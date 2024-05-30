@@ -18,6 +18,7 @@ class ClientTypeResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
+            'priority' => $this->priority,
         ];
     }
 }

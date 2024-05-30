@@ -14,17 +14,22 @@ class ClientTypeSeeder extends Seeder
     {
         \App\Models\ClientType::create([
             'name' => 'Tramitador',
-            'slug' => 'processor'
+            'slug' => 'processor',
+            'priority' => 2,
         ]);
 
         \App\Models\ClientType::create([
             'name' => 'Preferencial',
-            'slug' => 'preferential'
+            'slug' => 'preferential',
+            'priority' => 1,
+
         ]);
 
         \App\Models\ClientType::create([
             'name' => 'Estandar',
-            'slug' => 'standard'
+            'slug' => 'standard',
+            'priority' => 3,
+
         ]);
     }
 }

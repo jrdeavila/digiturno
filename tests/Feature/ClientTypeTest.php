@@ -23,8 +23,7 @@ class ClientTypeTest extends TestCase
                     'id',
                     'name',
                     'slug',
-                    'created_at',
-                    'updated_at',
+                    'priority'
                 ],
             ],
         ]);
@@ -44,6 +43,7 @@ class ClientTypeTest extends TestCase
                 'id',
                 'name',
                 'slug',
+                'priority',
             ],
         ]);
     }
@@ -65,6 +65,7 @@ class ClientTypeTest extends TestCase
                 'id',
                 'name',
                 'slug',
+                'priority',
             ],
         ]);
     }
@@ -103,6 +104,7 @@ class ClientTypeTest extends TestCase
                 'id',
                 'name',
                 'slug',
+                'priority',
             ],
         ]);
     }
