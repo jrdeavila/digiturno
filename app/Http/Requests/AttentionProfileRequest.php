@@ -26,7 +26,7 @@ class AttentionProfileRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
-                'unique:attention_profiles,name,' . $this->attention_profile->id,
+                \Illuminate\Validation\Rule::unique('attention_profiles', 'name')->ignore($this->attention_profile),
             ],
             'description' => 'required|string|max:255',
         ];
