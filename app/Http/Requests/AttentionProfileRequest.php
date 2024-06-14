@@ -28,7 +28,7 @@ class AttentionProfileRequest extends FormRequest
                 'max:255',
                 \Illuminate\Validation\Rule::unique('attention_profiles', 'name')->ignore($this->attention_profile),
             ],
-            'description' => 'required|string|max:255',
+            'attention_profile_id' => 'sometimes|exists:attention_profiles,id',
         ];
     }
 }

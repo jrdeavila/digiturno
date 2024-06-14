@@ -16,9 +16,11 @@ class ClientFactory extends Factory
      */
     public function definition(): array
     {
+        // Ex: 1234567890, 0987654321, 2345678901, 3456789012
+        $dni = "1234567890";
         return [
             'name' => $this->faker->name,
-            'dni' => $this->faker->unique()->randomNumber(10),
+            'dni' => $dni,
         ];
     }
 }

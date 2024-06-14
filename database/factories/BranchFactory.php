@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\AttentionProfile>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Branch>
  */
-class AttentionProfileFactory extends Factory
+class BranchFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,6 +18,7 @@ class AttentionProfileFactory extends Factory
     {
         return [
             'name' => $this->faker->name,
+            'address' => $this->faker->address,
         ];
     }
 }

@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\AttentionProfile;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+
+
 
 class AttentionProfileSeeder extends Seeder
 {
@@ -13,6 +14,17 @@ class AttentionProfileSeeder extends Seeder
      */
     public function run(): void
     {
-        AttentionProfile::factory()->count(10)->create();
+        $attentionProfiles = require __DIR__ . '/data/attentionProfiles.php';
+
+        foreach ($attentionProfiles as $key => $value) {
+            $ap = \App\Models\AttentionProfile::create([
+                'name' => $key,
+            ]);
+            for ($i = 0; $i < count($value); $i++) {
+                $ap->attentionProfiles()->create([
+                    'name' => $value[$i]
+                ]);
+            }
+        }
     }
 }

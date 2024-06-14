@@ -22,7 +22,7 @@ class AttentionProfileTest extends TestCase
                 '*' => [
                     'id',
                     'name',
-                    'description',
+                    'attention_profiles',
                     'created_at',
                     'updated_at',
                 ],
@@ -30,20 +30,38 @@ class AttentionProfileTest extends TestCase
         ]);
     }
 
+    public function test_get_one_attention_profile_with_attention_profiles_test_ok(): void
+    {
+        $attentionProfile = \App\Models\AttentionProfile::factory()->create();
+
+        \App\Models\AttentionProfile::factory()->create([
+            'attention_profile_id' => $attentionProfile->id,
+        ]);
+        $response = $this->get(route('attention_profiles.show', $attentionProfile->id));
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'data' => [
+                'id',
+                'name',
+                'attention_profiles',
+            ],
+        ]);
+    }
+
+
 
     public function test_get_one_attention_profile_test_ok(): void
     {
 
-        \App\Models\AttentionProfile::factory()->create();
+        $ap = \App\Models\AttentionProfile::factory()->create();
 
-        $response = $this->get(route('attention_profiles.show', 1));
+        $response = $this->get(route('attention_profiles.show', $ap->id));
         $response->assertStatus(200);
 
         $response->assertJsonStructure([
             'data' => [
                 'id',
                 'name',
-                'description',
             ],
         ]);
     }
@@ -67,7 +85,6 @@ class AttentionProfileTest extends TestCase
             'data' => [
                 'id',
                 'name',
-                'description',
             ],
         ]);
     }
@@ -76,7 +93,6 @@ class AttentionProfileTest extends TestCase
     {
         $data = [
             'name' => '',
-            'description' => '',
         ];
 
         $response = $this->post(route('attention_profiles.store'), $data);
@@ -90,7 +106,6 @@ class AttentionProfileTest extends TestCase
 
         $data = [
             'name' => $attentionProfile->name,
-            'description' => $attentionProfile->description,
         ];
 
         $response = $this->post(route('attention_profiles.store'), $data);
@@ -102,7 +117,6 @@ class AttentionProfileTest extends TestCase
     {
         $data = [
             'name' => '',
-            'description' => 'description',
         ];
 
         $response = $this->post(route('attention_profiles.store'), $data);
@@ -110,17 +124,7 @@ class AttentionProfileTest extends TestCase
         $response->assertStatus(422);
     }
 
-    public function test_create_attention_profile_test_description_required_error(): void
-    {
-        $data = [
-            'name' => 'name',
-            'description' => '',
-        ];
 
-        $response = $this->post(route('attention_profiles.store'), $data);
-
-        $response->assertStatus(422);
-    }
 
     public function test_update_attention_profile_test_ok(): void
     {
@@ -128,7 +132,6 @@ class AttentionProfileTest extends TestCase
 
         $data = [
             'name' => 'name',
-            'description' => 'description',
         ];
 
         $response = $this->put(route('attention_profiles.update', $attentionProfile->id), $data);
@@ -139,7 +142,6 @@ class AttentionProfileTest extends TestCase
             'data' => [
                 'id',
                 'name',
-                'description',
             ],
         ]);
     }
@@ -150,7 +152,6 @@ class AttentionProfileTest extends TestCase
 
         $data = [
             'name' => '',
-            'description' => '',
         ];
 
         $response = $this->put(route('attention_profiles.update', $attentionProfile->id), $data);
@@ -165,7 +166,6 @@ class AttentionProfileTest extends TestCase
 
         $data = [
             'name' => $attentionProfile2->name,
-            'description' => $attentionProfile2->description,
         ];
 
         $response = $this->put(route('attention_profiles.update', $attentionProfile->id), $data);
@@ -187,19 +187,6 @@ class AttentionProfileTest extends TestCase
         $response->assertStatus(422);
     }
 
-    public function test_update_attention_profile_test_description_required_error(): void
-    {
-        $attentionProfile = \App\Models\AttentionProfile::factory()->create();
-
-        $data = [
-            'name' => 'name',
-            'description' => '',
-        ];
-
-        $response = $this->put(route('attention_profiles.update', $attentionProfile->id), $data);
-
-        $response->assertStatus(422);
-    }
 
     public function test_delete_attention_profile_test_ok(): void
     {

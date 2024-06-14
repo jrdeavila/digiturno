@@ -12,6 +12,21 @@ class AttentionProfile extends Model
 
     protected $fillable = [
         'name',
-        'description',
+        'attention_profile_id'
     ];
+
+    public function shifts()
+    {
+        return $this->hasMany(Shift::class);
+    }
+
+    public function attentionProfile()
+    {
+        return $this->belongsTo(AttentionProfile::class);
+    }
+
+    public function attentionProfiles()
+    {
+        return $this->hasMany(AttentionProfile::class);
+    }
 }

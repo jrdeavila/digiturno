@@ -30,7 +30,10 @@ class RoomTest extends TestCase
     public function test_get_one_room_ok(): void
     {
 
-        \App\Models\Room::factory()->create();
+        $branch = \App\Models\Branch::factory()->create();
+        \App\Models\Room::factory()->create([
+            'branch_id' => $branch->id,
+        ]);
 
 
         $response = $this->get(route('rooms.show', 1));
@@ -54,8 +57,11 @@ class RoomTest extends TestCase
 
     public function test_create_room_ok(): void
     {
+        $branch = \App\Models\Branch::factory()->create();
+
         $response = $this->post(route('rooms.store'), [
-            'name' => 'Sala 1'
+            'name' => 'Sala 1',
+            'branch_id' => $branch->id,
         ]);
 
         $response->assertStatus(201);
@@ -76,7 +82,10 @@ class RoomTest extends TestCase
 
     public function test_create_room_unique_error(): void
     {
-        $room = \App\Models\Room::factory()->create();
+        $branch = \App\Models\Branch::factory()->create();
+        $room = \App\Models\Room::factory()->create([
+            'branch_id' => $branch->id,
+        ]);
         $data = $room->toArray();
 
         $response = $this->post(route('rooms.store'), $data);
@@ -84,11 +93,26 @@ class RoomTest extends TestCase
         $response->assertStatus(422);
     }
 
+    public function test_create_room_branch_not_found(): void
+    {
+        $response = $this->post(route('rooms.store'), [
+            'name' => 'Sala 1',
+            'branch_id' => 1,
+        ]);
+
+        $response->assertStatus(422);
+    }
+
 
     public function test_update_room_ok(): void
     {
-        $room = \App\Models\Room::factory()->create();
-        $data = \App\Models\Room::factory()->make()->toArray();
+        $branch = \App\Models\Branch::factory()->create();
+        $room = \App\Models\Room::factory()->create([
+            'branch_id' => $branch->id,
+        ]);
+        $data = \App\Models\Room::factory()->make([
+            'branch_id' => $branch->id,
+        ])->toArray();
 
         $response = $this->put(route('rooms.update', $room->id), $data);
 
@@ -104,7 +128,10 @@ class RoomTest extends TestCase
 
     public function test_update_room_validation_error(): void
     {
-        $room = \App\Models\Room::factory()->create();
+        $branch = \App\Models\Branch::factory()->create();
+        $room = \App\Models\Room::factory()->create([
+            'branch_id' => $branch->id,
+        ]);
         $response = $this->put(route('rooms.update', $room->id), []);
         $response->assertStatus(422);
     }
@@ -119,8 +146,13 @@ class RoomTest extends TestCase
 
     public function test_update_room_unique_error(): void
     {
-        $room = \App\Models\Room::factory()->create();
-        $room2 = \App\Models\Room::factory()->create();
+        $branch = \App\Models\Branch::factory()->create();
+        $room = \App\Models\Room::factory()->create([
+            'branch_id' => $branch->id,
+        ]);
+        $room2 = \App\Models\Room::factory()->create([
+            'branch_id' => $branch->id,
+        ]);
         $data = $room2->toArray();
 
         $response = $this->put(route('rooms.update', $room->id), $data);
@@ -131,7 +163,8 @@ class RoomTest extends TestCase
 
     public function test_delete_room_ok(): void
     {
-        $room =  \App\Models\Room::factory()->create();
+        $branch = \App\Models\Branch::factory()->create();
+        $room = $branch->rooms()->save(\App\Models\Room::factory()->make());
 
         $response = $this->delete(route('rooms.destroy', $room->id));
         $response->assertStatus(204);

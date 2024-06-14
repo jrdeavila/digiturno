@@ -11,15 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('attention_profiles', function (Blueprint $table) {
+        Schema::create('branches', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('attention_profile_id')
-                ->nullable()
-                ->constrained('attention_profiles')
-                ->nullOnDelete()
-                ->cascadeOnUpdate();
-            $table->softDeletes();
+            $table->string('address');
             $table->timestamps();
         });
     }
@@ -29,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('attention_profiles');
+        Schema::dropIfExists('branches');
     }
 };

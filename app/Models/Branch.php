@@ -5,22 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Room extends Model
+class Branch extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'name',
-        'branch_id',
+        'address',
     ];
 
-    public function branch()
+    public function rooms()
     {
-        return $this->belongsTo(Branch::class);
-    }
-
-    public function shifts()
-    {
-        return $this->hasMany(Shift::class);
+        return $this->hasMany(Room::class);
     }
 }
