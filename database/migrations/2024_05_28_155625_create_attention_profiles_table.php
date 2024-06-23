@@ -14,11 +14,6 @@ return new class extends Migration
         Schema::create('attention_profiles', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('attention_profile_id')
-                ->nullable()
-                ->constrained('attention_profiles')
-                ->nullOnDelete()
-                ->cascadeOnUpdate();
             $table->softDeletes();
             $table->timestamps();
         });

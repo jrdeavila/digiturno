@@ -53,4 +53,18 @@ return Application::configure(basePath: dirname(__DIR__))
                 \Illuminate\Http\JsonResponse::HTTP_NOT_FOUND
             );
         });
+
+        // When HttpJSONException is thrown return json response with message, help and status
+        $exceptions->render(function (
+            \App\Exceptions\HttpJSONException $exception,
+            \Illuminate\Http\Request $request
+        ) {
+            return response()->json(
+                [
+                    'message' => $exception->getMessage(),
+                    'help' => $exception->help,
+                ],
+                $exception->status
+            );
+        });
     })->create();

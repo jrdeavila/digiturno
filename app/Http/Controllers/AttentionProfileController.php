@@ -9,7 +9,7 @@ class AttentionProfileController extends Controller
 
     public function index()
     {
-        $attentionProfiles = \App\Models\AttentionProfile::where('attention_profile_id', null)->latest()->get();
+        $attentionProfiles = \App\Models\AttentionProfile::latest()->get();
         return \App\Http\Resources\AttentionProfileResource::collection($attentionProfiles);
     }
 

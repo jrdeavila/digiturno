@@ -12,7 +12,6 @@ class AttentionProfile extends Model
 
     protected $fillable = [
         'name',
-        'attention_profile_id'
     ];
 
     public function shifts()
@@ -20,13 +19,8 @@ class AttentionProfile extends Model
         return $this->hasMany(Shift::class);
     }
 
-    public function attentionProfile()
+    public function services()
     {
-        return $this->belongsTo(AttentionProfile::class);
-    }
-
-    public function attentionProfiles()
-    {
-        return $this->hasMany(AttentionProfile::class);
+        return $this->belongsToMany(Service::class, 'attention_profile_service', 'attention_profile_id', 'service_id');
     }
 }
