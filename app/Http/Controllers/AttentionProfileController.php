@@ -9,7 +9,9 @@ class AttentionProfileController extends Controller
 
     public function index()
     {
-        $attentionProfiles = \App\Models\AttentionProfile::latest()->get();
+        $attentionProfiles = \Illuminate\Support\Facades\Cache::remember('attention_profiles', 60, function () {
+            return \App\Models\AttentionProfile::latest()->get();
+        });
         return \App\Http\Resources\AttentionProfileResource::collection($attentionProfiles);
     }
 

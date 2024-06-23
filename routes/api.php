@@ -9,3 +9,4 @@ Route::apiResource('attention_profiles.services', \App\Http\Controllers\Attentio
 Route::apiResource('client_types', \App\Http\Controllers\ClientTypeController::class)->names('client_types');
 Route::apiResource('rooms', \App\Http\Controllers\RoomController::class)->names('rooms');
 Route::apiResource('shifts', \App\Http\Controllers\ShiftController::class)->names('shifts');
+Route::apiResource('branches', \App\Http\Controllers\BranchController::class)->names('branches');
