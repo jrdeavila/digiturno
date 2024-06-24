@@ -14,6 +14,9 @@ class AttentionProfileTest extends TestCase
      */
     public function test_get_all_attention_profile_test_ok(): void
     {
+        \App\Models\AttentionProfile::factory(5)->create()->each(function ($ap) {
+            $ap->services()->attach(\App\Models\Service::factory(5)->create());
+        });
         $response = $this->get(route('attention_profiles.index'));
         $response->assertStatus(200);
 
@@ -22,8 +25,12 @@ class AttentionProfileTest extends TestCase
                 '*' => [
                     'id',
                     'name',
-                    'created_at',
-                    'updated_at',
+                    'services' => [
+                        '*' => [
+                            'id',
+                            'name',
+                        ],
+                    ],
                 ],
             ],
         ]);
@@ -34,6 +41,7 @@ class AttentionProfileTest extends TestCase
     {
 
         $ap = \App\Models\AttentionProfile::factory()->create();
+        $ap->services()->attach(\App\Models\Service::factory(5)->create());
 
         $response = $this->get(route('attention_profiles.show', $ap->id));
         $response->assertStatus(200);
@@ -42,6 +50,12 @@ class AttentionProfileTest extends TestCase
             'data' => [
                 'id',
                 'name',
+                'services' => [
+                    '*' => [
+                        'id',
+                        'name',
+                    ],
+                ],
             ],
         ]);
     }
