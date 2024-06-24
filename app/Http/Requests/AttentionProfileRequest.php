@@ -28,7 +28,16 @@ class AttentionProfileRequest extends FormRequest
                 'max:255',
                 \Illuminate\Validation\Rule::unique('attention_profiles', 'name')->ignore($this->attention_profile),
             ],
-            'attention_profile_id' => 'sometimes|exists:attention_profiles,id',
+            'services' => 'required|array|min:1'
         ];
+    }
+
+    public function createAttentionProfile(): \App\Models\AttentionProfile
+    {
+        \Illuminate\Support\Facades\DB::beginTransaction();
+        $attentionProfile = \App\Models\AttentionProfile::create($this->validated());
+        $attentionProfile->services()->attach($this->services);
+        \Illuminate\Support\Facades\DB::commit();
+        return $attentionProfile;
     }
 }

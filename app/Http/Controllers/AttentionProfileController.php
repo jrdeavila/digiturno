@@ -18,7 +18,7 @@ class AttentionProfileController extends Controller
 
     public function store(\App\Http\Requests\AttentionProfileRequest $request)
     {
-        $attentionProfile = \App\Models\AttentionProfile::create($request->all());
+        $attentionProfile =  $request->createAttentionProfile();
         return new \App\Http\Resources\AttentionProfileResource($attentionProfile);
     }
 

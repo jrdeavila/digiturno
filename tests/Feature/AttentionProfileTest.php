@@ -69,9 +69,16 @@ class AttentionProfileTest extends TestCase
     public function test_create_attention_profile_test_ok(): void
     {
 
-        $data = \App\Models\AttentionProfile::factory()->make()->toArray();
+        $service = \App\Models\Service::factory()->create();
+        $ap = \App\Models\AttentionProfile::factory()->make();
 
-        $response = $this->post(route('attention_profiles.store'), $data);
+        $response = $this->post(route('attention_profiles.store'), [
+            'name' => $ap->name,
+            'services' => [
+                $service->id,
+            ],
+        ]);
+
 
         $response->assertStatus(201);
 
@@ -122,13 +129,17 @@ class AttentionProfileTest extends TestCase
 
     public function test_update_attention_profile_test_ok(): void
     {
+        $service = \App\Models\Service::factory()->create();
         $attentionProfile = \App\Models\AttentionProfile::factory()->create();
 
-        $data = [
-            'name' => 'name',
-        ];
 
-        $response = $this->put(route('attention_profiles.update', $attentionProfile->id), $data);
+
+        $response = $this->put(route('attention_profiles.update', $attentionProfile->id), [
+            'name' => 'name',
+            'services' => [
+                $service->id,
+            ],
+        ]);
 
         $response->assertStatus(200);
 
