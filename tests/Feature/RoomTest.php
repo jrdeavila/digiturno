@@ -31,12 +31,12 @@ class RoomTest extends TestCase
     {
 
         $branch = \App\Models\Branch::factory()->create();
-        \App\Models\Room::factory()->create([
+        $room = \App\Models\Room::factory()->create([
             'branch_id' => $branch->id,
         ]);
 
 
-        $response = $this->get(route('rooms.show', 1));
+        $response = $this->get(route('rooms.show', $room->id));
         $response->assertStatus(200);
 
         $response->assertJsonStructure([
