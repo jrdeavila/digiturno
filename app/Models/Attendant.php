@@ -14,8 +14,15 @@ class Attendant extends Model
         'email',
         'dni',
         'password',
-        'enabled',
         'attention_profile_id',
+    ];
+
+    protected $hidden = [
+        'password',
+    ];
+
+    protected $casts = [
+        'enabled' => 'boolean',
     ];
 
     public function modules()

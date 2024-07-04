@@ -32,6 +32,7 @@ class ModuleSeeder extends Seeder
             ]);
         });
 
+        \App\Models\Attendant::factory(10)->create();
 
         \App\Models\Module::all()->each(function (\App\Models\Module $module) {
             $module->attendants()->attach(\App\Models\Attendant::inRandomOrder()->first());
