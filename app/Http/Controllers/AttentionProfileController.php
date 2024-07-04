@@ -29,7 +29,7 @@ class AttentionProfileController extends Controller
 
     public function update(\App\Http\Requests\AttentionProfileRequest $request, \App\Models\AttentionProfile $attentionProfile)
     {
-        $attentionProfile->update($request->all());
+        $request->updateAttentionProfile($attentionProfile);
         return new \App\Http\Resources\AttentionProfileResource($attentionProfile);
     }
 

@@ -40,4 +40,12 @@ class AttentionProfileRequest extends FormRequest
         \Illuminate\Support\Facades\DB::commit();
         return $attentionProfile;
     }
+
+    public function updateAttentionProfile(\App\Models\AttentionProfile $attentionProfile): void
+    {
+        \Illuminate\Support\Facades\DB::beginTransaction();
+        $attentionProfile->update($this->validated());
+        $attentionProfile->services()->sync($this->services);
+        \Illuminate\Support\Facades\DB::commit();
+    }
 }
