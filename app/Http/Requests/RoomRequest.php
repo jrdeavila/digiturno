@@ -28,7 +28,7 @@ class RoomRequest extends FormRequest
                 'max:255',
                 \Illuminate\Validation\Rule::unique('rooms', 'name')->ignore($this->room),
             ],
-            'branch_id' => 'required|exists:branches,id',
+            'branch_id' => 'required|numeric|exists:branches,id',
         ];
     }
 }
