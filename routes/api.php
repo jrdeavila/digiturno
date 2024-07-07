@@ -14,3 +14,4 @@ Route::apiResource('modules', \App\Http\Controllers\ModuleController::class)->na
 Route::apiResource('module_types', \App\Http\Controllers\ModuleTypeController::class)->names('module_types')->only(['index', 'show']);
 Route::apiResource('attendants', \App\Http\Controllers\AttendantController::class)->names('attendants');
 Route::apiResource('modules.attendants', \App\Http\Controllers\ModuleAttendantController::class)->names('modules.attendants')->only(['index']);
+Route::apiResource('clients', \App\Http\Controllers\ClientController::class)->names('clients');
