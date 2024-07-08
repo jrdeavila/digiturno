@@ -14,7 +14,6 @@ class Attendant extends Model
         'email',
         'dni',
         'password',
-        'attention_profile_id',
     ];
 
     protected $hidden = [
@@ -28,10 +27,5 @@ class Attendant extends Model
     public function modules()
     {
         return $this->belongsToMany(Module::class, 'module_attendant_accesses')->withTimestamps();
-    }
-
-    public function attentionProfile()
-    {
-        return $this->belongsTo(AttentionProfile::class);
     }
 }

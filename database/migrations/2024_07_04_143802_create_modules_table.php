@@ -20,17 +20,10 @@ return new class extends Migration
             $table->string('password', 100);
             $table->boolean('enabled')->default(true);
             $table->enum('status', ['busy', 'free', 'absent', 'offline'])->default('offline');
-            $table->foreignId('attention_profile_id')
-                ->nullable()
-                ->constrained()
-                ->nullOnDelete()
-                ->cascadeOnUpdate();
+
             $table->timestamps();
         });
-        Schema::create('module_types', function (Blueprint $table) {
-            $table->id();
-            $table->string('name', 100);
-        });
+
         Schema::create('modules', function (Blueprint $table) {
             $table->id();
             $table->string('name', 100);
@@ -43,12 +36,18 @@ return new class extends Migration
                 ->nullOnDelete()
                 ->cascadeOnUpdate();
 
-            $table->foreignId('module_type_id')
+            $table->foreignId('client_type_id')
                 ->constrained()
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
             $table->unique(['name', 'ip_address']);
+            $table->foreignId('attention_profile_id')
+                ->nullable()
+                ->constrained()
+                ->nullOnDelete()
+                ->cascadeOnUpdate();
             $table->timestamps();
+
             $table->softDeletes();
         });
         Schema::create('module_attendant_accesses', function (Blueprint $table) {

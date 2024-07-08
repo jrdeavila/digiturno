@@ -12,23 +12,14 @@ class ModuleSeeder extends Seeder
      */
     public function run(): void
     {
-        // Types
-        \App\Models\ModuleType::create([
-            'name' => 'Preferencial',
-        ]);
-        \App\Models\ModuleType::create([
-            'name' => 'General',
-        ]);
-
-        // Modules
         \App\Models\Room::all()->each(function ($room) {
             \App\Models\Module::factory(3)->create([
                 'room_id' => $room->id,
-                'module_type_id' => 2,
+                'client_type_id' => 1,
             ]);
             \App\Models\Module::factory(1)->create([
                 'room_id' => $room->id,
-                'module_type_id' => 1,
+                'client_type_id' => 2,
             ]);
         });
 

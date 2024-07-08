@@ -11,7 +11,6 @@ Route::apiResource('rooms', \App\Http\Controllers\RoomController::class)->names(
 Route::apiResource('shifts', \App\Http\Controllers\ShiftController::class)->names('shifts');
 Route::apiResource('branches', \App\Http\Controllers\BranchController::class)->names('branches');
 Route::apiResource('modules', \App\Http\Controllers\ModuleController::class)->names('modules');
-Route::apiResource('module_types', \App\Http\Controllers\ModuleTypeController::class)->names('module_types')->only(['index', 'show']);
 Route::apiResource('attendants', \App\Http\Controllers\AttendantController::class)->names('attendants');
 Route::apiResource('modules.attendants', \App\Http\Controllers\ModuleAttendantController::class)->names('modules.attendants')->only(['index']);
 Route::apiResource('clients', \App\Http\Controllers\ClientController::class)->names('clients');

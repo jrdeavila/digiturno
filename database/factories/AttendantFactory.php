@@ -24,7 +24,6 @@ class AttendantFactory extends Factory
             'dni' => $dni,
             'password' => $dni,
             'enabled' => true,
-            'attention_profile_id' => \App\Models\AttentionProfile::factory(),
         ];
     }
 }

@@ -110,16 +110,16 @@ class ModuleTest extends TestCase
         $response->assertStatus(422);
     }
 
-    public function test_create_module_validation_error_module_type_id_empty(): void
+    public function test_create_module_validation_error_client_type_id_empty(): void
     {
-        $module = \App\Models\Module::factory()->make(['module_type_id' => '']);
+        $module = \App\Models\Module::factory()->make(['client_type_id' => '']);
         $response = $this->post(route('modules.store'), $module->toArray());
         $response->assertStatus(422);
     }
 
-    public function test_create_module_validation_error_module_type_id_not_exists(): void
+    public function test_create_module_validation_error_client_type_id_not_exists(): void
     {
-        $module = \App\Models\Module::factory()->make(['module_type_id' => 100]);
+        $module = \App\Models\Module::factory()->make(['client_type_id' => 100]);
         $response = $this->post(route('modules.store'), $module->toArray());
         $response->assertStatus(422);
     }
@@ -172,18 +172,18 @@ class ModuleTest extends TestCase
         $response->assertStatus(422);
     }
 
-    public function test_update_module_validation_error_module_type_id_empty(): void
+    public function test_update_module_validation_error_client_type_id_empty(): void
     {
         $module = \App\Models\Module::factory()->create();
-        $module->module_type_id = '';
+        $module->client_type_id = '';
         $response = $this->put(route('modules.update', $module), $module->toArray());
         $response->assertStatus(422);
     }
 
-    public function test_update_module_validation_error_module_type_id_not_exists(): void
+    public function test_update_module_validation_error_client_type_id_not_exists(): void
     {
         $module = \App\Models\Module::factory()->create();
-        $module->module_type_id = 100;
+        $module->client_type_id = 100;
         $response = $this->put(route('modules.update', $module), $module->toArray());
         $response->assertStatus(422);
     }

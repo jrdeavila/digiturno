@@ -25,7 +25,6 @@ class AttendantRequest extends FormRequest
             'name' => 'required|string|max:100',
             'email' => 'required|email',
             'dni' => 'required|string|max:10|unique:attendants,dni|regex:/^\d{8}$/',
-            'attention_profile_id' => 'required|exists:attention_profiles,id',
         ];
     }
 

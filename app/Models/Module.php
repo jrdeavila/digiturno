@@ -13,7 +13,7 @@ class Module extends Model
         'name',
         'ip_address',
         'room_id',
-        'module_type_id',
+        'client_type_id',
     ];
 
     public function room()
@@ -21,9 +21,9 @@ class Module extends Model
         return $this->belongsTo(Room::class);
     }
 
-    public function moduleType()
+    public function clientType()
     {
-        return $this->belongsTo(ModuleType::class);
+        return $this->belongsTo(ClientType::class);
     }
 
     public function attendants()

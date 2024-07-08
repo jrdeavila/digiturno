@@ -22,7 +22,7 @@ class ModuleFactory extends Factory
             'room_id' => \App\Models\Room::factory()->create([
                 'branch_id' => \App\Models\Branch::factory(),
             ]),
-            'module_type_id' => \App\Models\ModuleType::factory(),
+            'client_type_id' => \App\Models\ClientType::factory(),
         ];
     }
 }
