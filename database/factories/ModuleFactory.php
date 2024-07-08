@@ -23,6 +23,7 @@ class ModuleFactory extends Factory
                 'branch_id' => \App\Models\Branch::factory(),
             ]),
             'client_type_id' => \App\Models\ClientType::factory(),
+            'attention_profile_id' => \App\Models\AttentionProfile::factory(),
         ];
     }
 }

@@ -14,6 +14,7 @@ class Module extends Model
         'ip_address',
         'room_id',
         'client_type_id',
+        'attention_profile_id',
     ];
 
     public function room()
@@ -29,5 +30,10 @@ class Module extends Model
     public function attendants()
     {
         return $this->belongsToMany(Attendant::class, 'module_attendant_accesses')->withTimestamps();
+    }
+
+    public function attentionProfile()
+    {
+        return $this->belongsTo(AttentionProfile::class);
     }
 }

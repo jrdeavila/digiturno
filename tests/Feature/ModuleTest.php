@@ -26,7 +26,8 @@ class ModuleTest extends TestCase
                     'room',
                     'type',
                     'enabled',
-                    'status'
+                    'status',
+                    'attention_profile_id'
                 ],
             ],
         ]);
@@ -46,7 +47,8 @@ class ModuleTest extends TestCase
                 'room',
                 'type',
                 'enabled',
-                'status'
+                'status',
+                'attention_profile_id',
             ],
         ]);
     }
@@ -70,7 +72,8 @@ class ModuleTest extends TestCase
                 'room',
                 'type',
                 'enabled',
-                'status'
+                'status',
+                'attention_profile_id',
             ],
         ]);
     }

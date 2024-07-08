@@ -26,6 +26,7 @@ class ModuleRequest extends FormRequest
             'ip_address' => 'required|ipv4',
             'room_id' => 'required|exists:rooms,id',
             'client_type_id' => 'required|exists:client_types,id',
+            'attention_profile_id' => 'nullable|exists:attention_profiles,id',
         ];
     }
 
