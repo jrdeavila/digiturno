@@ -35,7 +35,8 @@ return new class extends Migration
             $table->id();
             $table->string('name', 100);
             $table->string('ip_address', 15);
-            $table->enum('status', ['online', 'offline', 'maintenance'])->default('offline');
+            $table->enum('status', ['online', 'offline'])->default('offline');
+            $table->boolean('enabled')->default(true);
             $table->foreignId('room_id')
                 ->nullable()
                 ->constrained()

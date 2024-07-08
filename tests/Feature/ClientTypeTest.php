@@ -33,9 +33,9 @@ class ClientTypeTest extends TestCase
     public function test_get_one_client_type_ok(): void
     {
 
-        \App\Models\ClientType::factory()->create();
+        $clientType = \App\Models\ClientType::factory()->create();
 
-        $response = $this->get(route('client_types.show', 1));
+        $response = $this->get(route('client_types.show', $clientType->id));
         $response->assertStatus(200);
 
         $response->assertJsonStructure([

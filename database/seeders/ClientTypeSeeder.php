@@ -31,5 +31,11 @@ class ClientTypeSeeder extends Seeder
             'priority' => 3,
 
         ]);
+
+        \App\Models\ClientType::all()->each(function (\App\Models\ClientType $clientType) {
+            \App\Models\Client::factory(10)->create([
+                'client_type_id' => $clientType->id,
+            ]);
+        });
     }
 }

@@ -25,6 +25,8 @@ class ModuleTest extends TestCase
                     'ip_address',
                     'room',
                     'type',
+                    'enabled',
+                    'status'
                 ],
             ],
         ]);
@@ -43,6 +45,8 @@ class ModuleTest extends TestCase
                 'ip_address',
                 'room',
                 'type',
+                'enabled',
+                'status'
             ],
         ]);
     }
@@ -65,6 +69,8 @@ class ModuleTest extends TestCase
                 'ip_address',
                 'room',
                 'type',
+                'enabled',
+                'status'
             ],
         ]);
     }
