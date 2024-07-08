@@ -13,13 +13,16 @@ class ModuleSeeder extends Seeder
     public function run(): void
     {
         \App\Models\Room::all()->each(function ($room) {
+            $attentionProfile = \App\Models\AttentionProfile::factory()->create();
             \App\Models\Module::factory(3)->create([
                 'room_id' => $room->id,
                 'client_type_id' => 1,
+                'attention_profile_id' => $attentionProfile->id,
             ]);
             \App\Models\Module::factory(1)->create([
                 'room_id' => $room->id,
                 'client_type_id' => 2,
+                'attention_profile_id' => $attentionProfile->id,
             ]);
         });
 
