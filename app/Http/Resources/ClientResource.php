@@ -19,6 +19,7 @@ class ClientResource extends JsonResource
             'name' => $this->name,
             'dni' => $this->dni,
             'client_type' => $this->clientType->name,
+            'is_deleted' => $this->deleted_at !== null,
         ];
     }
 }

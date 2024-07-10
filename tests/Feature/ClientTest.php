@@ -25,6 +25,7 @@ class ClientTest extends TestCase
                     'name',
                     'dni',
                     'client_type',
+                    'is_deleted'
                 ],
             ],
         ]);
@@ -41,6 +42,7 @@ class ClientTest extends TestCase
                 'name',
                 'dni',
                 'client_type',
+                'is_deleted'
             ],
         ]);
     }
@@ -56,6 +58,7 @@ class ClientTest extends TestCase
                 'name',
                 'dni',
                 'client_type',
+                'is_deleted'
             ],
         ]);
     }

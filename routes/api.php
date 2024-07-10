@@ -14,3 +14,7 @@ Route::apiResource('modules', \App\Http\Controllers\ModuleController::class)->na
 Route::apiResource('attendants', \App\Http\Controllers\AttendantController::class)->names('attendants');
 Route::apiResource('modules.attendants', \App\Http\Controllers\ModuleAttendantController::class)->names('modules.attendants')->only(['index']);
 Route::apiResource('clients', \App\Http\Controllers\ClientController::class)->names('clients');
+Route::prefix('clients')->group(function () {
+  Route::put('/{client}/restore', [\App\Http\Controllers\ClientController::class, 'restore'])->name('clients.restore');
+  Route::delete('/{client}/force-delete', [\App\Http\Controllers\ClientController::class, 'forceDelete'])->name('clients.force-delete');
+});
