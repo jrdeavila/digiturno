@@ -15,6 +15,7 @@ class Module extends Model
         'room_id',
         'client_type_id',
         'attention_profile_id',
+        'enabled'
     ];
 
     public function room()
