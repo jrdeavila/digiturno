@@ -8,7 +8,10 @@ class ShiftController extends Controller
 {
     public function index()
     {
-        $shifts = \App\Models\Shift::latest()->get();
+        $shifts = \App\Models\Shift::where(
+            'state',
+            \App\Enums\ShiftState::Pending
+        )->latest()->get();
         return \App\Http\Resources\ShiftResource::collection($shifts);
     }
 
@@ -23,15 +26,39 @@ class ShiftController extends Controller
         return new \App\Http\Resources\ShiftResource($shift);
     }
 
-    public function update(\App\Http\Requests\ShiftRequest $request, \App\Models\Shift $shift)
+    public function distracted()
     {
-        $shift = $request->updateShift($shift);
+        $shift =  \App\Models\Shift::where(
+            'state',
+            \App\Enums\ShiftState::Distracted
+        )->latest()->get();
+        return \App\Http\Resources\ShiftResource::collection($shift);
+    }
+
+    public function inProgress()
+    {
+        $shift =  \App\Models\Shift::where(
+            'state',
+            \App\Enums\ShiftState::InProgress
+        )->latest()->get();
+        return \App\Http\Resources\ShiftResource::collection($shift);
+    }
+
+    public function completedShift(\App\Models\Shift $shift)
+    {
+        $shift->update(['state' => \App\Enums\ShiftState::Completed]);
         return new \App\Http\Resources\ShiftResource($shift);
     }
 
-    public function destroy(\App\Models\Shift $shift)
+    public function qualifiedShift(\App\Models\Shift $shift, \App\Http\Requests\QualifiedShiftRequest $request)
     {
-        $shift->delete();
-        return response()->json(null, 204);
+        $request->createQualification();
+        return new \App\Http\Resources\ShiftResource($shift);
+    }
+
+    public function distractedShift(\App\Models\Shift $shift)
+    {
+        $shift->update(['state' => \App\Enums\ShiftState::Distracted]);
+        return new \App\Http\Resources\ShiftResource($shift);
     }
 }

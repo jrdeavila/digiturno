@@ -17,7 +17,11 @@ class ShiftFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'client_id' => \App\Models\Client::factory(),
+            'attention_profile_id' => \App\Models\AttentionProfile::factory(),
+            'room_id' => \App\Models\Room::factory()->create([
+                'branch_id' => \App\Models\Branch::factory(),
+            ])->id,
         ];
     }
 }

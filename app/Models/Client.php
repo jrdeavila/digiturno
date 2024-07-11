@@ -20,4 +20,9 @@ class Client extends Model
     {
         return $this->belongsTo(ClientType::class);
     }
+
+    public function shifts()
+    {
+        return $this->hasMany(Shift::class);
+    }
 }

@@ -13,9 +13,6 @@ return new class extends Migration
     {
         Schema::create('qualifications', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('shift_id')->constrained()
-                ->cascadeOnDelete()
-                ->cascadeOnUpdate();
             $table->enum('qualification', [
                 'no-assigned',
                 'bad',
@@ -23,7 +20,6 @@ return new class extends Migration
                 'good',
                 'excellent'
             ]);
-            $table->timestamps();
         });
     }
 

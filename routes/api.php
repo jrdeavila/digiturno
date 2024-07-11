@@ -8,7 +8,14 @@ Route::apiResource('services.subservices', \App\Http\Controllers\SubserviceContr
 Route::apiResource('attention_profiles.services', \App\Http\Controllers\AttentionProfileServiceController::class)->names('attention_profiles.services')->only(['index', 'store', 'destroy']);
 Route::apiResource('client_types', \App\Http\Controllers\ClientTypeController::class)->names('client_types');
 Route::apiResource('rooms', \App\Http\Controllers\RoomController::class)->names('rooms');
-Route::apiResource('shifts', \App\Http\Controllers\ShiftController::class)->names('shifts');
+Route::prefix('shifts')->group(function () {
+  Route::get('/distracted', [\App\Http\Controllers\ShiftController::class, 'distracted'])->name('shifts.distracted');
+  Route::get('/in-progress', [\App\Http\Controllers\ShiftController::class, 'inProgress'])->name('shifts.in-progress');
+  Route::put('/{shift}/completed', [\App\Http\Controllers\ShiftController::class, 'completedShift'])->name('shifts.completed');
+  Route::put('/{shift}/qualified', [\App\Http\Controllers\ShiftController::class, 'qualifiedShift'])->name('shifts.qualified');
+  Route::put('/{shift}/distracted', [\App\Http\Controllers\ShiftController::class, 'distractedShift'])->name('shifts.distracted');
+});
+Route::apiResource('shifts', \App\Http\Controllers\ShiftController::class)->names('shifts')->only(['index', 'store', 'show']);
 Route::apiResource('branches', \App\Http\Controllers\BranchController::class)->names('branches');
 Route::apiResource('modules', \App\Http\Controllers\ModuleController::class)->names('modules');
 Route::apiResource('attendants', \App\Http\Controllers\AttendantController::class)->names('attendants');
