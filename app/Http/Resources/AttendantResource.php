@@ -20,7 +20,6 @@ class AttendantResource extends JsonResource
             'email' => $this->email,
             'dni' => $this->dni,
             'enabled' => $this->enabled,
-            'attention_profile' => new AttentionProfileResource($this->attentionProfile),
         ];
     }
 }
