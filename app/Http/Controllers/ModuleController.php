@@ -42,4 +42,12 @@ class ModuleController extends Controller
         $module->delete();
         return response()->json(null, 204);
     }
+
+    public function getByIpAddress(
+        \App\Http\Requests\ModuleByIpAddressRequest $request,
+    ) {
+
+        $module = $request->getModuleByIpAddress();
+        return new \App\Http\Resources\ModuleResource($module);
+    }
 }

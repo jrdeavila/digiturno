@@ -17,7 +17,13 @@ Route::prefix('shifts')->group(function () {
 });
 Route::apiResource('shifts', \App\Http\Controllers\ShiftController::class)->names('shifts')->only(['index', 'store', 'show']);
 Route::apiResource('branches', \App\Http\Controllers\BranchController::class)->names('branches');
+
+Route::prefix('modules')->group(function () {
+  Route::get('/ip-address', [\App\Http\Controllers\ModuleController::class, 'getByIpAddress'])->name('modules.ip-address');
+});
 Route::apiResource('modules', \App\Http\Controllers\ModuleController::class)->names('modules');
+
+
 Route::apiResource('attendants', \App\Http\Controllers\AttendantController::class)->names('attendants');
 Route::apiResource('modules.attendants', \App\Http\Controllers\ModuleAttendantController::class)->names('modules.attendants')->only(['index']);
 Route::apiResource('clients', \App\Http\Controllers\ClientController::class)->names('clients');

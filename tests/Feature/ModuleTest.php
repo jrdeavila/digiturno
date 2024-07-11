@@ -203,4 +203,24 @@ class ModuleTest extends TestCase
         $response = $this->delete(route('modules.destroy', 100));
         $response->assertStatus(404);
     }
+
+    public function test_get_module_by_ip_address_ok(): void
+    {
+        $module = \App\Models\Module::factory()->create();
+
+        $response = $this->get(route('modules.ip-address', ['ip_address' => $module->ip_address]));
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'data' => [
+                'id',
+                'name',
+                'ip_address',
+                'room',
+                'type',
+                'enabled',
+                'status',
+                'attention_profile_id',
+            ],
+        ]);
+    }
 }
