@@ -30,7 +30,8 @@ class AttendantRequest extends FormRequest
                 'max:10',
                 'regex:/^\d{8}$/',
                 \Illuminate\Validation\Rule::unique('attendants', 'dni')->ignore($this->route('attendant')),
-            ]
+            ],
+            'enabled' => 'required|boolean',
         ];
     }
 

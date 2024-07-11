@@ -14,6 +14,7 @@ class Attendant extends Model
         'email',
         'dni',
         'password',
+        'enabled'
     ];
 
     protected $hidden = [
