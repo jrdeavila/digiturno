@@ -22,6 +22,7 @@ class RoomTest extends TestCase
                 '*' => [
                     'id',
                     'name',
+                    'branch_id'
                 ],
             ],
         ]);
@@ -43,6 +44,7 @@ class RoomTest extends TestCase
             'data' => [
                 'id',
                 'name',
+                'branch_id'
             ],
         ]);
     }
@@ -70,6 +72,7 @@ class RoomTest extends TestCase
             'data' => [
                 'id',
                 'name',
+                'branch_id'
             ],
         ]);
     }
@@ -122,6 +125,7 @@ class RoomTest extends TestCase
             'data' => [
                 'id',
                 'name',
+                'branch_id'
             ],
         ]);
     }
