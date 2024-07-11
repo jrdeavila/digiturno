@@ -24,7 +24,13 @@ class AttendantRequest extends FormRequest
         return [
             'name' => 'required|string|max:100',
             'email' => 'required|email',
-            'dni' => 'required|string|max:10|unique:attendants,dni|regex:/^\d{8}$/',
+            'dni' => [
+                'required',
+                'string',
+                'max:10',
+                'regex:/^\d{8}$/',
+                \Illuminate\Validation\Rule::unique('attendants', 'dni')->ignore($this->route('attendant')),
+            ]
         ];
     }
 
