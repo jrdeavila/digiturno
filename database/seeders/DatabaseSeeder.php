@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             RolePermissionSeeder::class,
             RoomSeeder::class,
             ModuleSeeder::class,
+            ShiftSeeder::class,
         ]);
     }
 }

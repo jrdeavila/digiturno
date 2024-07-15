@@ -14,10 +14,6 @@ class Service extends Model
         'service_id'
     ];
 
-    public function subservices()
-    {
-        return $this->hasMany(Service::class, 'service_id',  'id');
-    }
 
     public function service()
     {

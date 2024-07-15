@@ -22,6 +22,7 @@ class ShiftFactory extends Factory
             'room_id' => \App\Models\Room::factory()->create([
                 'branch_id' => \App\Models\Branch::factory(),
             ])->id,
+            'state' => $this->faker->randomElement(['pending', 'distracted', 'in_progress', 'completed', 'qualified',]),
         ];
     }
 }
