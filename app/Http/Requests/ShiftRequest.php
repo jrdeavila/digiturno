@@ -56,10 +56,11 @@ class ShiftRequest extends FormRequest
         \Illuminate\Support\Facades\DB::beginTransaction();
 
         // AttentionProfile belongs to many services, find the attention profile that has the services
+        $attentionProfiles = \App\Models\AttentionProfile::with('services')->get();
 
-        $attentionProfile = \App\Models\AttentionProfile::whereHas('services', function ($query) {
-            $query->whereIn('id', $this->validated()['services']);
-        })->first();
+        $attentionProfile = $attentionProfiles->first(function ($attentionProfile) {
+            return collect($this->validated()['services'])->diff($attentionProfile->services->pluck('id'))->isEmpty();
+        });
 
 
         \throw_unless($attentionProfile, \App\Exceptions\AttentionProfileNotFoundException::class);
@@ -69,7 +70,8 @@ class ShiftRequest extends FormRequest
         }
         $data = [
             ...$this->validated(),
-            'client_id' => $client->id
+            'client_id' => $client->id,
+            'attention_profile_id' => $attentionProfile->id,
         ];
 
         $shift = \App\Models\Shift::create($data);

@@ -21,7 +21,7 @@ class AttentionProfile extends Model
 
     public function services()
     {
-        return $this->belongsToMany(Service::class, 'attention_profile_service');
+        return $this->belongsToMany(Service::class, 'attention_profile_service', 'attention_profile_id', 'service_id');
     }
 
     public function modules()

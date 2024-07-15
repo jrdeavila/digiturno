@@ -30,7 +30,7 @@ class Shift extends Model
 
     public function attentionProfile()
     {
-        return $this->belongsTo(AttentionProfile::class);
+        return $this->belongsTo(AttentionProfile::class, 'attention_profile_id');
     }
 
     public function moduleAssignations()
