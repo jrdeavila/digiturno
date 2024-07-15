@@ -39,7 +39,13 @@ class ShiftRequest extends FormRequest
                 },
             ],
             'client.client_type_id' => 'required|exists:client_types,id',
-            'attention_profile_id' => 'required|exists:attention_profiles,id',
+            // 'attention_profile_id' => 'required|exists:attention_profiles,id',
+            'services' => [
+                'required',
+                'array',
+                'min:1',
+                'exists:services,id',
+            ],
             'state' => 'required|string|in:pending,completed,canceled,distracted,in_process',
 
         ];
@@ -49,6 +55,11 @@ class ShiftRequest extends FormRequest
     public function createShift()
     {
         \Illuminate\Support\Facades\DB::beginTransaction();
+        // Check what profile contains the services
+        $attentionProfile = \App\Models\AttentionProfile::whereHas('services', function ($query) {
+            $query->whereIn('id', $this->validated()['services']);
+        })->first();
+        \throw_unless($attentionProfile, \App\Exceptions\AttentionProfileNotFoundException::class);
         $client = \App\Models\Client::firstWhere('dni', $this->validated()['client']['dni']);
         if (!$client) {
             $client = \App\Models\Client::create($this->validated()['client']);

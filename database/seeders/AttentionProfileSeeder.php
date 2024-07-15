@@ -14,5 +14,20 @@ class AttentionProfileSeeder extends Seeder
      */
     public function run(): void
     {
+        $attentionProfiles = require __DIR__ . '/data/attentionProfiles.php';
+
+        foreach ($attentionProfiles as $attentionProfile => $services) {
+            $ap = \App\Models\AttentionProfile::create([
+                'name' => $attentionProfile,
+            ]);
+
+            foreach ($services as $service) {
+                // Find or create the service
+                $s = \App\Models\Service::firstOrCreate([
+                    'name' => $service,
+                ]);
+                $ap->services()->attach($s);
+            }
+        }
     }
 }

@@ -85,6 +85,8 @@ class ShiftTest extends TestCase
             'branch_id' => $branch->id
         ]);
         $attentionProfile = \App\Models\AttentionProfile::factory()->create();
+        $services = \App\Models\Service::factory(3)->create()->pluck('id')->toArray();
+        $attentionProfile->services()->attach($services);
         $clientType = \App\Models\ClientType::factory()->create();
         $client = \App\Models\Client::factory()->make([
             'client_type_id' =>  $clientType->id
@@ -92,7 +94,7 @@ class ShiftTest extends TestCase
 
         $data = [
             'room_id' => $room->id,
-            'attention_profile_id' => $attentionProfile->id,
+            'services' => $services,
             'client' => $client,
             'state' => 'pending',
         ];
