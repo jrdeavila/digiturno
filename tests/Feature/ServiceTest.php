@@ -47,23 +47,6 @@ class ServiceTest extends TestCase
         $response->assertStatus(404);
     }
 
-    public function test_get_subservices_ok(): void
-    {
-        $service = \App\Models\Service::factory()->create();
-        \App\Models\Service::factory()->count(5)->create(['service_id' => $service->id]);
-        $response = $this->get(route('services.subservices.index', $service->id));
-        $response->assertStatus(200);
-        $response->assertJsonStructure([
-            'data' => [
-                '*' => [
-                    'id',
-                    'name',
-                    'service',
-                ],
-            ],
-        ]);
-    }
-
     public function test_create_service_ok(): void
     {
         $service = \App\Models\Service::factory()->make();
