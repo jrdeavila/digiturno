@@ -9,19 +9,13 @@ class Qualification extends Model
 {
     use HasFactory;
 
-    public $timestamps = false;
     protected $fillable = [
         'qualification',
-        'shift_module_assignation_id',
+        'shift_id',
     ];
-
-    public function shiftModuleAssignation()
-    {
-        return $this->belongsTo(ShiftModuleAssignation::class);
-    }
 
     public function shift()
     {
-        return $this->shiftModuleAssignation->shift;
+        return $this->belongsTo(Shift::class);
     }
 }

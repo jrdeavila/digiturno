@@ -29,15 +29,11 @@ class QualifiedShiftRequest extends FormRequest
 
     public function createQualification()
     {
-        $moduleAssignation = $this->route('shift')->moduleAssignations()->first();
-        \throw_unless($moduleAssignation, \App\Exceptions\ShiftDontHaveModuleAssignedException::class);
         $qualification = $this->getQualificationOption($this->input('qualification'));
-        $moduleAssignation->qualifications()->create([
+        $this->route('shift')->qualification()->create([
             'qualification' => $qualification->value,
         ]);
-        $moduleAssignation->update([
-            'state' => \App\Enums\ShiftModuleAssignationState::Completed,
-        ]);
+
         $this->route('shift')->update([
             'state' => \App\Enums\ShiftState::Qualified,
         ]);

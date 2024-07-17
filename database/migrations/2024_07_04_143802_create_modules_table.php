@@ -62,6 +62,14 @@ return new class extends Migration
                 ->cascadeOnUpdate();
             $table->timestamps();
         });
+
+        Schema::table('shifts', function (Blueprint $table) {
+            $table->foreignId('module_id')
+                ->nullable()
+                ->constrained()
+                ->nullOnDelete()
+                ->cascadeOnUpdate();
+        });
     }
 
     /**
@@ -73,5 +81,9 @@ return new class extends Migration
         Schema::dropIfExists('module_types');
         Schema::dropIfExists('attendant');
         Schema::dropIfExists('module_attendant_accesses');
+        Schema::table('shifts', function (Blueprint $table) {
+            $table->dropForeign(['module_id']);
+            $table->dropColumn('module_id');
+        });
     }
 };

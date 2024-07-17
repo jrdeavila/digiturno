@@ -292,11 +292,6 @@ class ShiftTest extends TestCase
             'state' => 'pending',
         ]);
 
-        \App\Models\ShiftModuleAssignation::create([
-            'shift_id' => $shift->id,
-            'module_id' => $module->id,
-            'status' => \App\Enums\ShiftModuleAssignationState::Assigned,
-        ]);
 
         $response = $this->put(route('shifts.qualified', $shift->id), [
             'qualification' => 4,

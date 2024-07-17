@@ -33,8 +33,13 @@ class Shift extends Model
         return $this->belongsTo(AttentionProfile::class, 'attention_profile_id');
     }
 
-    public function moduleAssignations()
+    public function module()
     {
-        return $this->hasMany(ShiftModuleAssignation::class);
+        return $this->belongsTo(Module::class);
+    }
+
+    public function qualification()
+    {
+        return $this->hasOne(Qualification::class);
     }
 }

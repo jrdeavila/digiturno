@@ -12,17 +12,8 @@ class ShiftSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\Shift::factory(100)->create()->each(function ($shift) {
-            $shift->moduleAssignations()->saveMany([
-                \App\Models\ShiftModuleAssignation::factory()->make(),
-                \App\Models\ShiftModuleAssignation::factory()->make(),
-                \App\Models\ShiftModuleAssignation::factory()->make(),
-            ]);
-            $shift->moduleAssignations->each(function ($moduleAssignation) {
-                $moduleAssignation->qualifications()->saveMany(
-                    \App\Models\Qualification::factory(1)->make()
-                );
-            });
+        \App\Models\Shift::factory(10)->create()->each(function ($shift) {
+            $shift->qualification()->save(\App\Models\Qualification::factory()->make());
         });
     }
 }

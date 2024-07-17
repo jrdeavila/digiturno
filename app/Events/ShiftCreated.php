@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -25,7 +26,9 @@ class ShiftCreated implements ShouldBroadcast
 
     public function broadcastOn()
     {
-        return new \Illuminate\Broadcasting\PrivateChannel('App.Models.Shift.' . $this->shift->id);
+        return [
+            new Channel('shifts')
+        ];
     }
 
     public function broadcastAs()

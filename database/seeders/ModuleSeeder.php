@@ -13,7 +13,7 @@ class ModuleSeeder extends Seeder
     public function run(): void
     {
         \App\Models\Room::all()->each(function ($room) {
-            $attentionProfile = \App\Models\AttentionProfile::factory()->create();
+            $attentionProfile = \App\Models\AttentionProfile::first();
             \App\Models\Module::factory(3)->create([
                 'room_id' => $room->id,
                 'client_type_id' => 1,
