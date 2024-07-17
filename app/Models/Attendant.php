@@ -29,4 +29,14 @@ class Attendant extends Model
     {
         return $this->belongsToMany(Module::class, 'module_attendant_accesses')->withTimestamps();
     }
+
+    public function absences()
+    {
+        return $this->belongsToMany(
+            AbsenceReason::class,
+            'attendant_absence_reason',
+            'attendant_id',
+            'absence_reason_id',
+        )->withTimestamps();
+    }
 }
