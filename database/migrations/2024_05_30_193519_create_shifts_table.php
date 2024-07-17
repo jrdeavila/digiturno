@@ -20,7 +20,7 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
-            $table->enum('state', ['pending', 'distracted', 'in_progress', 'completed', 'qualified',])
+            $table->enum('state', ['pending', 'pending-transferred', 'transferred', 'distracted', 'in_progress', 'completed', 'qualified',])
                 ->default('pending');
 
             $table->foreignId('room_id')

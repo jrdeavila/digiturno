@@ -61,4 +61,19 @@ class ShiftController extends Controller
         $shift->update(['state' => \App\Enums\ShiftState::Distracted]);
         return new \App\Http\Resources\ShiftResource($shift);
     }
+
+    public function transferShift(\App\Models\Shift $shift, \App\Http\Requests\TransferShiftRequest $request)
+    {
+        $request->transferShift();
+        return new \App\Http\Resources\ShiftResource($shift);
+    }
+
+    public function getMyCurrentShift()
+    {
+        return new \App\Http\Resources\ShiftResource(
+            \App\Models\Shift::where('user_id', auth()->id())
+                ->where('state', \App\Enums\ShiftState::InProgress)
+                ->first()
+        );
+    }
 }

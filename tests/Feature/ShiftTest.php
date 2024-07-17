@@ -315,4 +315,66 @@ class ShiftTest extends TestCase
             return $e->shift->id === $response['data']['id'];
         });
     }
+
+    public function test_qualified_shift_not_found(): void
+    {
+        $response = $this->put(route('shifts.qualified', 10), []);
+        $response->assertStatus(404);
+    }
+
+    public function test_transfer_shift_ok(): void
+    {
+        \Illuminate\Support\Facades\Event::fake([
+            \App\Events\ShiftUpdated::class,
+            \App\Events\ShiftCreated::class,
+        ]);
+
+        $branch = \App\Models\Branch::factory()->create();
+        $room = \App\Models\Room::factory()->create([
+            'branch_id' => $branch->id
+        ]);
+        $attentionProfile = \App\Models\AttentionProfile::factory()->create();
+        $clientType = \App\Models\ClientType::factory()->create();
+        $client = \App\Models\Client::factory()->create([
+            'client_type_id' =>  $clientType->id
+        ]);
+
+        $module = \App\Models\Module::factory()->create();
+
+        $shift = \App\Models\Shift::factory()->create([
+            'room_id' => $room->id,
+            'attention_profile_id' => $attentionProfile->id,
+            'client_id' => $client->id,
+            'state' => 'pending',
+        ]);
+
+        $attentionProfile2 = \App\Models\AttentionProfile::factory()->create();
+
+        $response = $this->put(route('shifts.transfer', $shift->id), [
+            'qualification' => 4,
+            'attention_profile_id' => $attentionProfile2->id,
+        ]);
+
+        $response->assertStatus(200);
+
+        $response->assertJsonStructure([
+            'data' => [
+                'id',
+                'room',
+                'attention_profile',
+                'client',
+                'state',
+                'created_at',
+                'updated_at',
+            ],
+        ]);
+
+        \Illuminate\Support\Facades\Event::assertDispatched(\App\Events\ShiftUpdated::class, function ($e) use ($response) {
+            return $e->shift->id === $response['data']['id'];
+        });
+
+        \Illuminate\Support\Facades\Event::assertDispatched(\App\Events\ShiftCreated::class, function ($e) use ($response) {
+            return $e->shift->attentionProfile->name === $response['data']['attention_profile'];
+        });
+    }
 }
