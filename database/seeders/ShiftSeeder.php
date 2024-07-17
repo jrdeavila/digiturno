@@ -12,7 +12,7 @@ class ShiftSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\Shift::factory(10)->create()->each(function ($shift) {
+        \App\Models\Shift::factory(20)->create()->each(function ($shift) {
             $shift->qualification()->save(\App\Models\Qualification::factory()->make());
         });
     }

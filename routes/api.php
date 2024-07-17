@@ -11,6 +11,7 @@ Route::apiResource('rooms', \App\Http\Controllers\RoomController::class)->names(
 Route::prefix('shifts')->group(function () {
   Route::get('/distracted', [\App\Http\Controllers\ShiftController::class, 'distracted'])->name('shifts.distracted');
   Route::get('/in-progress', [\App\Http\Controllers\ShiftController::class, 'inProgress'])->name('shifts.in-progress');
+  Route::get("/my/current", [\App\Http\Controllers\ShiftController::class, 'myCurrentShift'])->name('shifts.my.current');
   Route::put('/{shift}/completed', [\App\Http\Controllers\ShiftController::class, 'completedShift'])->name('shifts.completed');
   Route::put('/{shift}/qualified', [\App\Http\Controllers\ShiftController::class, 'qualifiedShift'])->name('shifts.qualified');
   Route::put('/{shift}/distracted', [\App\Http\Controllers\ShiftController::class, 'distractedShift'])->name('shifts.distracted');

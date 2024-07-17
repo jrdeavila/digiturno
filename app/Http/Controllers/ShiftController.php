@@ -68,12 +68,12 @@ class ShiftController extends Controller
         return new \App\Http\Resources\ShiftResource($shift);
     }
 
-    public function getMyCurrentShift()
+    public function myCurrentShift()
     {
-        return new \App\Http\Resources\ShiftResource(
-            \App\Models\Shift::where('user_id', auth()->id())
-                ->where('state', \App\Enums\ShiftState::InProgress)
-                ->first()
-        );
+        $shift = \App\Models\Shift::where('state', \App\Enums\ShiftState::InProgress)
+            ->first();
+        return $shift ?  new \App\Http\Resources\ShiftResource(
+            $shift
+        ) : null;
     }
 }

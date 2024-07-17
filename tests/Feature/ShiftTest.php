@@ -377,4 +377,16 @@ class ShiftTest extends TestCase
             return $e->shift->attentionProfile->name === $response['data']['attention_profile'];
         });
     }
+
+    public function test_transfer_shift_not_found(): void
+    {
+        $response = $this->put(route('shifts.transfer', 10), []);
+        $response->assertStatus(404);
+    }
+
+    public function test_get_my_current_shift_ok(): void
+    {
+        $response = $this->get(route('shifts.my.current'));
+        $response->assertStatus(200);
+    }
 }
