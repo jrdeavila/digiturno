@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             RoomSeeder::class,
             ModuleSeeder::class,
             ShiftSeeder::class,
+            AbsenceReasonSeeder::class,
         ]);
     }
 }
