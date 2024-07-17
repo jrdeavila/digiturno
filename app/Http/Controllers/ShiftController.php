@@ -11,7 +11,7 @@ class ShiftController extends Controller
         $shifts = \App\Models\Shift::where(
             'state',
             \App\Enums\ShiftState::Pending
-        )->latest()->get();
+        )->orderBy('created_at', 'asc')->get();
         return \App\Http\Resources\ShiftResource::collection($shifts);
     }
 
