@@ -17,7 +17,7 @@ class QualificationFactory extends Factory
     public function definition(): array
     {
         return [
-            'qualification' => $this->faker->randomElement(['good', 'bad', 'regular', 'excellent', 'no-assigned']),
+            'qualification' => $this->faker->randomElement(['good', 'bad', 'regular', 'excellent', 'no_qualified']),
         ];
     }
 }

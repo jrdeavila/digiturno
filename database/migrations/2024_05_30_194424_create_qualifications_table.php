@@ -18,7 +18,7 @@ return new class extends Migration
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
             $table->enum('qualification', [
-                'no-assigned',
+                'no_qualified',
                 'bad',
                 'regular',
                 'good',

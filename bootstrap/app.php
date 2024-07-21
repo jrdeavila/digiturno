@@ -67,6 +67,17 @@ return Application::configure(basePath: dirname(__DIR__))
                 $exception->status
             );
         });
+
+        // When method not allowed return json response with 405 status code
+        $exceptions->render(function (
+            \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException $exception,
+            \Illuminate\Http\Request $request
+        ) {
+            return response()->json(
+                ['message' => 'Method Not Allowed'],
+                \Illuminate\Http\JsonResponse::HTTP_METHOD_NOT_ALLOWED
+            );
+        });
     })
     ->withEvents(
         discover: __DIR__ . '/../app/Listeners',

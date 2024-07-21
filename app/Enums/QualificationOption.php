@@ -8,5 +8,5 @@ enum QualificationOption: string
   case Regular = 'regular';
   case Good = 'good';
   case Excellent = 'excellent';
-  case NotQualified = 'not_qualified';
+  case NotQualified = 'no_qualified';
 }
