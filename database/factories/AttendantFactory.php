@@ -22,7 +22,7 @@ class AttendantFactory extends Factory
             'name' => $this->faker->name,
             'email' => $this->faker->unique()->safeEmail,
             'dni' => $dni,
-            'password' => $dni,
+            'password' => bcrypt($dni),
             'enabled' => true,
         ];
     }

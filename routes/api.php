@@ -26,9 +26,19 @@ Route::prefix('modules')->group(function () {
 });
 Route::apiResource('modules', \App\Http\Controllers\ModuleController::class)->names('modules');
 
-
+Route::prefix('attendants')->group(function () {
+  Route::post('/login', [\App\Http\Controllers\AuthenticationController::class, 'login'])->name('attendants.login');
+  Route::middleware([
+    \App\Http\Middleware\VerifyAttendantToken::class,
+  ])->group(function () {
+    Route::get('/profile', [\App\Http\Controllers\AuthenticationController::class, 'profile'])->name('attendants.profile');
+    Route::post('/logout', [\App\Http\Controllers\AuthenticationController::class, 'logout'])->name('attendants.logout');
+    Route::post('/refresh', [\App\Http\Controllers\AuthenticationController::class, 'refresh'])->name('attendants.refresh');
+  });
+});
 Route::apiResource('attendants', \App\Http\Controllers\AttendantController::class)->names('attendants');
 Route::apiResource('attendants.absences', \App\Http\Controllers\AttendantAbsenceController::class)->names('attendant.absence')->only(['index', 'store']);
+
 Route::apiResource('modules.attendants', \App\Http\Controllers\ModuleAttendantController::class)->names('modules.attendants')->only(['index']);
 Route::apiResource('clients', \App\Http\Controllers\ClientController::class)->names('clients');
 Route::prefix('clients')->group(function () {

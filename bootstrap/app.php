@@ -79,6 +79,9 @@ return Application::configure(basePath: dirname(__DIR__))
             );
         });
     })
+    ->withProviders([
+        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
+    ])
     ->withEvents(
         discover: __DIR__ . '/../app/Listeners',
     )

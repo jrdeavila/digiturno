@@ -40,6 +40,14 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'admin' => [
+            'driver' => 'jwt',
+            'provider' => 'users',
+        ],
+        'attendant' => [
+            'driver' => 'jwt',
+            'provider' => 'attendants',
+        ],
     ],
 
     /*
@@ -63,6 +71,10 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\User::class),
+        ],
+        'attendants' => [
+            'driver' => 'eloquent',
+            'model' => env('AUTH_ATTENDANT_MODEL', App\Models\Attendant::class),
         ],
 
         // 'users' => [
