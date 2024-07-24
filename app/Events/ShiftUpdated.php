@@ -4,7 +4,6 @@ namespace App\Events;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
@@ -16,24 +15,45 @@ class ShiftUpdated implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels, Queueable;
 
     public \App\Models\Shift $shift;
-    /**
-     * Create a new event instance.
-     */
+
     public function __construct(
         \App\Models\Shift $shift
     ) {
         $this->shift = $shift;
     }
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
-     */
     public function broadcastOn(): array
     {
+        if ($this->shift->state === 'in_progress' || $this->shift->state === 'completed' || $this->shift->state === 'qualified') {
+            return [
+                new Channel('rooms.' . $this->shift->room->id . '.attention_profiles.' . $this->shift->attentionProfile->id . '.shifts'),
+                new Channel('modules.' . $this->shift->module_id . '.current-shift'),
+            ];
+        }
         return [
-            new Channel('shifts')
+            new Channel('rooms.' . $this->shift->room->id . '.attention_profiles.' . $this->shift->attentionProfile->id . '.shifts'),
+        ];
+    }
+
+    public function broadcastAs()
+    {
+        $as = [
+            "pending" => 'shift.pending',
+            "pending-transferred" => 'shift.pending.transferred',
+            "distracted" => 'shift.distracted',
+            "in_progress" => 'shift.in-progress',
+            "completed" => 'shift.completed',
+            "qualified" => 'shift.qualified',
+            "transferred" => 'shift.transferred',
+            "cancelled" => 'shift.cancelled',
+        ];
+        return $as[$this->shift->state];
+    }
+
+    public function broadcastWith()
+    {
+        return [
+            'shift' => new \App\Http\Resources\ShiftResource($this->shift)
         ];
     }
 }

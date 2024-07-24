@@ -41,7 +41,6 @@ class QualifiedShiftRequest extends FormRequest
 
     private function getQualificationOption(int $qualification): \App\Enums\QualificationOption
     {
-        echo $qualification;
         switch ($qualification) {
             case 0:
                 return \App\Enums\QualificationOption::NotQualified;

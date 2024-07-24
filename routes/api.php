@@ -9,20 +9,27 @@ Route::apiResource('services.subservices', \App\Http\Controllers\SubserviceContr
 Route::apiResource('attention_profiles.services', \App\Http\Controllers\AttentionProfileServiceController::class)->names('attention_profiles.services')->only(['index', 'store', 'destroy']);
 Route::apiResource('client_types', \App\Http\Controllers\ClientTypeController::class)->names('client_types');
 Route::apiResource('rooms', \App\Http\Controllers\RoomController::class)->names('rooms');
+Route::apiResource('rooms.attention_profiles.shifts', \App\Http\Controllers\RoomShiftController::class)->names('rooms.shifts')->only(['index']);
+Route::prefix('rooms')->group(function () {
+  Route::get('/{room}/attention_profiles/{attention_profile}/shifts/distracted', [\App\Http\Controllers\RoomShiftController::class, 'distracted'])->name('rooms.shifts.distracted');
+});
 Route::prefix('shifts')->group(function () {
   Route::get('/distracted', [\App\Http\Controllers\ShiftController::class, 'distracted'])->name('shifts.distracted');
   Route::get('/in-progress', [\App\Http\Controllers\ShiftController::class, 'inProgress'])->name('shifts.in-progress');
-  Route::get("/my/current", [\App\Http\Controllers\ShiftController::class, 'myCurrentShift'])->name('shifts.my.current');
   Route::put('/{shift}/completed', [\App\Http\Controllers\ShiftController::class, 'completedShift'])->name('shifts.completed');
   Route::put('/{shift}/qualified', [\App\Http\Controllers\ShiftController::class, 'qualifiedShift'])->name('shifts.qualified');
   Route::put('/{shift}/distracted', [\App\Http\Controllers\ShiftController::class, 'distractedShift'])->name('shifts.distracted');
   Route::put('/{shift}/transfer', [\App\Http\Controllers\ShiftController::class, 'transferShift'])->name('shifts.transfer');
+  Route::put('/{shift}/pending', [\App\Http\Controllers\ShiftController::class, 'sendToPending'])->name('shifts.pending');
+  Route::put('/{shift}/call', [\App\Http\Controllers\ShiftController::class, 'call'])->name('shifts.call');
+  Route::put('/{shift}/in-progress', [\App\Http\Controllers\ShiftController::class, 'sendToInProgress'])->name('shifts.in-progress');
 });
 Route::apiResource('shifts', \App\Http\Controllers\ShiftController::class)->names('shifts')->only(['index', 'store', 'show']);
 Route::apiResource('branches', \App\Http\Controllers\BranchController::class)->names('branches');
 
 Route::prefix('modules')->group(function () {
   Route::get('/ip-address', [\App\Http\Controllers\ModuleController::class, 'getByIpAddress'])->name('modules.ip-address');
+  Route::get('/{module}/shifts/current', [\App\Http\Controllers\ModuleShiftController::class, 'currentShift'])->name('modules.current-shift');
 });
 Route::apiResource('modules', \App\Http\Controllers\ModuleController::class)->names('modules');
 

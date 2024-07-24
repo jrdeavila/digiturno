@@ -68,12 +68,21 @@ class ShiftController extends Controller
         return new \App\Http\Resources\ShiftResource($shift);
     }
 
-    public function myCurrentShift()
+    public function sendToPending(\App\Models\Shift $shift)
     {
-        $shift = \App\Models\Shift::where('state', \App\Enums\ShiftState::InProgress)
-            ->first();
-        return $shift ?  new \App\Http\Resources\ShiftResource(
-            $shift
-        ) : null;
+        $shift->update(['state' => \App\Enums\ShiftState::Pending]);
+        return new \App\Http\Resources\ShiftResource($shift);
+    }
+
+    public function call(\App\Models\Shift $shift)
+    {
+        \App\Events\CallClient::dispatch($shift);
+        return new \App\Http\Resources\ShiftResource($shift);
+    }
+
+    public function sendToInProgress(\App\Models\Shift $shift, \App\Http\Requests\SendToInProgressRequest $request)
+    {
+        $shiftInProgress = $request->sendToInProgress($shift);
+        return new \App\Http\Resources\ShiftResource($shiftInProgress);
     }
 }

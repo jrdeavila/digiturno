@@ -37,4 +37,9 @@ class Module extends Model
     {
         return $this->belongsTo(AttentionProfile::class);
     }
+
+    public function shifts()
+    {
+        return $this->hasMany(Shift::class);
+    }
 }

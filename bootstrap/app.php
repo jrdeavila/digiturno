@@ -83,6 +83,9 @@ return Application::configure(basePath: dirname(__DIR__))
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
     ])
     ->withEvents(
+        discover: __DIR__ . '/../app/Jobs',
+    )
+    ->withEvents(
         discover: __DIR__ . '/../app/Listeners',
     )
     ->create();

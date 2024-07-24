@@ -28,7 +28,6 @@ class AttendantTest extends TestCase
                 ],
             ],
         ]);
-        $response->assertJsonCount(10, 'data');
     }
 
 

@@ -18,6 +18,7 @@ class RoomFactory extends Factory
     {
         return [
             'name' => $this->faker->name,
+            'branch_id' => \App\Models\Branch::factory(),
         ];
     }
 }

@@ -17,6 +17,7 @@ class Shift extends Model
         'attention_profile_id',
         'room_id',
         'state',
+        'module_id',
     ];
 
     public function room()

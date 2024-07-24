@@ -578,9 +578,161 @@ class ShiftTest extends TestCase
         $response->assertStatus(404);
     }
 
-    public function test_get_my_current_shift_ok(): void
+    public function test_send_to_pending_ok(): void
     {
-        $response = $this->get(route('shifts.my.current'));
+        \Illuminate\Support\Facades\Event::fake([
+            \App\Events\ShiftUpdated::class,
+        ]);
+
+        $shift = \App\Models\Shift::factory()->create([
+            'state' => 'distracted',
+        ]);
+        $response = $this->put(route('shifts.pending', $shift->id), []);
         $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'data' => [
+                'id',
+                'room',
+                'attention_profile',
+                'client',
+                'state',
+                'created_at',
+                'updated_at',
+            ],
+        ]);
+
+        \Illuminate\Support\Facades\Event::assertDispatched(\App\Events\ShiftUpdated::class, function ($e) use ($response) {
+            return $e->shift->id === $response['data']['id'];
+        });
+    }
+
+    public function test_send_to_pending_not_found(): void
+    {
+        $response = $this->put(route('shifts.pending', 10), []);
+        $response->assertStatus(404);
+    }
+
+    public function test_call_shift_ok(): void
+    {
+
+
+        \Illuminate\Support\Facades\Event::fake([
+            \App\Events\CallClient::class,
+        ]);
+
+        $shift = \App\Models\Shift::factory()->create([
+            'state' => 'pending',
+        ]);
+        $response = $this->put(route('shifts.call', $shift->id), []);
+
+        \Illuminate\Support\Facades\Event::assertDispatched(\App\Events\CallClient::class, function ($e) use ($shift) {
+            return $e->shift->id === $shift->id;
+        });
+
+        $response->assertStatus(200);
+
+        $response->assertJsonStructure([
+            'data' => [
+                'id',
+                'room',
+                'attention_profile',
+                'client',
+                'state',
+                'created_at',
+                'updated_at',
+            ],
+        ]);
+    }
+
+    public function test_call_shift_not_found(): void
+    {
+        $response = $this->put(route('shifts.call', 10), []);
+        $response->assertStatus(404);
+    }
+
+    public function test_send_to_in_progress_ok(): void
+    {
+        \Illuminate\Support\Facades\Event::fake([
+            \App\Events\ShiftUpdated::class,
+            \App\Events\ModuleBusy::class,
+        ]);
+
+        $shift = \App\Models\Shift::factory()->create([
+            'state' => 'pending',
+            'module_id' => null,
+        ]);
+        $module = \App\Models\Module::factory()->create();
+        $response = $this->put(route('shifts.in-progress', $shift->id), [
+            'module_id' => $module->id,
+        ]);
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'data' => [
+                'id',
+                'room',
+                'attention_profile',
+                'client',
+                'state',
+                'created_at',
+                'updated_at',
+            ],
+        ]);
+
+        \Illuminate\Support\Facades\Event::assertDispatched(\App\Events\ShiftUpdated::class, function ($e) use ($response) {
+            return $e->shift->id === $response['data']['id'];
+        });
+
+        \Illuminate\Support\Facades\Event::assertDispatched(\App\Events\ModuleBusy::class, function ($e) use ($module) {
+            return $e->module->id === $module->id;
+        });
+    }
+
+    public function test_send_to_in_progress_shift_when_module_is_busy(): void
+    {
+        $shift = \App\Models\Shift::factory()->create([
+            'state' => \App\Enums\ShiftState::Pending,
+        ]);
+        $module = \App\Models\Module::factory()->create();
+        \App\Models\Shift::factory()->create([
+            'state' => \App\Enums\ShiftState::InProgress,
+            'module_id' => $module->id,
+        ]);
+        $response = $this->put(route('shifts.in-progress', $shift->id), [
+            'module_id' => $module->id,
+        ]);
+        $response->assertStatus(400);
+    }
+
+    public function test_send_to_in_progress_shift_when_module_is_qualifying(): void
+    {
+        $shift = \App\Models\Shift::factory()->create([
+            'state' => \App\Enums\ShiftState::Completed,
+        ]);
+        $module = \App\Models\Module::factory()->create();
+        \App\Models\Shift::factory()->create([
+            'state' => \App\Enums\ShiftState::InProgress,
+            'module_id' => $module->id,
+        ]);
+        $response = $this->put(route('shifts.in-progress', $shift->id), [
+            'module_id' => $module->id,
+        ]);
+        $response->assertStatus(400);
+    }
+
+
+
+    public function test_send_to_in_progress_validation_error(): void
+    {
+        $shift = \App\Models\Shift::factory()->create([
+            'state' => \App\Enums\ShiftState::Pending,
+        ]);
+        $response = $this->put(route('shifts.in-progress', $shift->id), []);
+        $response->assertStatus(422);
+    }
+
+    public function test_send_to_in_progress_not_found(): void
+    {
+        $response = $this->put(route('shifts.in-progress', 10), []);
+        $response->assertStatus(404);
     }
 }
