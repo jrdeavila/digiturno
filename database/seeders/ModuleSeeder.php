@@ -18,11 +18,13 @@ class ModuleSeeder extends Seeder
                 'room_id' => $room->id,
                 'client_type_id' => 1,
                 'attention_profile_id' => $attentionProfile->id,
+                'module_type_id' => 1,
             ]);
             \App\Models\Module::factory(1)->create([
                 'room_id' => $room->id,
                 'client_type_id' => 2,
                 'attention_profile_id' => $attentionProfile->id,
+                'module_type_id' => 2,
             ]);
         });
 

@@ -23,6 +23,7 @@ class ModuleResource extends JsonResource
             'status' => $this->status,
             'enabled' => $this->enabled,
             'attention_profile_id' => $this->attentionProfile->id,
+            'module_type_id' => $this->module_type_id,
         ];
     }
 }

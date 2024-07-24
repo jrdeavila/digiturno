@@ -33,6 +33,8 @@ Route::prefix('modules')->group(function () {
 });
 Route::apiResource('modules', \App\Http\Controllers\ModuleController::class)->names('modules');
 
+Route::apiResource('module_types', \App\Http\Controllers\ModuleTypeController::class)->only(['index'])->names('module_types');
+
 Route::prefix('attendants')->group(function () {
   Route::post('/login', [\App\Http\Controllers\AuthenticationController::class, 'login'])->name('attendants.login');
   Route::middleware([

@@ -24,12 +24,22 @@ return new class extends Migration
             $table->timestamps();
         });
 
+        Schema::create('module_types', function (Blueprint $table) {
+            $table->id();
+            $table->string('name', 100);
+            $table->timestamps();
+        });
+
         Schema::create('modules', function (Blueprint $table) {
             $table->id();
             $table->string('name', 100);
             $table->string('ip_address', 15);
             $table->enum('status', ['online', 'offline'])->default('offline');
             $table->boolean('enabled')->default(true);
+            $table->foreignId('module_type_id')
+                ->constrained()
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
             $table->foreignId('room_id')
                 ->nullable()
                 ->constrained()
@@ -37,8 +47,9 @@ return new class extends Migration
                 ->cascadeOnUpdate();
 
             $table->foreignId('client_type_id')
+                ->nullable()
                 ->constrained()
-                ->cascadeOnDelete()
+                ->nullOnDelete()
                 ->cascadeOnUpdate();
             $table->unique(['name', 'ip_address']);
             $table->foreignId('attention_profile_id')

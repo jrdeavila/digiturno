@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             ClientTypeSeeder::class,
             RolePermissionSeeder::class,
             RoomSeeder::class,
+            ModuleTypeSeeder::class,
             ModuleSeeder::class,
             ShiftSeeder::class,
             AbsenceReasonSeeder::class,

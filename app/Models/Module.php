@@ -15,7 +15,8 @@ class Module extends Model
         'room_id',
         'client_type_id',
         'attention_profile_id',
-        'enabled'
+        'enabled',
+        'module_type_id',
     ];
 
     public function room()
@@ -41,5 +42,10 @@ class Module extends Model
     public function shifts()
     {
         return $this->hasMany(Shift::class);
+    }
+
+    public function moduleType()
+    {
+        return $this->belongsTo(ModuleType::class);
     }
 }
