@@ -40,7 +40,7 @@ class ShiftCreated implements ShouldBroadcast
     public function broadcastWith()
     {
         return [
-            'data' => new \App\Http\Resources\ShiftResource($this->shift)
+            'shift' => new \App\Http\Resources\ShiftResource($this->shift)
         ];
     }
 }

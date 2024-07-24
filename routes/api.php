@@ -14,6 +14,7 @@ Route::prefix('rooms')->group(function () {
   Route::get('/{room}/attention_profiles/{attention_profile}/shifts/distracted', [\App\Http\Controllers\RoomShiftController::class, 'distracted'])->name('rooms.shifts.distracted');
 });
 Route::prefix('shifts')->group(function () {
+  Route::post('/with-attention-profile', [\App\Http\Controllers\ShiftController::class, 'createShiftWithAttentionProfile'])->name('shifts.with-attention-profile');
   Route::get('/distracted', [\App\Http\Controllers\ShiftController::class, 'distracted'])->name('shifts.distracted');
   Route::get('/in-progress', [\App\Http\Controllers\ShiftController::class, 'inProgress'])->name('shifts.in-progress');
   Route::put('/{shift}/completed', [\App\Http\Controllers\ShiftController::class, 'completedShift'])->name('shifts.completed');

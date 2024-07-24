@@ -26,6 +26,12 @@ class ShiftController extends Controller
         return new \App\Http\Resources\ShiftResource($shift);
     }
 
+    public function createShiftWithAttentionProfile(\App\Http\Requests\ShiftWithAttentionProfileRequest $request)
+    {
+        $shift = $request->createShift();
+        return new \App\Http\Resources\ShiftResource($shift);
+    }
+
     public function distracted()
     {
         $shift =  \App\Models\Shift::where(

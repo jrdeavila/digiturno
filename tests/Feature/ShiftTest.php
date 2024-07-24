@@ -167,6 +167,99 @@ class ShiftTest extends TestCase
         $response->assertStatus(422);
     }
 
+    public function test_create_shift_with_attention_profile_ok(): void
+    {
+        \Illuminate\Support\Facades\Event::fake([
+            \App\Events\ShiftCreated::class,
+        ]);
+
+        $branch = \App\Models\Branch::factory()->create();
+        $room = \App\Models\Room::factory()->create([
+            'branch_id' => $branch->id
+        ]);
+        $attentionProfile = \App\Models\AttentionProfile::factory()->create();
+        $clientType = \App\Models\ClientType::factory()->create();
+        $client = \App\Models\Client::factory()->make([
+            'client_type_id' =>  $clientType->id
+        ])->toArray();
+
+        $data = [
+            'room_id' => $room->id,
+            'attention_profile_id' => $attentionProfile->id,
+            'client' => $client,
+            'state' => 'pending',
+        ];
+
+        $response = $this->post(route('shifts.with-attention-profile'), $data);
+
+        $response->assertStatus(201);
+
+        $response->assertJsonStructure([
+            'data' => [
+                'id',
+                'room',
+                'attention_profile',
+                'client',
+                'state',
+                'created_at',
+                'updated_at',
+            ],
+        ]);
+
+        \Illuminate\Support\Facades\Event::assertDispatched(\App\Events\ShiftCreated::class, function ($e) use ($response) {
+            return $e->shift->id === $response['data']['id'];
+        });
+    }
+
+    public function test_create_shift_with_attention_profile_validation_error(): void
+    {
+        $response = $this->post(route('shifts.with-attention-profile'), []);
+        $response->assertStatus(422);
+    }
+
+    public function test_create_shift_with_attention_profile_room_not_found(): void
+    {
+        $attentionProfile = \App\Models\AttentionProfile::factory()->create();
+        $clientType = \App\Models\ClientType::factory()->create();
+        $client = \App\Models\Client::factory()->make([
+            'client_type_id' =>  $clientType->id
+        ])->toArray();
+
+        $data = [
+            'room_id' => 0,
+            'attention_profile_id' => $attentionProfile->id,
+            'client' => $client,
+            'state' => 'pending',
+        ];
+
+        $response = $this->post(route('shifts.with-attention-profile'), $data);
+        $response->assertStatus(422);
+    }
+
+    public function test_create_shift_with_attention_profile_attention_profile_not_found(): void
+    {
+        $branch = \App\Models\Branch::factory()->create();
+        $room = \App\Models\Room::factory()->create([
+            'branch_id' => $branch->id
+        ]);
+        $clientType = \App\Models\ClientType::factory()->create();
+        $client = \App\Models\Client::factory()->make([
+            'client_type_id' =>  $clientType->id
+        ])->toArray();
+
+        $data = [
+            'room_id' => $room->id,
+            'attention_profile_id' => 0,
+            'client' => $client,
+            'state' => 'pending',
+        ];
+
+        $response = $this->post(route('shifts.with-attention-profile'), $data);
+        $response->assertStatus(422);
+    }
+
+
+
     public function test_complete_shift_ok(): void
     {
         \Illuminate\Support\Facades\Event::fake([

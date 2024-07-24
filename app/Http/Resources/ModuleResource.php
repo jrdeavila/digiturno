@@ -19,10 +19,10 @@ class ModuleResource extends JsonResource
             'name' => $this->name,
             'ip_address' => $this->ip_address,
             'room' => new RoomResource($this->room),
-            'type' => $this->clientType->name,
+            'type' => $this->clientType?->name,
             'status' => $this->status,
             'enabled' => $this->enabled,
-            'attention_profile_id' => $this->attentionProfile->id,
+            'attention_profile_id' => $this->attentionProfile?->id,
             'module_type_id' => $this->module_type_id,
         ];
     }
