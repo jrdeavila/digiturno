@@ -27,7 +27,7 @@ Route::prefix('shifts')->group(function () {
   Route::put('/{shift}/call', [\App\Http\Controllers\ShiftController::class, 'call'])->name('shifts.call');
   Route::put('/{shift}/in-progress', [\App\Http\Controllers\ShiftController::class, 'sendToInProgress'])->name('shifts.in-progress');
 });
-Route::apiResource('shifts', \App\Http\Controllers\ShiftController::class)->names('shifts')->only(['index', 'store', 'show']);
+Route::apiResource('shifts', \App\Http\Controllers\ShiftController::class)->names('shifts')->only(['index', 'store', 'show', 'destroy']);
 Route::apiResource('branches', \App\Http\Controllers\BranchController::class)->names('branches');
 
 Route::prefix('modules')->group(function () {

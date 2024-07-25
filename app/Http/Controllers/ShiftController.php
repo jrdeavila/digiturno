@@ -30,6 +30,12 @@ class ShiftController extends Controller
         return new \App\Http\Resources\ShiftResource($shift);
     }
 
+    public function destroy(\App\Models\Shift $shift)
+    {
+        $shift->delete();
+        return response()->json(null, 204);
+    }
+
     public function createShiftWithAttentionProfile(\App\Http\Requests\ShiftWithAttentionProfileRequest $request)
     {
         $shift = $request->createShift();

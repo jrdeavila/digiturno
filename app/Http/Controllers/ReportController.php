@@ -10,7 +10,7 @@ class ReportController extends Controller
 
     public function __invoke()
     {
-        $data = \App\Models\Shift::with('room', 'client', 'moduleAssignations', 'attentionProfile')->get();
+        $data = \App\Models\Shift::with('room', 'client', 'qualification', 'attentionProfile')->get();
 
         $csv = \League\Csv\Writer::createFromString('');
 
@@ -35,8 +35,8 @@ class ReportController extends Controller
                 $shift->client->name,
                 $shift->client->dni,
                 $shift->client->clientType->name,
-                $shift->moduleAssignations->last()?->status ?? "assigned",
-                $shift->moduleAssignations->last()?->qualifications->last()->qualification ?? "no-assigned",
+                $shift->state,
+                $shift->qualification?->qualification,
                 $shift->created_at,
                 $shift->updated_at,
             ]);

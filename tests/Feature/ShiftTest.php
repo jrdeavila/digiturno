@@ -828,4 +828,17 @@ class ShiftTest extends TestCase
         $response = $this->put(route('shifts.in-progress', 10), []);
         $response->assertStatus(404);
     }
+
+    public function test_delete_shift_ok(): void
+    {
+        $shift = \App\Models\Shift::factory()->create();
+        $response = $this->delete(route('shifts.destroy', $shift->id));
+        $response->assertStatus(204);
+    }
+
+    public function test_delete_shift_not_found(): void
+    {
+        $response = $this->delete(route('shifts.destroy', 10));
+        $response->assertStatus(404);
+    }
 }
