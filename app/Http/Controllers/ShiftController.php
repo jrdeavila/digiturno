@@ -8,9 +8,13 @@ class ShiftController extends Controller
 {
     public function index()
     {
-        $shifts = \App\Models\Shift::where(
+        $shifts = \App\Models\Shift::whereIn(
             'state',
-            \App\Enums\ShiftState::Pending
+            [
+                \App\Enums\ShiftState::Pending,
+                \App\Enums\ShiftState::PendingTransferred,
+            ]
+
         )->orderBy('created_at', 'asc')->get();
         return \App\Http\Resources\ShiftResource::collection($shifts);
     }

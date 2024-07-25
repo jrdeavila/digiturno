@@ -8,6 +8,15 @@
     return true;
 });
 
+\Illuminate\Support\Facades\Broadcast::channel('rooms.{room}.shifts', function (
+    \App\Models\User $user,
+    \App\Models\Shift $shift
+) {
+    return true;
+});
+
+
+
 
 \Illuminate\Support\Facades\Broadcast::channel('rooms.{room}.attention_profiles.{attentionProfile}.shifts', function (
     \App\Models\User $user,

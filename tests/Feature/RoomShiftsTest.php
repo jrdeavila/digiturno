@@ -133,4 +133,76 @@ class RoomShiftsTest extends TestCase
         ]));
         $response->assertStatus(404);
     }
+
+    public function test_get_room_shifts_by_room_ok(): void
+    {
+        $room = \App\Models\Room::factory()->create();
+        \App\Models\Shift::factory()->create([
+            'room_id' => $room->id,
+            'state' => \App\Enums\ShiftState::Pending
+        ]);
+
+        $response = $this->get(route('rooms.shifts.by_room', [
+            'room' => $room->id
+        ]));
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'id',
+                    'room',
+                    'attention_profile',
+                    'client',
+                    'state',
+                    'created_at',
+                    'updated_at',
+                ]
+            ]
+        ]);
+        $response->assertJsonCount(1, 'data');
+    }
+
+    public function test_get_room_shifts_by_room_not_found(): void
+    {
+        $response = $this->get(route('rooms.shifts.by_room', [
+            'room' => 1000
+        ]));
+        $response->assertStatus(404);
+    }
+
+    public function test_get_room_shifts_distracted_by_room_ok(): void
+    {
+        $room = \App\Models\Room::factory()->create();
+        \App\Models\Shift::factory()->create([
+            'room_id' => $room->id,
+            'state' => \App\Enums\ShiftState::Distracted
+        ]);
+
+        $response = $this->get(route('rooms.shifts.distracted_by_room', [
+            'room' => $room->id
+        ]));
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'id',
+                    'room',
+                    'attention_profile',
+                    'client',
+                    'state',
+                    'created_at',
+                    'updated_at',
+                ]
+            ]
+        ]);
+        $response->assertJsonCount(1, 'data');
+    }
+
+    public function test_get_room_shifts_distracted_by_room_not_found(): void
+    {
+        $response = $this->get(route('rooms.shifts.distracted_by_room', [
+            'room' => 1000
+        ]));
+        $response->assertStatus(404);
+    }
 }

@@ -11,6 +11,8 @@ Route::apiResource('client_types', \App\Http\Controllers\ClientTypeController::c
 Route::apiResource('rooms', \App\Http\Controllers\RoomController::class)->names('rooms');
 Route::apiResource('rooms.attention_profiles.shifts', \App\Http\Controllers\RoomShiftController::class)->names('rooms.shifts')->only(['index']);
 Route::prefix('rooms')->group(function () {
+  Route::get("/{room}/shifts", [\App\Http\Controllers\RoomShiftController::class, 'shiftsByRoom'])->name('rooms.shifts.by_room');
+  Route::get('/{room}/shifts/distracted', [\App\Http\Controllers\RoomShiftController::class, 'shiftsDistractedByRoom'])->name('rooms.shifts.distracted_by_room');
   Route::get('/{room}/attention_profiles/{attention_profile}/shifts/distracted', [\App\Http\Controllers\RoomShiftController::class, 'distracted'])->name('rooms.shifts.distracted');
 });
 Route::prefix('shifts')->group(function () {
