@@ -16,7 +16,7 @@ class AttendantFactory extends Factory
      */
     public function definition(): array
     {
-        $dni = $this->faker->unique()->randomNumber(8);
+        $dni = $this->faker->unique()->randomNumber(8) . $this->faker->randomNumber(2);
         $dni = strval($dni);
         return [
             'name' => $this->faker->name,
