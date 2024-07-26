@@ -32,6 +32,9 @@ class AttendantLoginRequest extends FormRequest
         $credentials = $this->only('email', 'password');
         $token = auth('attendant')->attempt($credentials);
         throw_unless($token, \App\Exceptions\InvalidCredentialsException::class);
+        $attendant = auth('attendant')->user();
+        throw_unless($attendant->enabled, \App\Exceptions\AttendantDisabledException::class);
+        \App\Jobs\AttendantLogin::dispatch($attendant, $this->module);
         return $token;
     }
 }
