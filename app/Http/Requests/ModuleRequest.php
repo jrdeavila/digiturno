@@ -23,7 +23,11 @@ class ModuleRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:100',
-            'ip_address' => 'required|ipv4',
+            'ip_address' => [
+                'required',
+                'ipv4',
+                \Illuminate\Validation\Rule::unique('modules')->ignore($this->route('module')),
+            ],
             'room_id' => 'required|exists:rooms,id',
             'client_type_id' => 'nullable|exists:client_types,id',
             'attention_profile_id' => 'nullable|exists:attention_profiles,id',

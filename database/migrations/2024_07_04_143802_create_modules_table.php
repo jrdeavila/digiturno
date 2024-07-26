@@ -33,7 +33,7 @@ return new class extends Migration
         Schema::create('modules', function (Blueprint $table) {
             $table->id();
             $table->string('name', 100);
-            $table->string('ip_address', 15);
+            $table->string('ip_address', 15)->unique();
             $table->enum('status', ['online', 'offline'])->default('offline');
             $table->boolean('enabled')->default(true);
             $table->foreignId('module_type_id')
