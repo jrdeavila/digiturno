@@ -50,7 +50,7 @@ class ClientTypeTest extends TestCase
 
     public function test_get_one_client_type_not_found(): void
     {
-        $response = $this->get(route('client_types.show', 1));
+        $response = $this->get(route('client_types.show', 100));
         $response->assertStatus(404);
     }
 
@@ -151,7 +151,7 @@ class ClientTypeTest extends TestCase
 
     public function test_delete_client_type_not_found(): void
     {
-        $response = $this->delete(route('client_types.destroy', 1));
+        $response = $this->delete(route('client_types.destroy', 100));
         $response->assertStatus(404);
     }
 }

@@ -45,7 +45,7 @@ class BranchTest extends TestCase
 
     public function test_get_one_branch_not_found(): void
     {
-        $response = $this->get(route('branches.show', 10));
+        $response = $this->get(route('branches.show', 100));
         $response->assertStatus(404);
     }
 
@@ -97,7 +97,7 @@ class BranchTest extends TestCase
 
     public function test_delete_branch_not_found(): void
     {
-        $response = $this->delete(route('branches.destroy', 10));
+        $response = $this->delete(route('branches.destroy', 100));
         $response->assertStatus(404);
     }
 
@@ -142,7 +142,7 @@ class BranchTest extends TestCase
     public function test_update_branch_not_found(): void
     {
         $data = \App\Models\Branch::factory()->make()->toArray();
-        $response = $this->put(route('branches.update', 10), $data);
+        $response = $this->put(route('branches.update', 100), $data);
         $response->assertStatus(404);
     }
 }

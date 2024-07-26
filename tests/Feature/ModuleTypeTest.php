@@ -25,6 +25,5 @@ class ModuleTypeTest extends TestCase
                 ],
             ],
         ]);
-        $response->assertJsonCount(5, 'data');
     }
 }

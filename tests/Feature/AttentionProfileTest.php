@@ -62,7 +62,7 @@ class AttentionProfileTest extends TestCase
 
     public function test_get_one_attention_profile_test_not_found(): void
     {
-        $response = $this->get(route('attention_profiles.show', 1));
+        $response = $this->get(route('attention_profiles.show', 100));
         $response->assertStatus(404);
     }
 
@@ -204,7 +204,7 @@ class AttentionProfileTest extends TestCase
 
     public function test_delete_attention_profile_test_not_found(): void
     {
-        $response = $this->delete(route('attention_profiles.destroy', 1));
+        $response = $this->delete(route('attention_profiles.destroy', 100));
 
         $response->assertStatus(404);
     }
@@ -232,7 +232,7 @@ class AttentionProfileTest extends TestCase
 
     public function test_get_all_attention_profile_services_test_not_found(): void
     {
-        $response = $this->get(route('attention_profiles.services.index', 1));
+        $response = $this->get(route('attention_profiles.services.index', 100));
         $response->assertStatus(404);
     }
 
@@ -277,7 +277,7 @@ class AttentionProfileTest extends TestCase
             'service_id' => 1,
         ];
 
-        $response = $this->post(route('attention_profiles.services.store', 1), $data);
+        $response = $this->post(route('attention_profiles.services.store', 100), $data);
 
         $response->assertStatus(404);
     }
@@ -296,7 +296,7 @@ class AttentionProfileTest extends TestCase
 
     public function test_destroy_attention_profile_services_test_not_found(): void
     {
-        $response = $this->delete(route('attention_profiles.services.destroy', [1, 1]));
+        $response = $this->delete(route('attention_profiles.services.destroy', [100, 1]));
 
         $response->assertStatus(404);
     }
@@ -305,7 +305,7 @@ class AttentionProfileTest extends TestCase
     {
         $attentionProfile = \App\Models\AttentionProfile::factory()->create();
 
-        $response = $this->delete(route('attention_profiles.services.destroy', [$attentionProfile->id, 1]));
+        $response = $this->delete(route('attention_profiles.services.destroy', [$attentionProfile->id, 100]));
 
         $response->assertStatus(404);
     }

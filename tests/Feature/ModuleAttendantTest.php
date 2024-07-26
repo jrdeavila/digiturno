@@ -33,7 +33,7 @@ class ModuleAttendantTest extends TestCase
 
     public function test_get_all_attendants_in_module_not_found(): void
     {
-        $response = $this->get(route('modules.attendants.index', 1));
+        $response = $this->get(route('modules.attendants.index', 100));
         $response->assertStatus(404);
     }
 }

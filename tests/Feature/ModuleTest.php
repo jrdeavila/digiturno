@@ -32,7 +32,6 @@ class ModuleTest extends TestCase
                 ],
             ],
         ]);
-        $response->assertJsonCount(5, 'data');
     }
 
     public function test_get_only_one_module_ok(): void

@@ -52,7 +52,8 @@ class RoomTest extends TestCase
 
     public function test_get_one_room_not_found(): void
     {
-        $response = $this->get(route('rooms.show', 1));
+
+        $response = $this->get(route('rooms.show', 100));
         $response->assertStatus(404);
     }
 
@@ -100,7 +101,7 @@ class RoomTest extends TestCase
     {
         $response = $this->post(route('rooms.store'), [
             'name' => 'Sala 1',
-            'branch_id' => 1,
+            'branch_id' => 1000,
         ]);
 
         $response->assertStatus(422);
@@ -143,7 +144,7 @@ class RoomTest extends TestCase
     public function test_update_room_not_found(): void
     {
         $data = \App\Models\Room::factory()->make()->toArray();
-        $response = $this->put(route('rooms.update', 1), $data);
+        $response = $this->put(route('rooms.update', 100), $data);
 
         $response->assertStatus(404);
     }
@@ -176,7 +177,7 @@ class RoomTest extends TestCase
 
     public function test_delete_room_not_found(): void
     {
-        $response = $this->delete(route('rooms.destroy', 1));
+        $response = $this->delete(route('rooms.destroy', 100));
         $response->assertStatus(404);
     }
 }
