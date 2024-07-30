@@ -14,18 +14,22 @@ class ModuleTypeSeeder extends Seeder
     {
         \App\Models\ModuleType::create([
             'name' => 'Módulo de Atención',
+            'use_qualification_module' => true,
         ]);
 
         \App\Models\ModuleType::create([
             'name' => 'Módulo de Seccional',
+            'use_qualification_module' => true,
         ]);
 
         \App\Models\ModuleType::create([
             'name' => 'Módulo de Recepción',
+            'use_qualification_module' => true,
         ]);
 
         \App\Models\ModuleType::create([
             'name' => 'Módulo de Pantalla',
+            'use_qualification_module' => false,
         ]);
     }
 }

@@ -22,6 +22,7 @@ class ModuleTypeTest extends TestCase
                 '*' => [
                     'id',
                     'name',
+                    'use_qualification_module',
                 ],
             ],
         ]);

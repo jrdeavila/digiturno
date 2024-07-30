@@ -18,6 +18,7 @@ class ModuleTypeFactory extends Factory
     {
         return [
             'name' => $this->faker->word,
+            'use_qualification_module' => $this->faker->boolean,
         ];
     }
 }

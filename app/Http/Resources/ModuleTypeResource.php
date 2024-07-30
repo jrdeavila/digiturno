@@ -17,6 +17,7 @@ class ModuleTypeResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'use_qualification_module' => $this->use_qualification_module,
         ];
     }
 }

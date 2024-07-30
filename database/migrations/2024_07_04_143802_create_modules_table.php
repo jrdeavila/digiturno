@@ -27,6 +27,7 @@ return new class extends Migration
         Schema::create('module_types', function (Blueprint $table) {
             $table->id();
             $table->string('name', 100);
+            $table->boolean('use_qualification_module')->default(true);
             $table->timestamps();
         });
 
