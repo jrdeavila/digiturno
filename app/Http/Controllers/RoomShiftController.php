@@ -13,6 +13,7 @@ class RoomShiftController extends Controller
             [\App\Enums\ShiftState::Pending, \App\Enums\ShiftState::PendingTransferred],
         )
             ->orderBy('created_at', 'desc')
+            ->orderBy('state', 'asc')
             ->get();
         return \App\Http\Resources\ShiftResource::collection($shifts);
     }
@@ -23,6 +24,8 @@ class RoomShiftController extends Controller
             'state',
             \App\Enums\ShiftState::Distracted
         )
+            ->orderBy('created_at', 'asc')
+            ->orderBy('state', 'asc')
             ->latest()->get();
         return \App\Http\Resources\ShiftResource::collection($shifts);
     }
