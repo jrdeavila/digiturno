@@ -18,7 +18,7 @@ class ClientResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'dni' => $this->dni,
-            'client_type' => $this->clientType->priority,
+            'client_type' => $this->clientType->name,
             'is_deleted' => $this->deleted_at !== null,
         ];
     }
