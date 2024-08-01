@@ -26,9 +26,11 @@ class RoomShiftController extends Controller
             'state',
             \App\Enums\ShiftState::Distracted
         )
-            ->orderBy('created_at', 'asc')
-            ->orderBy('state', 'asc')
-            ->latest()->get();
+            ->join("clients", "shifts.client_id", "=", "clients.id")
+            ->join('client_types', 'clients.client_type_id', '=', 'client_types.id')
+            ->orderBy('shifts.created_at', 'desc')
+            ->orderBy('client_types.priority', 'asc')
+            ->get();
         return \App\Http\Resources\ShiftResource::collection($shifts);
     }
 
@@ -41,7 +43,10 @@ class RoomShiftController extends Controller
             [\App\Enums\ShiftState::Pending, \App\Enums\ShiftState::PendingTransferred],
         )
             ->where('attention_profile_id', $attentionProfile->id)
-            ->orderBy('created_at', 'desc')
+            ->join("clients", "shifts.client_id", "=", "clients.id")
+            ->join('client_types', 'clients.client_type_id', '=', 'client_types.id')
+            ->orderBy('shifts.created_at', 'desc')
+            ->orderBy('client_types.priority', 'asc')
             ->get();
         return \App\Http\Resources\ShiftResource::collection($shifts);
     }
@@ -54,7 +59,11 @@ class RoomShiftController extends Controller
             \App\Enums\ShiftState::Distracted
         )
             ->where('attention_profile_id', $attentionProfile->id)
-            ->latest()->get();
+            ->join("clients", "shifts.client_id", "=", "clients.id")
+            ->join('client_types', 'clients.client_type_id', '=', 'client_types.id')
+            ->orderBy('shifts.created_at', 'desc')
+            ->orderBy('client_types.priority', 'asc')
+            ->get();
         return \App\Http\Resources\ShiftResource::collection($shift);
     }
 }
