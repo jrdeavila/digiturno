@@ -16,6 +16,7 @@ class RoomShiftController extends Controller
             ->join('client_types', 'clients.client_type_id', '=', 'client_types.id')
             ->orderBy('shifts.created_at', 'asc')
             ->orderBy('client_types.priority', 'asc')
+            ->select('shifts.*')
             ->get();
         return \App\Http\Resources\ShiftResource::collection($shifts);
     }
@@ -30,6 +31,7 @@ class RoomShiftController extends Controller
             ->join('client_types', 'clients.client_type_id', '=', 'client_types.id')
             ->orderBy('shifts.created_at', 'asc')
             ->orderBy('client_types.priority', 'asc')
+            ->select('shifts.*')
             ->get();
         return \App\Http\Resources\ShiftResource::collection($shifts);
     }
@@ -47,6 +49,7 @@ class RoomShiftController extends Controller
             ->join('client_types', 'clients.client_type_id', '=', 'client_types.id')
             ->orderBy('shifts.created_at', 'asc')
             ->orderBy('client_types.priority', 'asc')
+            ->select('shifts.*')
             ->get();
         return \App\Http\Resources\ShiftResource::collection($shifts);
     }
@@ -63,6 +66,7 @@ class RoomShiftController extends Controller
             ->join('client_types', 'clients.client_type_id', '=', 'client_types.id')
             ->orderBy('shifts.created_at', 'asc')
             ->orderBy('client_types.priority', 'asc')
+            ->select('shifts.*')
             ->get();
         return \App\Http\Resources\ShiftResource::collection($shift);
     }
