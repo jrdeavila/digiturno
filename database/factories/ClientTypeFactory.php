@@ -21,6 +21,7 @@ class ClientTypeFactory extends Factory
         return [
             'name' => $name,
             'slug' => $slug,
+            'priority' => $this->faker->numberBetween(1, 3),
         ];
     }
 }
