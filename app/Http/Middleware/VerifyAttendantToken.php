@@ -24,8 +24,10 @@ class VerifyAttendantToken
             JWTAuth::setToken($token)->toUser();
             return $next($request);
         } catch (TokenInvalidException $e) {
+            \App\Jobs\ModuleOffline::dispatch($request->module);
             throw new \App\Exceptions\InvalidTokenException();
         } catch (TokenExpiredException $e) {
+            \App\Jobs\ModuleOffline::dispatch($request->module);
             throw new \App\Exceptions\ExpiredTokenException();
         }
     }

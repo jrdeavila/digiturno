@@ -44,6 +44,7 @@ class TransferShiftRequest extends FormRequest
         ]);
 
 
+        \App\Jobs\ShiftTransferred::dispatch($shift);
 
         return $shift;
     }

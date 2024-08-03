@@ -5,7 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 
+#[ObservedBy(\App\Observers\AttendantObserver::class)]
 class Attendant extends Authenticatable implements JWTSubject
 {
     use HasFactory;
@@ -15,7 +17,8 @@ class Attendant extends Authenticatable implements JWTSubject
         'email',
         'dni',
         'password',
-        'enabled'
+        'enabled',
+        'status',
     ];
 
     protected $hidden = [

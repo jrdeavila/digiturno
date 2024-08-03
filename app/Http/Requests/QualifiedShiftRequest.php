@@ -37,6 +37,8 @@ class QualifiedShiftRequest extends FormRequest
         $this->route('shift')->update([
             'state' => \App\Enums\ShiftState::Qualified,
         ]);
+
+        \App\Jobs\ShiftQualified::dispatch($this->route('shift'));
     }
 
     private function getQualificationOption(int $qualification): \App\Enums\QualificationOption

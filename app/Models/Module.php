@@ -4,7 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 
+
+#[ObservedBy(\App\Observers\ModuleObserver::class)]
 class Module extends Model
 {
     use HasFactory;
@@ -17,6 +20,7 @@ class Module extends Model
         'attention_profile_id',
         'enabled',
         'module_type_id',
+        'status',
     ];
 
     public function room()

@@ -20,6 +20,8 @@ class AuthenticationController extends Controller
 
     public function logout()
     {
+        $module = request()->module;
+        \App\Jobs\AttendantLogout::dispatch(auth('attendant')->user(), $module);
         auth('attendant')->logout();
         return response()->json(['message' => 'Successfully logged out']);
     }

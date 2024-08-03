@@ -263,12 +263,17 @@ class AttendantAuthenticationTest extends TestCase
 
     public function test_get_attendant_profile_unauthorized(): void
     {
+        \Illuminate\Support\Facades\Bus::fake([
+            \App\Jobs\ModuleOffline::class
+        ]);
         $module = \App\Models\Module::factory()->create([
             'enabled' => true,
         ]);
         $response = $this
             ->withHeader('X-Module-Ip', $module->ip_address)
             ->get(route('attendants.profile'));
+
+        \Illuminate\Support\Facades\Bus::assertDispatched(\App\Jobs\ModuleOffline::class);
 
         $response->assertStatus(401);
 
@@ -280,6 +285,10 @@ class AttendantAuthenticationTest extends TestCase
 
     public function test_get_attendant_profile_invalid_token(): void
     {
+        \Illuminate\Support\Facades\Bus::fake([
+            \App\Jobs\ModuleOffline::class
+        ]);
+
         $module = \App\Models\Module::factory()->create([
             'enabled' => true,
         ]);
@@ -289,6 +298,8 @@ class AttendantAuthenticationTest extends TestCase
             ->get(route('attendants.profile'), [
                 'Authorization' => 'Bearer invalid',
             ]);
+
+        \Illuminate\Support\Facades\Bus::assertDispatched(\App\Jobs\ModuleOffline::class);
 
         $response->assertStatus(401);
 
@@ -300,12 +311,17 @@ class AttendantAuthenticationTest extends TestCase
 
     public function test_get_attendant_profile_missing_token(): void
     {
+        \Illuminate\Support\Facades\Bus::fake([
+            \App\Jobs\ModuleOffline::class
+        ]);
         $module = \App\Models\Module::factory()->create([
             'enabled' => true,
         ]);
         $response = $this
             ->withHeader('X-Module-Ip', $module->ip_address)
             ->get(route('attendants.profile'));
+
+        \Illuminate\Support\Facades\Bus::assertDispatched(\App\Jobs\ModuleOffline::class);
 
         $response->assertStatus(401);
 
@@ -317,6 +333,9 @@ class AttendantAuthenticationTest extends TestCase
 
     public function test_logout_attendant_ok(): void
     {
+        \Illuminate\Support\Facades\Bus::fake([
+            \App\Jobs\AttendantLogout::class
+        ]);
         $module = \App\Models\Module::factory()->create([
             'enabled' => true,
         ]);
@@ -332,16 +351,25 @@ class AttendantAuthenticationTest extends TestCase
         $response->assertJsonStructure([
             'message',
         ]);
+
+        \Illuminate\Support\Facades\Bus::assertDispatched(\App\Jobs\AttendantLogout::class, function ($job) use ($attendant) {
+            return $job->attendant->is($attendant);
+        });
     }
 
     public function test_logout_attendant_unauthorized(): void
     {
+        \Illuminate\Support\Facades\Bus::fake([
+            \App\Jobs\ModuleOffline::class
+        ]);
         $module = \App\Models\Module::factory()->create([
             'enabled' => true,
         ]);
         $response = $this
             ->withHeader('X-Module-Ip', $module->ip_address)
             ->post(route('attendants.logout'));
+
+        \Illuminate\Support\Facades\Bus::assertDispatched(\App\Jobs\ModuleOffline::class);
 
         $response->assertStatus(401);
 
@@ -353,6 +381,9 @@ class AttendantAuthenticationTest extends TestCase
 
     public function test_logout_attendant_invalid_token(): void
     {
+        \Illuminate\Support\Facades\Bus::fake([
+            \App\Jobs\ModuleOffline::class
+        ]);
         $module = \App\Models\Module::factory()->create([
             'enabled' => true,
         ]);
@@ -361,6 +392,8 @@ class AttendantAuthenticationTest extends TestCase
             ->post(route('attendants.logout'), [], [
                 'Authorization' => 'Bearer invalid',
             ]);
+
+        \Illuminate\Support\Facades\Bus::assertDispatched(\App\Jobs\ModuleOffline::class);
 
         $response->assertStatus(401);
 
@@ -372,6 +405,9 @@ class AttendantAuthenticationTest extends TestCase
 
     public function test_logout_attendant_missing_token(): void
     {
+        \Illuminate\Support\Facades\Bus::fake([
+            \App\Jobs\ModuleOffline::class
+        ]);
         $module = \App\Models\Module::factory()->create([
             'enabled' => true,
         ]);
@@ -379,6 +415,7 @@ class AttendantAuthenticationTest extends TestCase
             ->withHeader('X-Module-Ip', $module->ip_address)
             ->post(route('attendants.logout'));
 
+        \Illuminate\Support\Facades\Bus::assertDispatched(\App\Jobs\ModuleOffline::class);
         $response->assertStatus(401);
 
         $response->assertJsonStructure([
@@ -408,12 +445,17 @@ class AttendantAuthenticationTest extends TestCase
 
     public function test_refresh_attendant_token_unauthorized(): void
     {
+        \Illuminate\Support\Facades\Bus::fake([
+            \App\Jobs\ModuleOffline::class
+        ]);
         $module = \App\Models\Module::factory()->create([
             'enabled' => true,
         ]);
         $response = $this
             ->withHeader('X-Module-Ip', $module->ip_address)
             ->post(route('attendants.refresh'));
+
+        \Illuminate\Support\Facades\Bus::assertDispatched(\App\Jobs\ModuleOffline::class);
 
         $response->assertStatus(401);
 
@@ -425,6 +467,9 @@ class AttendantAuthenticationTest extends TestCase
 
     public function test_refresh_attendant_token_invalid_token(): void
     {
+        \Illuminate\Support\Facades\Bus::fake([
+            \App\Jobs\ModuleOffline::class
+        ]);
         $module = \App\Models\Module::factory()->create([
             'enabled' => true,
         ]);
@@ -436,6 +481,8 @@ class AttendantAuthenticationTest extends TestCase
 
         $response->assertStatus(401);
 
+        \Illuminate\Support\Facades\Bus::assertDispatched(\App\Jobs\ModuleOffline::class);
+
         $response->assertJsonStructure([
             'message',
             'help',
@@ -444,12 +491,18 @@ class AttendantAuthenticationTest extends TestCase
 
     public function test_refresh_attendant_token_missing_token(): void
     {
+        \Illuminate\Support\Facades\Bus::fake([
+            \App\Jobs\ModuleOffline::class
+        ]);
+
         $module = \App\Models\Module::factory()->create([
             'enabled' => true,
         ]);
         $response = $this
             ->withHeader('X-Module-Ip', $module->ip_address)
             ->post(route('attendants.refresh'));
+
+        \Illuminate\Support\Facades\Bus::assertDispatched(\App\Jobs\ModuleOffline::class);
 
         $response->assertStatus(401);
 

@@ -20,6 +20,7 @@ class AttendantResource extends JsonResource
             'email' => $this->email,
             'dni' => $this->dni,
             'enabled' => $this->enabled,
+            'status' => $this->status,
         ];
     }
 }

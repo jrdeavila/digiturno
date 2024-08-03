@@ -17,12 +17,10 @@ class CallClient implements ShouldBroadcast
      * Create a new event instance.
      */
     public function __construct(
-        \App\Models\Shift $shift
+        \App\Models\Shift $shift,
     ) {
         $this->shift = $shift;
     }
-
-
 
 
     /**
@@ -45,7 +43,8 @@ class CallClient implements ShouldBroadcast
     public function broadcastWith()
     {
         return [
-            'client' => new \App\Http\Resources\ClientResource($this->shift->client)
+            'client' => new \App\Http\Resources\ClientResource($this->shift->client),
+            'module' => new \App\Http\Resources\ModuleResource($this->shift->module)
         ];
     }
 }

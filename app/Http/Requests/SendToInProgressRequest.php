@@ -42,7 +42,8 @@ class SendToInProgressRequest extends FormRequest
             'state' => \App\Enums\ShiftState::InProgress,
             'module_id' => $this->input('module_id'),
         ]);
-        event(new \App\Events\ModuleBusy($module));
+
+        \App\Jobs\ShiftInProgress::dispatch($shift);
         return $shift;
     }
 }

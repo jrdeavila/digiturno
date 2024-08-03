@@ -15,6 +15,7 @@ ENV SUPERVISOR_PHP_COMMAND="/usr/bin/php -d variables_order=EGPCS /var/www/html/
 ENV QUEUE_PHP_COMMAND="/usr/bin/php -d variables_order=EGPCS /var/www/html/artisan queue:work --verbose --tries=3 --timeout=90"
 ENV REVERB_PHP_COMMAND="/usr/bin/php -d variables_order=EGPCS /var/www/html/artisan reverb:start"
 ENV SUPERVISOR_PHP_USER="sail"
+ENV SCHEDULER_PHP_COMMAND="/usr/bin/php -d variables_order=EGPCS /var/www/html/artisan schedule:work"
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
