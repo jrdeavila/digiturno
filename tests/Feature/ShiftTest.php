@@ -831,9 +831,13 @@ class ShiftTest extends TestCase
 
     public function test_delete_shift_ok(): void
     {
+        \Illuminate\Support\Facades\Event::fake([
+            \App\Events\ShiftDeleted::class,
+        ]);
         $shift = \App\Models\Shift::factory()->create();
         $response = $this->delete(route('shifts.destroy', $shift->id));
         $response->assertStatus(204);
+        \Illuminate\Support\Facades\Event::assertDispatched(\App\Events\ShiftDeleted::class);
     }
 
     public function test_delete_shift_not_found(): void
