@@ -13,4 +13,9 @@ class ShiftObserver
     {
         \App\Events\ShiftUpdated::dispatch($shift);
     }
+
+    public function deleted(\App\Models\Shift $shift)
+    {
+        \App\Events\ShiftDeleted::dispatch($shift);
+    }
 }
