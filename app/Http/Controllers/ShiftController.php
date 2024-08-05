@@ -92,7 +92,8 @@ class ShiftController extends Controller
 
     public function call(\App\Models\Shift $shift)
     {
-        \App\Events\CallClient::dispatch($shift);
+        $module = request()->module;
+        \App\Events\CallClient::dispatch($shift, $module);
         return new \App\Http\Resources\ShiftResource($shift);
     }
 

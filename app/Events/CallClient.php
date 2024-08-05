@@ -13,13 +13,16 @@ class CallClient implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels, Queueable;
     public \App\Models\Shift $shift;
+    public \App\Models\Module $module;
     /**
      * Create a new event instance.
      */
     public function __construct(
         \App\Models\Shift $shift,
+        \App\Models\Module $module
     ) {
         $this->shift = $shift;
+        $this->module = $module;
     }
 
 
@@ -44,7 +47,7 @@ class CallClient implements ShouldBroadcast
     {
         return [
             'client' => new \App\Http\Resources\ClientResource($this->shift->client),
-            'module' => new \App\Http\Resources\ModuleResource($this->shift->module)
+            'module' => new \App\Http\Resources\ModuleResource($this->module)
         ];
     }
 }

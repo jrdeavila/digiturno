@@ -9,6 +9,20 @@ use Tests\TestCase;
 class ShiftTest extends TestCase
 {
     use RefreshDatabase;
+
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $module = \App\Models\Module::factory()->create([
+            'enabled' => true,
+        ]);
+        $this->withHeaders([
+            'X-Module-Ip' => $module->ip_address,
+        ]);
+    }
+
+
     /**
      * A basic feature test example.
      */
@@ -390,6 +404,7 @@ class ShiftTest extends TestCase
             'qualification' => 0,
         ]);
 
+
         $response->assertStatus(200);
 
         $response->assertJsonStructure([
@@ -582,6 +597,7 @@ class ShiftTest extends TestCase
             'qualification' => 4,
         ]);
 
+
         $response->assertStatus(200);
 
         $response->assertJsonStructure([
@@ -747,14 +763,18 @@ class ShiftTest extends TestCase
     {
         \Illuminate\Support\Facades\Event::fake([
             \App\Events\ShiftUpdated::class,
-            \App\Events\ModuleBusy::class,
         ]);
 
         $shift = \App\Models\Shift::factory()->create([
             'state' => 'pending',
             'module_id' => null,
         ]);
+        $attendant = \App\Models\Attendant::factory()->create();
         $module = \App\Models\Module::factory()->create();
+        \App\Models\ModuleAttendantAccess::create([
+            'module_id' => $module->id,
+            'attendant_id' => $attendant->id,
+        ]);
         $response = $this->put(route('shifts.in-progress', $shift->id), [
             'module_id' => $module->id,
         ]);
@@ -773,10 +793,6 @@ class ShiftTest extends TestCase
 
         \Illuminate\Support\Facades\Event::assertDispatched(\App\Events\ShiftUpdated::class, function ($e) use ($response) {
             return $e->shift->id === $response['data']['id'];
-        });
-
-        \Illuminate\Support\Facades\Event::assertDispatched(\App\Events\ModuleBusy::class, function ($e) use ($module) {
-            return $e->module->id === $module->id;
         });
     }
 

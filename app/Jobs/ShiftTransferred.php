@@ -30,7 +30,10 @@ class ShiftTransferred implements ShouldQueue
      */
     public function handle(): void
     {
+        $this->shift->refresh();
         $module = $this->shift->module;
+        if (!$module) return;
+        if (!$module->status == \App\Enums\ModuleStatus::Offline) return;
         $attendant = $module->attendants->last();
         $attendant->update([
             'status' => \App\Enums\AttendantStatus::Free

@@ -30,6 +30,7 @@ class SendToInProgressRequest extends FormRequest
         \App\Models\Shift $shift
     ): \App\Models\Shift {
         // Verify if the module is busy
+
         $module = \App\Models\Module::find($this->input('module_id'));
         $hasShiftsInProgress = \App\Models\Shift::where('module_id', $module->id)
             ->whereIn('state', [\App\Enums\ShiftState::InProgress, \App\Enums\ShiftState::Completed])
@@ -43,6 +44,7 @@ class SendToInProgressRequest extends FormRequest
             'module_id' => $this->input('module_id'),
         ]);
 
+        $shift->refresh();
         \App\Jobs\ShiftInProgress::dispatch($shift);
         return $shift;
     }

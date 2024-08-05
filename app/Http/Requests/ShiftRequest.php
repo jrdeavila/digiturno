@@ -33,7 +33,13 @@ class ShiftRequest extends FormRequest
                 'regex:/^[0-9]+$/',
                 function ($attribute, $value, $fail) {
                     $client = \App\Models\Client::firstWhere('dni', $value);
-                    if ($client && $client->shifts()->where('state', 'pending')->exists()) {
+                    if ($client && $client->shifts()->where(
+                        'state',
+                        \App\Enums\ShiftState::Pending
+                    )->orWhere(
+                        'state',
+                        \App\Enums\ShiftState::PendingTransferred
+                    )->exists()) {
                         $fail('client_has_pending_shift');
                     }
                 },
