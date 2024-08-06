@@ -26,6 +26,7 @@ class AssignShifts implements ShouldQueue
     public function handle(): void
     {
         $shifts = \App\Models\Shift::whereIn('state', [\App\Enums\ShiftState::Pending, \App\Enums\ShiftState::PendingTransferred])
+            ->whereNull('module_id')
             ->get();
 
         foreach ($shifts as $shift) {
@@ -37,21 +38,24 @@ class AssignShifts implements ShouldQueue
     {
         $attentionProfile = $shift->attentionProfile;
         $room = $shift->room;
-        $module = \App\Models\Module::where('attention_profile_id', $attentionProfile->id)
+        $availableModules = \App\Models\Module::where('attention_profile_id', $attentionProfile->id)
             ->where('room_id', $room->id)
             ->where('enabled', true)
             ->where('status', \App\Enums\ModuleStatus::Online)
             // Having last attendant
             ->whereHas('attendants', function ($query) {
-                $query->where('status', \App\Enums\AttendantStatus::Free);
+                $query->where('status', '!=', \App\Enums\AttendantStatus::Absent);
             })
-            ->first();
+            ->get();
+
+        $module = $availableModules->sortBy(function ($module) {
+            return $module->shifts()->whereIn('state', [\App\Enums\ShiftState::Pending, \App\Enums\ShiftState::PendingTransferred])->count();
+        })->first();
+
 
         $shift->module()->associate($module);
         $shift->update([
-            'state' => \App\Enums\ShiftState::InProgress,
+            'state' => \App\Enums\ShiftState::Pending,
         ]);
-        \App\Jobs\ShiftInProgress::dispatch($shift);
-        event(new \App\Events\CallClient($shift));
     }
 }

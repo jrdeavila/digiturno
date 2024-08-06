@@ -74,7 +74,7 @@ class ShiftController extends Controller
 
     public function distractedShift(\App\Models\Shift $shift)
     {
-        $shift->update(['state' => \App\Enums\ShiftState::Distracted]);
+        $shift->update(['state' => \App\Enums\ShiftState::Distracted, 'module_id' => null]);
         return new \App\Http\Resources\ShiftResource($shift);
     }
 

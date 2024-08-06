@@ -11,5 +11,5 @@ Artisan::command('inspire', function () {
 Schedule::job(function () {
     \App\Jobs\AssignShifts::dispatch();
 })
-    ->everyTenSeconds()
+    ->everySecond()
     ->name('assign-shifts');

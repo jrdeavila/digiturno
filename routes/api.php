@@ -35,8 +35,8 @@ Route::apiResource('branches', \App\Http\Controllers\BranchController::class)->n
 Route::middleware([
   \App\Http\Middleware\VerifyModuleIp::class,
 ])->prefix('modules')->group(function () {
-  Route::get('/{module}/shifts/current', [\App\Http\Controllers\ModuleShiftController::class, 'currentShift'])->name('modules.current-shift');
-  Route::get('/{module}/shifts', [\App\Http\Controllers\ModuleShiftController::class, 'myShifts'])->name('modules.my-shifts');
+  Route::get('/shifts/current', [\App\Http\Controllers\ModuleShiftController::class, 'currentShift'])->name('modules.current-shift');
+  Route::get('/shifts', [\App\Http\Controllers\ModuleShiftController::class, 'myShifts'])->name('modules.my-shifts');
 });
 Route::get('/modules/ip-address', [\App\Http\Controllers\ModuleController::class, 'getByIpAddress'])->name('modules.ip-address');
 Route::apiResource('modules', \App\Http\Controllers\ModuleController::class)->names('modules');

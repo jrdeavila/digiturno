@@ -25,7 +25,7 @@ class ModuleShiftController extends Controller
     {
         $module = $request->module;
         $shifts = \App\Models\Shift::where('module_id', $module->id)
-            ->whereIn('state', [\App\Enums\ShiftState::InProgress, \App\Enums\ShiftState::PendingTransferred])
+            ->whereIn('state', [\App\Enums\ShiftState::Pending, \App\Enums\ShiftState::PendingTransferred])
             ->get();
 
         return \App\Http\Resources\ShiftResource::collection($shifts);

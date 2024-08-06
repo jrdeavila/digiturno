@@ -12,12 +12,47 @@ class ModuleShiftTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $module = \App\Models\Module::factory()->create(['ip_address' => '0.0.0.0',]);
-        $this->withHeader('X-Module-Ip', $module->ip_address);
+        \App\Models\Module::factory()->create(['ip_address' => '0.0.0.0', 'enabled' => true]);
+        $this->withHeaders(['X-Module-Ip' => '0.0.0.0']);
     }
     /**
      * A basic feature test example.
      */
+
+    public function test_get_module_shifts_ok(): void
+    {
+        $module = \App\Models\Module::where('ip_address', '0.0.0.0')->first();
+        \App\Models\Shift::factory()->count(5)->create([
+            'module_id' => $module->id,
+            'state' => \App\Enums\ShiftState::Pending,
+        ]);
+        \App\Models\Shift::factory()->count(5)->create([
+            'module_id' => $module->id,
+            'state' => \App\Enums\ShiftState::PendingTransferred,
+        ]);
+
+        $response = $this->get(route(
+            'modules.my-shifts',
+        ));
+
+        $response->assertStatus(200);
+
+        $response->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'id',
+                    'room',
+                    'attention_profile',
+                    'client',
+                    'state',
+                    'created_at',
+                    'updated_at',
+                ],
+            ],
+        ]);
+    }
+
+
     public function test_get_module_current_shift_ok(): void
     {
         $module = \App\Models\Module::where('ip_address', '0.0.0.0')->first();
