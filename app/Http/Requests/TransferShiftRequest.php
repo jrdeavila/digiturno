@@ -33,7 +33,10 @@ class TransferShiftRequest extends FormRequest
         $shift = $this->route('shift');
         $shift->update([
             'state' => \App\Enums\ShiftState::Transferred,
-            'qualification' => $this->qualification,
+        ]);
+
+        $shift->qualification()->create([
+            'qualification' => $this->getQualificationOption($this->qualification),
         ]);
 
         \App\Models\Shift::create([
@@ -47,5 +50,23 @@ class TransferShiftRequest extends FormRequest
         \App\Jobs\ShiftTransferred::dispatch($shift);
 
         return $shift;
+    }
+
+    private function getQualificationOption(int $qualification): \App\Enums\QualificationOption
+    {
+        switch ($qualification) {
+            case 0:
+                return \App\Enums\QualificationOption::NotQualified;
+            case 1:
+                return \App\Enums\QualificationOption::Bad;
+            case 2:
+                return \App\Enums\QualificationOption::Regular;
+            case 3:
+                return \App\Enums\QualificationOption::Good;
+            case 4:
+                return \App\Enums\QualificationOption::Excellent;
+            default:
+                return \App\Enums\QualificationOption::NotQualified;
+        }
     }
 }

@@ -28,8 +28,6 @@ class ShiftWithAttentionProfileRequest extends FormRequest
             'client.dni' => [
                 'required',
                 'string',
-                'min:8',
-                'max:10',
                 'regex:/^[0-9]+$/',
                 function ($attribute, $value, $fail) {
                     $client = \App\Models\Client::firstWhere('dni', $value);
