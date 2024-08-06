@@ -7,8 +7,9 @@ use Illuminate\Http\Request;
 
 class ModuleShiftController extends Controller
 {
-    public function currentShift(\App\Models\Module $module)
+    public function currentShift(Request $request)
     {
+        $module =  $request->module;
         $shift = \App\Models\Shift::where('module_id', $module->id)
             // Where state is in progress or completed
             ->whereIn('state', [\App\Enums\ShiftState::InProgress, \App\Enums\ShiftState::Completed])
@@ -18,5 +19,15 @@ class ModuleShiftController extends Controller
             return response()->json(null, 204);
         }
         return new \App\Http\Resources\ShiftResource($shift);
+    }
+
+    public function myShifts(Request $request)
+    {
+        $module = $request->module;
+        $shifts = \App\Models\Shift::where('module_id', $module->id)
+            ->whereIn('state', [\App\Enums\ShiftState::InProgress, \App\Enums\ShiftState::PendingTransferred])
+            ->get();
+
+        return \App\Http\Resources\ShiftResource::collection($shifts);
     }
 }

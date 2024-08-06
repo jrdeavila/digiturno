@@ -18,24 +18,27 @@ Route::prefix('rooms')->group(function () {
 Route::middleware([
   \App\Http\Middleware\VerifyModuleIp::class,
 ])->prefix('shifts')->group(function () {
-    Route::post('/with-attention-profile', [\App\Http\Controllers\ShiftController::class, 'createShiftWithAttentionProfile'])->name('shifts.with-attention-profile');
-    Route::get('/distracted', [\App\Http\Controllers\ShiftController::class, 'distracted'])->name('shifts.distracted');
-    Route::get('/in-progress', [\App\Http\Controllers\ShiftController::class, 'inProgress'])->name('shifts.in-progress');
-    Route::put('/{shift}/completed', [\App\Http\Controllers\ShiftController::class, 'completedShift'])->name('shifts.completed');
-    Route::put('/{shift}/qualified', [\App\Http\Controllers\ShiftController::class, 'qualifiedShift'])->name('shifts.qualified');
-    Route::put('/{shift}/distracted', [\App\Http\Controllers\ShiftController::class, 'distractedShift'])->name('shifts.distracted');
-    Route::put('/{shift}/transfer', [\App\Http\Controllers\ShiftController::class, 'transferShift'])->name('shifts.transfer');
-    Route::put('/{shift}/pending', [\App\Http\Controllers\ShiftController::class, 'sendToPending'])->name('shifts.pending');
-    Route::put('/{shift}/call', [\App\Http\Controllers\ShiftController::class, 'call'])->name('shifts.call');
-    Route::put('/{shift}/in-progress', [\App\Http\Controllers\ShiftController::class, 'sendToInProgress'])->name('shifts.in-progress');
-  });
+  Route::post('/with-attention-profile', [\App\Http\Controllers\ShiftController::class, 'createShiftWithAttentionProfile'])->name('shifts.with-attention-profile');
+  Route::get('/distracted', [\App\Http\Controllers\ShiftController::class, 'distracted'])->name('shifts.distracted');
+  Route::get('/in-progress', [\App\Http\Controllers\ShiftController::class, 'inProgress'])->name('shifts.in-progress');
+  Route::put('/{shift}/completed', [\App\Http\Controllers\ShiftController::class, 'completedShift'])->name('shifts.completed');
+  Route::put('/{shift}/qualified', [\App\Http\Controllers\ShiftController::class, 'qualifiedShift'])->name('shifts.qualified');
+  Route::put('/{shift}/distracted', [\App\Http\Controllers\ShiftController::class, 'distractedShift'])->name('shifts.distracted');
+  Route::put('/{shift}/transfer', [\App\Http\Controllers\ShiftController::class, 'transferShift'])->name('shifts.transfer');
+  Route::put('/{shift}/pending', [\App\Http\Controllers\ShiftController::class, 'sendToPending'])->name('shifts.pending');
+  Route::put('/{shift}/call', [\App\Http\Controllers\ShiftController::class, 'call'])->name('shifts.call');
+  Route::put('/{shift}/in-progress', [\App\Http\Controllers\ShiftController::class, 'sendToInProgress'])->name('shifts.in-progress');
+});
 Route::apiResource('shifts', \App\Http\Controllers\ShiftController::class)->names('shifts')->only(['index', 'store', 'show', 'destroy']);
 Route::apiResource('branches', \App\Http\Controllers\BranchController::class)->names('branches');
 
-Route::prefix('modules')->group(function () {
-  Route::get('/ip-address', [\App\Http\Controllers\ModuleController::class, 'getByIpAddress'])->name('modules.ip-address');
+Route::middleware([
+  \App\Http\Middleware\VerifyModuleIp::class,
+])->prefix('modules')->group(function () {
   Route::get('/{module}/shifts/current', [\App\Http\Controllers\ModuleShiftController::class, 'currentShift'])->name('modules.current-shift');
+  Route::get('/{module}/shifts', [\App\Http\Controllers\ModuleShiftController::class, 'myShifts'])->name('modules.my-shifts');
 });
+Route::get('/modules/ip-address', [\App\Http\Controllers\ModuleController::class, 'getByIpAddress'])->name('modules.ip-address');
 Route::apiResource('modules', \App\Http\Controllers\ModuleController::class)->names('modules');
 
 Route::apiResource('module_types', \App\Http\Controllers\ModuleTypeController::class)->only(['index'])->names('module_types');

@@ -9,12 +9,18 @@ use Tests\TestCase;
 class ModuleShiftTest extends TestCase
 {
     use RefreshDatabase;
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $module = \App\Models\Module::factory()->create(['ip_address' => '0.0.0.0',]);
+        $this->withHeader('X-Module-Ip', $module->ip_address);
+    }
     /**
      * A basic feature test example.
      */
     public function test_get_module_current_shift_ok(): void
     {
-        $module = \App\Models\Module::factory()->create();
+        $module = \App\Models\Module::where('ip_address', '0.0.0.0')->first();
         \App\Models\Shift::factory()->create([
             'state' => \App\Enums\ShiftState::InProgress,
             'module_id' => $module->id,
@@ -42,10 +48,8 @@ class ModuleShiftTest extends TestCase
 
     public function test_get_module_current_shift_not_found(): void
     {
-        $module = \App\Models\Module::factory()->create();
         $response = $this->get(route(
             'modules.current-shift',
-            ['module' => $module->id]
         ));
 
 

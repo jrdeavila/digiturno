@@ -34,6 +34,13 @@
     return true;
 });
 
+\Illuminate\Support\Facades\Broadcast::channel('modules.{module}.shifts', function (
+    \App\Models\User $user,
+    \App\Models\Module $module
+) {
+    return true;
+});
+
 \Illuminate\Support\Facades\Broadcast::channel('modules.{module}', function (
     \App\Models\User $user,
     \App\Models\Module $module
