@@ -52,6 +52,37 @@ class ModuleShiftTest extends TestCase
         ]);
     }
 
+    public function test_get_module_processors_shifts_ok(): void
+    {
+        $clientType = \App\Models\ClientType::factory()->create(['priority' => 2]);
+        $module = \App\Models\Module::factory()->create([
+            'client_type_id' => $clientType->id,
+            'enabled' => true,
+        ]);
+
+        $response = $this
+            ->withHeaders(['X-Module-Ip' => $module->ip_address])
+            ->get(route(
+                'modules.my-shifts',
+            ));
+
+        $response->assertStatus(200);
+
+        $response->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'id',
+                    'room',
+                    'attention_profile',
+                    'client',
+                    'state',
+                    'created_at',
+                    'updated_at',
+                ],
+            ],
+        ]);
+    }
+
 
     public function test_get_module_current_shift_ok(): void
     {
@@ -62,7 +93,6 @@ class ModuleShiftTest extends TestCase
         ]);
         $response = $this->get(route(
             'modules.current-shift',
-            ['module' => $module->id]
         ));
 
         $response->assertStatus(200);
