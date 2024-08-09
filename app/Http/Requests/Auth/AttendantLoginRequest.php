@@ -27,6 +27,17 @@ class AttendantLoginRequest extends FormRequest
         ];
     }
 
+    public function messages(): array
+    {
+        return [
+            'email.exists' => 'email_not_found',
+            'email.required' => 'email_required',
+            'email.email' => 'email_invalid',
+            'password.required' => 'password_required',
+            'password.string' => 'password_invalid',
+        ];
+    }
+
     public function login(): string
     {
         $credentials = $this->only('email', 'password');

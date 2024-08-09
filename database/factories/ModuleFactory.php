@@ -24,7 +24,7 @@ class ModuleFactory extends Factory
             ]),
             'client_type_id' => \App\Models\ClientType::factory(),
             'attention_profile_id' => \App\Models\AttentionProfile::factory(),
-            'enabled' => $this->faker->boolean(),
+            'enabled' => true,
             'module_type_id' => \App\Models\ModuleType::factory(),
         ];
     }

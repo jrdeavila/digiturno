@@ -42,7 +42,6 @@ class AssignShifts implements ShouldQueue
             ->where('room_id', $room->id)
             ->where('enabled', true)
             ->where('status', \App\Enums\ModuleStatus::Online)
-            // Having last attendant
             ->whereHas('attendants', function ($query) {
                 $query->where('status', '!=', \App\Enums\AttendantStatus::Absent);
             })
