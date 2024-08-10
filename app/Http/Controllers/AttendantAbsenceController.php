@@ -18,4 +18,13 @@ class AttendantAbsenceController extends Controller
         $absence = $request->createAbsence($attendant);
         return new \App\Http\Resources\AttendantAbsenceResource($absence);
     }
+
+    public function backToWork(
+        \App\Models\Attendant $attendant,
+    ) {
+        $attendant->update([
+            'status' => \App\Enums\AttendantStatus::Free
+        ]);
+        return response()->noContent();
+    }
 }

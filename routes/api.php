@@ -57,6 +57,9 @@ Route::middleware([
 });
 Route::apiResource('attendants', \App\Http\Controllers\AttendantController::class)->names('attendants');
 Route::apiResource('attendants.absences', \App\Http\Controllers\AttendantAbsenceController::class)->names('attendant.absence')->only(['index', 'store']);
+Route::prefix('attendants')->group(function () {
+  Route::put('/{attendant}/back-to-work', [\App\Http\Controllers\AttendantAbsenceController::class, 'backToWork'])->name('attendant.back-to-work');
+});
 
 Route::apiResource('modules.attendants', \App\Http\Controllers\ModuleAttendantController::class)->names('modules.attendants')->only(['index']);
 Route::apiResource('clients', \App\Http\Controllers\ClientController::class)->names('clients');

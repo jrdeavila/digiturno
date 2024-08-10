@@ -32,12 +32,17 @@ class AttendantAbsenceRequest extends FormRequest
 
     public function createAbsence(\App\Models\Attendant $attendant): \App\Models\AbsenceReason
     {
+        if ($attendant->status === \App\Enums\AttendantStatus::Absent) {
+            throw new \App\Exceptions\AttendantAlreadyAbsentException();
+        }
         \Illuminate\Support\Facades\DB::table('attendant_absence_reason')->insert([
             'attendant_id' => $attendant->id,
             'absence_reason_id' => $this->input('absence_reason_id'),
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+
+        \App\Jobs\AttendantAbsence::dispatch($attendant);
 
         $absence = $attendant->absences()->latest()->firstOrFail();
         return $absence;
