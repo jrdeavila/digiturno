@@ -14,6 +14,7 @@ class ModuleShiftController extends Controller
         $shift = \App\Models\Shift::where('module_id', $module->id)
             // Where state is in progress or completed
             ->whereIn('state', [\App\Enums\ShiftState::InProgress, \App\Enums\ShiftState::Completed])
+            ->whereDate('shifts.created_at', now())
             ->first();
 
         if (!$shift) {
@@ -42,6 +43,7 @@ class ModuleShiftController extends Controller
                 return $query;
             })
             ->whereIn('state', [\App\Enums\ShiftState::Pending, \App\Enums\ShiftState::PendingTransferred])
+            ->whereDate('shifts.created_at', now())
             ->get();
 
         return \App\Http\Resources\ShiftResource::collection($shifts);
