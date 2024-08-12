@@ -47,8 +47,15 @@ class AssignShifts implements ShouldQueue
             })
             ->get();
 
+        // Get the module with the least amount of shifts
         $module = $availableModules->sortBy(function ($module) {
-            return $module->shifts()->whereIn('state', [\App\Enums\ShiftState::Pending, \App\Enums\ShiftState::PendingTransferred])->count();
+            return $module->shifts()->whereIn('state', [
+                \App\Enums\ShiftState::Pending,
+                \App\Enums\ShiftState::PendingTransferred,
+                \App\Enums\ShiftState::InProgress,
+                \App\Enums\ShiftState::Qualified,
+                \App\Enums\ShiftState::Completed,
+            ])->count();
         })->first();
 
 
