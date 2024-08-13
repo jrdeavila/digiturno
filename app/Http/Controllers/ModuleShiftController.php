@@ -7,14 +7,26 @@ use Illuminate\Http\Request;
 
 class ModuleShiftController extends Controller
 {
+    public function countShiftPerModule(Request $request)
+    {
+        $modules = \App\Models\Module::where('enabled', true)
+            ->where('status', \App\Enums\ModuleStatus::Online)
+            ->withCount(['shifts' => function ($query) {
+                $query->whereIn('state', [
+                    \App\Enums\ShiftState::Qualified,
+                    \App\Enums\ShiftState::Transferred,
+                ])->whereDate('shifts.created_at', now());
+            }])
+            ->get();
+        return response()->json($modules);
+    }
+
     public function currentShift(Request $request)
     {
         $module =  $request->module;
-
         $shift = \App\Models\Shift::where('module_id', $module->id)
             // Where state is in progress or completed
             ->whereIn('state', [\App\Enums\ShiftState::InProgress, \App\Enums\ShiftState::Completed])
-            ->whereDate('shifts.created_at', now())
             ->first();
 
         if (!$shift) {

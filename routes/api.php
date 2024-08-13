@@ -38,6 +38,8 @@ Route::middleware([
   Route::get('/shifts/current', [\App\Http\Controllers\ModuleShiftController::class, 'currentShift'])->name('modules.current-shift');
   Route::get('/shifts', [\App\Http\Controllers\ModuleShiftController::class, 'myShifts'])->name('modules.my-shifts');
 });
+
+Route::get("/modules/shifts/count", [\App\Http\Controllers\ModuleShiftController::class, 'countShiftPerModule'])->name('modules.shifts.count');
 Route::get('/modules/ip-address', [\App\Http\Controllers\ModuleController::class, 'getByIpAddress'])->name('modules.ip-address');
 Route::apiResource('modules', \App\Http\Controllers\ModuleController::class)->names('modules');
 
