@@ -43,8 +43,10 @@ class AssignShifts implements ShouldQueue
             ->where('enabled', true)
             ->where('status', \App\Enums\ModuleStatus::Online)
             ->whereHas('attendants', function ($query) {
-                $query->where('status', '!=', \App\Enums\AttendantStatus::Absent);
-                $query->where('status', '!=', \App\Enums\AttendantStatus::Busy);
+                $query->whereNotInt([
+                    \App\Enums\AttendantStatus::Absent,
+                    \App\Enums\AttendantStatus::Busy,
+                ]);
             })
             ->get();
 
