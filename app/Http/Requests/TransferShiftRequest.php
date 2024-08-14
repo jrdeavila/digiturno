@@ -44,10 +44,10 @@ class TransferShiftRequest extends FormRequest
             'attention_profile_id' => $this->attention_profile_id,
             'state' => \App\Enums\ShiftState::PendingTransferred,
             'room_id' => $shift->room_id,
+            'module_id' => null,
         ]);
 
-
-        \App\Jobs\ShiftTransferred::dispatch($shift);
+        // \App\Jobs\ShiftTransferred::dispatch($shift);
 
         return $shift;
     }

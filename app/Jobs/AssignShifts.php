@@ -27,6 +27,7 @@ class AssignShifts implements ShouldQueue
     {
         $shifts = \App\Models\Shift::whereIn('state', [\App\Enums\ShiftState::Pending, \App\Enums\ShiftState::PendingTransferred])
             ->whereNull('module_id')
+            ->whereDate('created_at', now())
             ->get();
 
         foreach ($shifts as $shift) {
@@ -42,23 +43,13 @@ class AssignShifts implements ShouldQueue
             ->where('room_id', $room->id)
             ->where('enabled', true)
             ->where('status', \App\Enums\ModuleStatus::Online)
-            ->whereHas('attendants', function ($query) {
-                $query->whereNotIn('status', [
-                    \App\Enums\AttendantStatus::Absent,
-                    \App\Enums\AttendantStatus::Busy,
-                ]);
-            })
             ->get();
 
         // Get the module with the least amount of shifts
         $module = $availableModules->sortBy(function ($module) {
-            return $module->shifts()->whereIn('state', [
-                \App\Enums\ShiftState::Pending,
-                \App\Enums\ShiftState::PendingTransferred,
-                \App\Enums\ShiftState::InProgress,
-                \App\Enums\ShiftState::Qualified,
-                \App\Enums\ShiftState::Completed,
-            ])->count();
+            return $module->shifts()
+                ->whereDate('created_at', now())
+                ->count();
         })->first();
 
 

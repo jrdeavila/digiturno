@@ -71,6 +71,10 @@ class ShiftRequest extends FormRequest
         $client = \App\Models\Client::firstWhere('dni', $this->validated()['client']['dni']);
         if (!$client) {
             $client = \App\Models\Client::create($this->validated()['client']);
+        } else {
+            $client->client_type_id = $this->validated()['client']['client_type_id'];
+            $client->name = $this->validated()['client']['name'];
+            $client->save();
         }
         $data = [
             ...$this->validated(),
