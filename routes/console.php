@@ -14,11 +14,11 @@ Schedule::job(function () {
     ->everySecond()
     ->name('assign-shifts');
 
-Schedule::job(function () {
-    \App\Jobs\VerifyRepeatedShifts::dispatch();
-})
-    ->everyFiveSeconds()
-    ->name('verify-repeated-shifts');
+// Schedule::job(function () {
+//     \App\Jobs\VerifyRepeatedShifts::dispatch();
+// })
+//     ->everyFiveSeconds()
+//     ->name('verify-repeated-shifts');
 
 // Put all modules in offline status on 8:00AM, 12:00 PM and 6:00 PM
 Schedule::call(function () {
@@ -34,10 +34,9 @@ Schedule::call(function () {
 
 
 // Check if attendant has a shift in progress and put it in free if not
-
 Schedule::call(function () {
     $attendants =  \App\Models\Attendant::query()
-        ->where('status', '!=', \App\Enums\AttendantStatus::Free)
+        ->where('status',  \App\Enums\AttendantStatus::Busy)
         ->get();
     foreach ($attendants as $attendant) {
         if (!$attendant->haveShiftInProgress() && !$attendant->haveShiftCompleted()) {

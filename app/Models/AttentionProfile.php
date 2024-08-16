@@ -12,6 +12,7 @@ class AttentionProfile extends Model
 
     protected $fillable = [
         'name',
+        'room_id',
     ];
 
     public function shifts()
@@ -27,5 +28,10 @@ class AttentionProfile extends Model
     public function modules()
     {
         return $this->hasMany(Module::class);
+    }
+
+    public function room()
+    {
+        return $this->belongsTo(Room::class);
     }
 }

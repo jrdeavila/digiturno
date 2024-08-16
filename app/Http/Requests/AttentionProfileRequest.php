@@ -28,6 +28,7 @@ class AttentionProfileRequest extends FormRequest
                 'max:255',
                 \Illuminate\Validation\Rule::unique('attention_profiles', 'name')->ignore($this->attention_profile),
             ],
+            'room_id' => 'required|exists:rooms,id',
             'services' => 'required|array|min:1'
         ];
     }

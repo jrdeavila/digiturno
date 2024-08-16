@@ -9,9 +9,16 @@ use Tests\TestCase;
 class AttentionProfileTest extends TestCase
 {
     use RefreshDatabase;
-    /**
-     * A basic feature test example.
-     */
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $module = \App\Models\Module::factory()->create();
+        $this->withHeaders([
+            'X-Module-Ip' => $module->ip_address,
+        ]);
+    }
+
     public function test_get_all_attention_profile_test_ok(): void
     {
         \App\Models\AttentionProfile::factory(5)->create()->each(function ($ap) {
@@ -74,6 +81,7 @@ class AttentionProfileTest extends TestCase
 
         $response = $this->post(route('attention_profiles.store'), [
             'name' => $ap->name,
+            'room_id' => $ap->room_id,
             'services' => [
                 $service->id,
             ],
@@ -136,6 +144,7 @@ class AttentionProfileTest extends TestCase
 
         $response = $this->put(route('attention_profiles.update', $attentionProfile->id), [
             'name' => 'name',
+            'room_id' => $attentionProfile->room_id,
             'services' => [
                 $service->id,
             ],

@@ -3,7 +3,9 @@
 use App\Models\Room;
 use Illuminate\Support\Facades\Route;
 
-Route::apiResource('attention_profiles', \App\Http\Controllers\AttentionProfileController::class)->names('attention_profiles');
+Route::middleware([
+  \App\Http\Middleware\VerifyModuleIp::class,
+])->apiResource('attention_profiles', \App\Http\Controllers\AttentionProfileController::class)->names('attention_profiles');
 Route::apiResource('services', \App\Http\Controllers\ServiceController::class)->names('services');
 Route::apiResource('services.subservices', \App\Http\Controllers\SubserviceController::class)->names('services.subservices')->only(['index']);
 Route::apiResource('attention_profiles.services', \App\Http\Controllers\AttentionProfileServiceController::class)->names('attention_profiles.services')->only(['index', 'store', 'destroy']);

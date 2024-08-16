@@ -35,6 +35,8 @@ class VerifyRepeatedShifts implements ShouldQueue
 
     public function verifyRepeatedShifts(\App\Models\Shift $shift): void
     {
+        // Transaction
+        \Illuminate\Support\Facades\DB::beginTransaction();
         // Get shifts that have the same client and room
         $shifts = \App\Models\Shift::where('client_id', $shift->client_id)
             ->where('room_id', $shift->room_id)
@@ -46,5 +48,6 @@ class VerifyRepeatedShifts implements ShouldQueue
                 $shift->delete();
             }
         }
+        \Illuminate\Support\Facades\DB::commit();
     }
 }

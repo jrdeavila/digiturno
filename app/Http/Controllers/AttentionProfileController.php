@@ -7,10 +7,12 @@ use Illuminate\Http\Request;
 class AttentionProfileController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $attentionProfiles = \Illuminate\Support\Facades\Cache::remember('attention_profiles', 60, function () {
-            return \App\Models\AttentionProfile::latest()->get();
+        $module = $request->module;
+        $attentionProfiles = \Illuminate\Support\Facades\Cache::remember('attention_profiles', 60, function () use ($module) {
+            return \App\Models\AttentionProfile::where('room_id', $module->room_id)
+                ->latest()->get();
         });
         return \App\Http\Resources\AttentionProfileResource::collection($attentionProfiles);
     }

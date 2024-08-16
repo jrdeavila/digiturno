@@ -19,6 +19,7 @@ class AttentionProfileSeeder extends Seeder
         foreach ($attentionProfiles as $attentionProfile => $services) {
             $ap = \App\Models\AttentionProfile::create([
                 'name' => $attentionProfile,
+                // TODO: Add room_id to mount the relationship
             ]);
 
             foreach ($services as $service) {

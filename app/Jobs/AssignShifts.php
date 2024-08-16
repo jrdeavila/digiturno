@@ -25,6 +25,7 @@ class AssignShifts implements ShouldQueue
      */
     public function handle(): void
     {
+        \Illuminate\Support\Facades\DB::beginTransaction();
         $shifts = \App\Models\Shift::whereIn('state', [\App\Enums\ShiftState::Pending, \App\Enums\ShiftState::PendingTransferred])
             ->whereNull('module_id')
             ->whereDate('created_at', now())
@@ -33,6 +34,7 @@ class AssignShifts implements ShouldQueue
         foreach ($shifts as $shift) {
             $this->searchModuleAttendant($shift);
         }
+        \Illuminate\Support\Facades\DB::commit();
     }
 
     private function searchModuleAttendant(\App\Models\Shift $shift): void
