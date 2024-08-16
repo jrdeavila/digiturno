@@ -20,6 +20,7 @@ class ShiftResource extends JsonResource
             'attention_profile' => $this->attentionProfile->name,
             'client' => new \App\Http\Resources\ClientResource($this->client),
             'state' => $this->state,
+            'module' => $this->module?->name,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

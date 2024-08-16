@@ -39,17 +39,29 @@ class AssignShifts implements ShouldQueue
     {
         $attentionProfile = $shift->attentionProfile;
         $room = $shift->room;
+
+        // For Tinker
+        // \App\Models\Module::where('attention_profile_id', 1)->where('room_id', 1)->where('enabled', true)->where('status', 'online')->whereHas('attendants', function ($query) { $query->where('status', 'free')->whereDate('module_attendant_accesses.created_at', now()); })->get();
+
         $availableModules = \App\Models\Module::where('attention_profile_id', $attentionProfile->id)
             ->where('room_id', $room->id)
             ->where('enabled', true)
             ->where('status', \App\Enums\ModuleStatus::Online)
+            ->whereHas('attendants', function ($query) {
+                // Having pivot table created_at column to get the latest attendant
+                $query
+                    ->whereIn('status', [
+                        \App\Enums\AttendantStatus::Free,
+                        // \App\Enums\AttendantStatus::Busy,
+                    ])
+                    ->whereDate('module_attendant_accesses.created_at', now());
+            })
             ->get();
 
         // Get the module with the least amount of shifts
         $module = $availableModules->sortBy(function ($module) {
-            return $module->shifts()
-                ->whereDate('created_at', now())
-                ->count();
+            // Sort by shift amount for now and sort by free attendants
+            return $module->shifts()->whereDate('created_at', now())->count();
         })->first();
 
 

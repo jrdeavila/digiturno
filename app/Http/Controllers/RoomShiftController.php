@@ -12,10 +12,14 @@ class RoomShiftController extends Controller
         $shifts = $room->shifts()->whereIn(
             'state',
             [
-                \App\Enums\ShiftState::Pending, \App\Enums\ShiftState::PendingTransferred,
-                \App\Enums\ShiftState::Distracted, \App\Enums\ShiftState::Distracted,
-                \App\Enums\ShiftState::Transferred, \App\Enums\ShiftState::InProgress,
-                \App\Enums\ShiftState::Completed, \App\Enums\ShiftState::Qualified,
+                \App\Enums\ShiftState::Pending,
+                \App\Enums\ShiftState::PendingTransferred,
+                \App\Enums\ShiftState::Distracted,
+                \App\Enums\ShiftState::Distracted,
+                \App\Enums\ShiftState::Transferred,
+                \App\Enums\ShiftState::InProgress,
+                \App\Enums\ShiftState::Completed,
+                \App\Enums\ShiftState::Qualified,
             ],
         )
             ->join("clients", "shifts.client_id", "=", "clients.id")

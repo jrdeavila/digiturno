@@ -34,6 +34,24 @@ class Attendant extends Authenticatable implements JWTSubject
         return $this->belongsToMany(Module::class, 'module_attendant_accesses')->withTimestamps();
     }
 
+    public function shifts()
+    {
+        return $this->modules()->wherePivot('created_at', '>=', now()->startOfDay())->first()?->shifts;
+    }
+
+    public function haveShiftInProgress()
+    {
+        $shits = $this->shifts()->where('state', \App\Enums\ShiftState::InProgress);
+        return $shits->isNotEmpty();
+    }
+
+    public function haveShiftCompleted()
+    {
+        $shifts =  $this->shifts()->where('state', \App\Enums\ShiftState::Completed);
+        return $shifts->isNotEmpty();
+    }
+
+
     public function absences()
     {
         return $this->belongsToMany(
