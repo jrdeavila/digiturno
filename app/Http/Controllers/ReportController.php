@@ -24,11 +24,13 @@ class ReportController extends Controller
             'Client Type',
             'Status',
             'Qualification',
+            'Attendant',
             'Created At',
             'Updated At',
         ]);
 
         foreach ($data as $shift) {
+            $attendant = $shift->module?->attendants()->whereDate('module_attendant_accesses.created_at', now())->first();
             $csv->insertOne([
                 $shift->id,
                 $shift->room->name,
@@ -39,6 +41,7 @@ class ReportController extends Controller
                 $shift->client->clientType->slug,
                 $shift->state,
                 $shift->qualification?->qualification,
+                $attendant?->name,
                 $shift->created_at,
                 $shift->updated_at,
             ]);
