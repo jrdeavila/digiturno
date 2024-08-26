@@ -30,7 +30,9 @@ class TransferShiftRequest extends FormRequest
 
     public function transferShift()
     {
+        \Illuminate\Support\Facades\DB::beginTransaction();
         $shift = $this->route('shift');
+
         $shift->update([
             'state' => \App\Enums\ShiftState::Transferred,
         ]);
@@ -38,7 +40,6 @@ class TransferShiftRequest extends FormRequest
         $shift->qualification()->create([
             'qualification' => $this->getQualificationOption($this->qualification),
         ]);
-
         \App\Models\Shift::create([
             'client_id' => $shift->client_id,
             'attention_profile_id' => $this->attention_profile_id,
@@ -46,9 +47,7 @@ class TransferShiftRequest extends FormRequest
             'room_id' => $shift->room_id,
             'module_id' => null,
         ]);
-
-        // \App\Jobs\ShiftTransferred::dispatch($shift);
-
+        \Illuminate\Support\Facades\DB::commit();
         return $shift;
     }
 

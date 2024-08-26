@@ -7,6 +7,14 @@ use Illuminate\Http\Request;
 class AttentionProfileController extends Controller
 {
 
+    public function adminIndex(Request $request)
+    {
+        $attentionProfiles = \Illuminate\Support\Facades\Cache::remember('attention_profiles', 60, function () {
+            return \App\Models\AttentionProfile::latest()->get();
+        });
+        return \App\Http\Resources\AttentionProfileResource::collection($attentionProfiles);
+    }
+
     public function index(Request $request)
     {
         $module = $request->module;

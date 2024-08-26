@@ -32,7 +32,7 @@ class ShiftController extends Controller
 
     public function destroy(\App\Models\Shift $shift)
     {
-        $shift->delete();
+        \App\Jobs\DeleteShift::dispatch($shift);
         return response()->json(null, 204);
     }
 

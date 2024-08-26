@@ -649,6 +649,7 @@ class ShiftTest extends TestCase
             'attention_profile_id' => $attentionProfile->id,
             'client_id' => $client->id,
             'state' => 'pending',
+            'module_id' => $module->id,
         ]);
 
         $attentionProfile2 = \App\Models\AttentionProfile::factory()->create();
@@ -671,6 +672,7 @@ class ShiftTest extends TestCase
                 'updated_at',
             ],
         ]);
+
 
         \Illuminate\Support\Facades\Event::assertDispatched(\App\Events\ShiftUpdated::class, function ($e) use ($response) {
             return $e->shift->id === $response['data']['id'];

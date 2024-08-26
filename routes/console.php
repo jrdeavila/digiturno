@@ -20,31 +20,31 @@ Schedule::job(function () {
 //     ->everyFiveSeconds()
 //     ->name('verify-repeated-shifts');
 
-// Put all modules in offline status on 8:00AM, 12:00 PM and 6:00 PM
-Schedule::call(function () {
-    \App\Models\Module::query()->update(['status' => 'offline']);
-})->at('08:00', '12:00', '18:00');
+// // Put all modules in offline status on 8:00AM, 12:00 PM and 6:00 PM
+// Schedule::call(function () {
+//     \App\Models\Module::query()->update(['status' => 'offline']);
+// })->at('08:00', '12:00', '18:00');
 
 
-// Put all attendances in free status on 8:00AM, 12:00 PM and 6:00 PM
-Schedule::call(function () {
-    \App\Models\Attendant::query()->update(['status' => 'free']);
-})->at('08:00', '12:00', '18:00')
-    ->name('reset-attendants-status');
+// // Put all attendances in free status on 8:00AM, 12:00 PM and 6:00 PM
+// Schedule::call(function () {
+//     \App\Models\Attendant::query()->update(['status' => 'free']);
+// })->at('08:00', '12:00', '18:00')
+//     ->name('reset-attendants-status');
 
 
-// Check if attendant has a shift in progress and put it in free if not
-Schedule::call(function () {
-    $attendants =  \App\Models\Attendant::query()
-        ->where('status',  \App\Enums\AttendantStatus::Busy)
-        ->get();
-    foreach ($attendants as $attendant) {
-        if (!$attendant->haveShiftInProgress() && !$attendant->haveShiftCompleted()) {
-            $attendant->update(['status' => \App\Enums\AttendantStatus::Free]);
-        }
-    }
-})->everySecond()
-    ->name('check-attendants-status');
+// // Check if attendant has a shift in progress and put it in free if not
+// Schedule::call(function () {
+//     $attendants =  \App\Models\Attendant::query()
+//         ->where('status',  \App\Enums\AttendantStatus::Busy)
+//         ->get();
+//     foreach ($attendants as $attendant) {
+//         if (!$attendant->haveShiftInProgress() && !$attendant->haveShiftCompleted()) {
+//             $attendant->update(['status' => \App\Enums\AttendantStatus::Free]);
+//         }
+//     }
+// })->everyFiveSeconds()
+//     ->name('check-attendants-status');
 
 
 // Command to delete distracted shifts

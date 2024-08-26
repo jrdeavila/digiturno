@@ -15,6 +15,9 @@ class AuthenticationController extends Controller
     public function profile()
     {
         $attendant = auth('attendant')->user();
+        if ($attendant->status === \App\Enums\AttendantStatus::Offline) {
+            $attendant->status = \App\Enums\AttendantStatus::Free;
+        }
         return new \App\Http\Resources\AttendantResource($attendant);
     }
 
@@ -30,5 +33,16 @@ class AuthenticationController extends Controller
     {
         $token = auth('attendant')->refresh();
         return response()->json(['token' => $token]);
+    }
+
+    public function offline()
+    {
+        $attendant = auth('attendant')->user();
+        $module = request()->module;
+        $module->status = \App\Enums\ModuleStatus::Offline;
+        $module->save();
+        $attendant->status = \App\Enums\AttendantStatus::Offline;
+        $attendant->save();
+        return response()->json(['message' => 'Successfully offline']);
     }
 }

@@ -38,6 +38,14 @@ class Module extends Model
         return $this->belongsToMany(Attendant::class, 'module_attendant_accesses')->withTimestamps();
     }
 
+    public function currentAttendant(): ?\App\Models\Attendant
+    {
+        return $this->attendants()->whereDate(
+            'module_attendant_accesses.created_at',
+            now()->toDateString()
+        )->first();
+    }
+
     public function attentionProfile()
     {
         return $this->belongsTo(AttentionProfile::class);
