@@ -9,11 +9,17 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 
+
 // Command to delete distracted shifts
 Artisan::command('delete:distracted-shifts', function () {
-    \App\Models\Shift::query()
+    $res = \App\Models\Shift::query()
         ->whereDate('created_at', now())
-        ->where('state', \App\Enums\ShiftState::Distracted)
+        ->whereIn('state', [
+            \App\Enums\ShiftState::Distracted,
+            \App\Enums\ShiftState::Pending,
+            \App\Enums\ShiftState::PendingTransferred,
+        ])
         ->delete();
     $this->info('Distracted shifts deleted successfully');
+    $this->info("Total deleted: $res");
 })->purpose('Delete all distracted shifts')->daily();
