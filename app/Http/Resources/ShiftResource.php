@@ -21,6 +21,7 @@ class ShiftResource extends JsonResource
             'client' => new \App\Http\Resources\ClientResource($this->client),
             'state' => $this->state,
             'module' => $this->module?->name,
+            'module_id' => $this->module_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

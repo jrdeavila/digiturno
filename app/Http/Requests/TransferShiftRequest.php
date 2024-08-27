@@ -28,10 +28,10 @@ class TransferShiftRequest extends FormRequest
     }
 
 
-    public function transferShift()
-    {
+    public function transferShift(
+        \App\Models\Shift $shift
+    ) {
         \Illuminate\Support\Facades\DB::beginTransaction();
-        $shift = $this->route('shift');
 
         $shift->update([
             'state' => \App\Enums\ShiftState::Transferred,
@@ -40,15 +40,21 @@ class TransferShiftRequest extends FormRequest
         $shift->qualification()->create([
             'qualification' => $this->getQualificationOption($this->qualification),
         ]);
-        \App\Models\Shift::create([
+
+        $shift->module?->currentAttendant()?->update([
+            'status' => \App\Enums\AttendantStatus::Free,
+        ]);
+
+        $module = \App\Utils\FindAvailableModuleUtil::findModule($shift->room_id, $this->attention_profile_id, $shift->module->id);
+        $shiftTransferred = \App\Models\Shift::create([
             'client_id' => $shift->client_id,
             'attention_profile_id' => $this->attention_profile_id,
             'state' => \App\Enums\ShiftState::PendingTransferred,
             'room_id' => $shift->room_id,
-            'module_id' => null,
+            'module_id' => $module->id,
         ]);
         \Illuminate\Support\Facades\DB::commit();
-        return $shift;
+        return $shiftTransferred;
     }
 
     private function getQualificationOption(int $qualification): \App\Enums\QualificationOption

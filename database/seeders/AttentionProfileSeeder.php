@@ -26,6 +26,7 @@ class AttentionProfileSeeder extends Seeder
                 // Find or create the service
                 $s = \App\Models\Service::firstOrCreate([
                     'name' => $service,
+                    'room_id' => 1,
                 ]);
                 $ap->services()->attach($s);
             }

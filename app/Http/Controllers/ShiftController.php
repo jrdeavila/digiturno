@@ -32,6 +32,7 @@ class ShiftController extends Controller
 
     public function destroy(\App\Models\Shift $shift)
     {
+        throw_unless($shift->state !== \App\Enums\ShiftState::InProgress, \App\Exceptions\ShiftInProgressDeletingFailedException::class);
         \App\Jobs\DeleteShift::dispatch($shift);
         return response()->json(null, 204);
     }
@@ -72,16 +73,17 @@ class ShiftController extends Controller
         return new \App\Http\Resources\ShiftResource($shift);
     }
 
-    public function distractedShift(\App\Models\Shift $shift)
+    public function distractedShift(\App\Models\Shift $shift, Request $request)
     {
-        $shift->update(['state' => \App\Enums\ShiftState::Distracted, 'module_id' => null]);
+        $module = $request->module;
+        $shift->update(['state' => \App\Enums\ShiftState::Distracted, 'module_id' => $module->id]);
         return new \App\Http\Resources\ShiftResource($shift);
     }
 
     public function transferShift(\App\Models\Shift $shift, \App\Http\Requests\TransferShiftRequest $request)
     {
-        $request->transferShift();
-        return new \App\Http\Resources\ShiftResource($shift);
+        $shiftTransferred = $request->transferShift($shift);
+        return new \App\Http\Resources\ShiftResource($shiftTransferred);
     }
 
     public function sendToPending(\App\Models\Shift $shift)

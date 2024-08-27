@@ -197,6 +197,26 @@ class ShiftTest extends TestCase
             'client_type_id' =>  $clientType->id
         ])->toArray();
 
+        $modules =    \App\Models\Module::factory(4)->create([
+            'enabled' => true,
+            'status' => 'online',
+            'attention_profile_id' => $attentionProfile->id,
+            'room_id' => $room->id,
+        ]);
+
+        $modules->each(function ($module) {
+            \App\Models\ModuleAttendantAccess::create([
+                'module_id' => $module->id,
+                'attendant_id' => \App\Models\Attendant::factory()->create()->id,
+            ]);
+            \App\Models\Shift::factory(5)->create([
+                'module_id' => $module->id,
+                'state' => 'qualified',
+            ]);
+        });
+
+
+
         $data = [
             'room_id' => $room->id,
             'attention_profile_id' => $attentionProfile->id,
@@ -627,10 +647,7 @@ class ShiftTest extends TestCase
 
     public function test_transfer_shift_ok(): void
     {
-        \Illuminate\Support\Facades\Event::fake([
-            \App\Events\ShiftUpdated::class,
-            \App\Events\ShiftCreated::class,
-        ]);
+
 
         $branch = \App\Models\Branch::factory()->create();
         $room = \App\Models\Room::factory()->create([
@@ -642,7 +659,12 @@ class ShiftTest extends TestCase
             'client_type_id' =>  $clientType->id
         ]);
 
-        $module = \App\Models\Module::factory()->create();
+        $module = \App\Models\Module::factory()->create([
+            'enabled' => true,
+            'status' => 'online',
+            'attention_profile_id' => $attentionProfile->id,
+            'room_id' => $room->id,
+        ]);
 
         $shift = \App\Models\Shift::factory()->create([
             'room_id' => $room->id,
@@ -654,12 +676,30 @@ class ShiftTest extends TestCase
 
         $attentionProfile2 = \App\Models\AttentionProfile::factory()->create();
 
+        $modules =   \App\Models\Module::factory(4)->create([
+            'enabled' => true,
+            'status' => 'online',
+            'attention_profile_id' => $attentionProfile2->id,
+            'room_id' => $room->id,
+        ]);
+
+        $modules->each(function ($module) {
+            \App\Models\ModuleAttendantAccess::create([
+                'module_id' => $module->id,
+                'attendant_id' => \App\Models\Attendant::factory()->create()->id,
+            ]);
+            \App\Models\Shift::factory(5)->create([
+                'module_id' => $module->id,
+                'state' => 'qualified',
+            ]);
+        });
+
         $response = $this->put(route('shifts.transfer', $shift->id), [
             'qualification' => 4,
             'attention_profile_id' => $attentionProfile2->id,
         ]);
 
-        $response->assertStatus(200);
+        $response->assertStatus(201);
 
         $response->assertJsonStructure([
             'data' => [
@@ -668,19 +708,20 @@ class ShiftTest extends TestCase
                 'attention_profile',
                 'client',
                 'state',
+                'module_id',
                 'created_at',
                 'updated_at',
             ],
         ]);
+        $this->assertNotEquals(
+            $shift->id,
+            $response['data']['id']
+        );
 
-
-        \Illuminate\Support\Facades\Event::assertDispatched(\App\Events\ShiftUpdated::class, function ($e) use ($response) {
-            return $e->shift->id === $response['data']['id'];
-        });
-
-        \Illuminate\Support\Facades\Event::assertDispatched(\App\Events\ShiftCreated::class, function ($e) use ($response) {
-            return $e->shift->attentionProfile->name === $response['data']['attention_profile'];
-        });
+        $this->assertNotEquals(
+            $module->id,
+            $response['data']['module_id']
+        );
     }
 
     public function test_transfer_shift_not_found(): void

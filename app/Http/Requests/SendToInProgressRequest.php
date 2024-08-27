@@ -41,11 +41,12 @@ class SendToInProgressRequest extends FormRequest
         }
         $shift->update([
             'state' => \App\Enums\ShiftState::InProgress,
-            'module_id' => $this->input('module_id'),
         ]);
 
-        $shift->refresh();
-        \App\Jobs\ShiftInProgress::dispatch($shift);
+        $shift->module?->currentAttendant()?->update([
+            'status' => \App\Enums\AttendantStatus::Busy,
+        ]);
+
         return $shift;
     }
 }

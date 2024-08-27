@@ -43,7 +43,10 @@ class Module extends Model
         return $this->attendants()->whereDate(
             'module_attendant_accesses.created_at',
             now()->toDateString()
-        )->first();
+        )
+            // Order by the last attendant that accessed the module
+            ->orderBy('module_attendant_accesses.created_at', 'desc')
+            ->first();
     }
 
     public function attentionProfile()

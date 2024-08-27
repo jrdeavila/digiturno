@@ -29,6 +29,8 @@ class ShiftCreated implements ShouldBroadcast
     {
         return [
             new Channel('rooms.' . $this->shift->room_id . '.attention_profiles.' . $this->shift->attention_profile_id . '.shifts'),
+            new Channel('modules.' . $this->shift->module_id . '.shifts'),
+            new Channel('rooms.' . $this->shift->room_id . '.shifts'),
         ];
     }
 

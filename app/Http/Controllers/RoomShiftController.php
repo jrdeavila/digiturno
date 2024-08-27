@@ -38,6 +38,7 @@ class RoomShiftController extends Controller
             'state',
             \App\Enums\ShiftState::Distracted
         )
+            ->where('shifts.created_at', now())
             ->join("clients", "shifts.client_id", "=", "clients.id")
             ->join('client_types', 'clients.client_type_id', '=', 'client_types.id')
             ->orderBy('shifts.created_at', 'asc')
@@ -55,6 +56,7 @@ class RoomShiftController extends Controller
             'state',
             [\App\Enums\ShiftState::Pending, \App\Enums\ShiftState::PendingTransferred],
         )
+            ->where('shifts.created_at', now())
             ->where('attention_profile_id', $attentionProfile->id)
             ->join("clients", "shifts.client_id", "=", "clients.id")
             ->join('client_types', 'clients.client_type_id', '=', 'client_types.id')
@@ -72,6 +74,7 @@ class RoomShiftController extends Controller
             'state',
             \App\Enums\ShiftState::Distracted
         )
+            ->where('shifts.created_at', now())
             ->where('attention_profile_id', $attentionProfile->id)
             ->join("clients", "shifts.client_id", "=", "clients.id")
             ->join('client_types', 'clients.client_type_id', '=', 'client_types.id')

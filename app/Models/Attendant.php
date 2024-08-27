@@ -62,6 +62,14 @@ class Attendant extends Authenticatable implements JWTSubject
         )->withTimestamps();
     }
 
+    public function currentModule(): ?\App\Models\Module
+    {
+        return $this->modules()->whereDate(
+            'module_attendant_accesses.created_at',
+            now()->toDateString()
+        )->first();
+    }
+
     public function getJWTIdentifier()
     {
         return $this->getKey();

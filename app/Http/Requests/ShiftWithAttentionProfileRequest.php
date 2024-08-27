@@ -50,11 +50,14 @@ class ShiftWithAttentionProfileRequest extends FormRequest
             $client = \App\Models\Client::create($this->validated()['client']);
         }
 
+        $module = \App\Utils\FindAvailableModuleUtil::findModule($this->validated()['room_id'], $this->validated()['attention_profile_id']);
+
         $data = [
             'client_id' => $client->id,
             'room_id' => $this->validated()['room_id'],
             'attention_profile_id' => $this->validated()['attention_profile_id'],
             'state' => 'pending',
+            'module_id' => $module->id,
         ];
 
         $shift = \App\Models\Shift::create($data);

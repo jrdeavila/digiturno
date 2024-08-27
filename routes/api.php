@@ -69,6 +69,7 @@ Route::prefix('attendants')->group(function () {
   Route::put('/{attendant}/back-to-work', [\App\Http\Controllers\AttendantAbsenceController::class, 'backToWork'])->name('attendant.back-to-work');
 });
 
+Route::apiResource('module-types', \App\Http\Controllers\ModuleTypeController::class)->names('module-types');
 Route::apiResource('modules.attendants', \App\Http\Controllers\ModuleAttendantController::class)->names('modules.attendants')->only(['index']);
 Route::apiResource('clients', \App\Http\Controllers\ClientController::class)->names('clients');
 Route::prefix('clients')->group(function () {

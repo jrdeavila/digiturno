@@ -38,6 +38,10 @@ class QualifiedShiftRequest extends FormRequest
             'state' => \App\Enums\ShiftState::Qualified,
         ]);
 
+        $this->route('shift')->module?->currentAttendant()?->update([
+            'status' => \App\Enums\AttendantStatus::Free,
+        ]);
+
         \App\Jobs\ShiftQualified::dispatch($this->route('shift'));
     }
 

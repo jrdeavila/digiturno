@@ -30,7 +30,7 @@ class DeleteShift implements ShouldQueue
     {
         // If shift's module exists, change its attendant's status to free 
         if ($this->shift->module) {
-            $this->shift->module->currentAttendant()?->update([
+            $this->shift->module?->currentAttendant()?->update([
                 'status' => \App\Enums\AttendantStatus::Free,
             ]);
         }
