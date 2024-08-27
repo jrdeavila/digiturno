@@ -23,3 +23,12 @@ Artisan::command('shifts:clear-incomplete', function () {
     $this->info('Delete all incomplete shifts');
     $this->info("Total deleted: $res");
 })->purpose('Delete all incomplete shifts')->daily();
+
+Artisan::command('attendant:put-offline', function () {
+    $res = \App\Models\Attendant::query()
+        ->update(['status' => \App\Enums\AttendantStatus::Offline]);
+    \App\Models\Module::query()
+        ->update(['status' => \App\Enums\ModuleStatus::Offline]);
+    $this->info('Put all busy attendants offline');
+    $this->info("Total updated: $res");
+})->purpose('Put all busy attendants offline')->daily();
