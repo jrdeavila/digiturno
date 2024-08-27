@@ -9,8 +9,7 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 
-
-// Command to delete distracted shifts
+// Command to delete all incomplete shifts
 Artisan::command('shifts:clear-incomplete', function () {
     $res = \App\Models\Shift::query()
         // ->whereDate('created_at', now())
@@ -22,7 +21,7 @@ Artisan::command('shifts:clear-incomplete', function () {
         ->delete();
     $this->info('Delete all incomplete shifts');
     $this->info("Total deleted: $res");
-})->purpose('Delete all incomplete shifts')->daily();
+})->purpose('Delete all incomplete shifts');
 
 Artisan::command('attendant:put-offline', function () {
     $res = \App\Models\Attendant::query()
@@ -31,4 +30,4 @@ Artisan::command('attendant:put-offline', function () {
         ->update(['status' => \App\Enums\ModuleStatus::Offline]);
     $this->info('Put all busy attendants offline');
     $this->info("Total updated: $res");
-})->purpose('Put all busy attendants offline')->daily();
+})->purpose('Put all busy attendants offline');
