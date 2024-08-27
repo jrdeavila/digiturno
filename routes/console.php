@@ -11,15 +11,15 @@ Artisan::command('inspire', function () {
 
 
 // Command to delete distracted shifts
-Artisan::command('delete:distracted-shifts', function () {
+Artisan::command('shifts:clear-incomplete', function () {
     $res = \App\Models\Shift::query()
-        ->whereDate('created_at', now())
+        // ->whereDate('created_at', now())
         ->whereIn('state', [
             \App\Enums\ShiftState::Distracted,
             \App\Enums\ShiftState::Pending,
             \App\Enums\ShiftState::PendingTransferred,
         ])
         ->delete();
-    $this->info('Distracted shifts deleted successfully');
+    $this->info('Delete all incomplete shifts');
     $this->info("Total deleted: $res");
-})->purpose('Delete all distracted shifts')->daily();
+})->purpose('Delete all incomplete shifts')->daily();
