@@ -39,13 +39,19 @@ abstract class FindAvailableModuleUtil
       if (count($freeModules) > 0) {
         $selectedModule = $freeModules[0];
         foreach ($freeModules as $module) {
-          if (count($module->shifts) < count($selectedModule->shifts)) {
+          if (count($module->shifts()->whereDate(
+            'created_at',
+            now()->toDateString(),
+          )->get()) < count($selectedModule->shifts()->whereDate(
+            'created_at',
+            now()->toDateString(),
+          )->get())) {
             $selectedModule = $module;
           }
         }
       } else {
         // If there are no free modules, assign the module with the least amount of shifts
-        $selectedModule = $freeOrBusyModules[0];
+        $selectedModule = $busyModules[0];
         foreach ($busyModules as $module) {
           if (count($module->shifts) < count($selectedModule->shifts)) {
             $selectedModule = $module;
