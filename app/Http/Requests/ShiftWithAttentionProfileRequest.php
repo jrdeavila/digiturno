@@ -38,6 +38,7 @@ class ShiftWithAttentionProfileRequest extends FormRequest
             ],
             'client.client_type_id' => 'required|exists:client_types,id',
             'attention_profile_id' => 'required|exists:attention_profiles,id',
+            'module_id' => 'sometimes|exists:modules,id',
         ];
     }
 
@@ -48,6 +49,8 @@ class ShiftWithAttentionProfileRequest extends FormRequest
         $client = \App\Models\Client::firstWhere('dni', $this->validated()['client']['dni']);
         if (!$client) {
             $client = \App\Models\Client::create($this->validated()['client']);
+        } else {
+            $client->update($this->validated()['client']);
         }
 
         $module = \App\Utils\FindAvailableModuleUtil::findModule($this->validated()['room_id'], $this->validated()['attention_profile_id']);
@@ -64,6 +67,26 @@ class ShiftWithAttentionProfileRequest extends FormRequest
 
         \Illuminate\Support\Facades\DB::commit();
 
+        return $shift;
+    }
+
+    public function updateShift(\App\Models\Shift $shift)
+    {
+        \Illuminate\Support\Facades\DB::beginTransaction();
+        $client = \App\Models\Client::firstWhere('dni', $this->validated()['client']['dni']);
+        $client->update($this->validated()['client']);
+
+        $data = [
+            'client_id' => $client->id,
+            'room_id' => $this->validated()['room_id'],
+            'attention_profile_id' => $this->validated()['attention_profile_id'],
+            'state' => 'pending',
+            'module_id' => $this->validated()['module_id'],
+        ];
+
+        $shift->update($data);
+
+        \Illuminate\Support\Facades\DB::commit();
         return $shift;
     }
 }
