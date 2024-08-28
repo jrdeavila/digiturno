@@ -40,12 +40,12 @@ abstract class FindAvailableModuleUtil
         $selectedModule = $freeModules[0];
         foreach ($freeModules as $module) {
           if (count($module->shifts()
-            // ->where('state', 'pending')
+            ->where('state', 'pending')
             ->whereDate(
               'created_at',
               now()->toDateString(),
             )->get()) < count($selectedModule->shifts()
-            // ->where('state', 'pending')
+            ->where('state', 'pending')
             ->whereDate(
               'created_at',
               now()->toDateString(),
@@ -57,7 +57,17 @@ abstract class FindAvailableModuleUtil
         // If there are no free modules, assign the module with the least amount of shifts
         $selectedModule = $busyModules[0];
         foreach ($busyModules as $module) {
-          if (count($module->shifts) < count($selectedModule->shifts)) {
+          if (count($module->shifts()
+            ->where('state', 'pending')
+            ->whereDate(
+              'created_at',
+              now()->toDateString(),
+            )->get()) < count($selectedModule->shifts()
+            ->where('state', 'pending')
+            ->whereDate(
+              'created_at',
+              now()->toDateString(),
+            )->get())) {
             $selectedModule = $module;
           }
         }
