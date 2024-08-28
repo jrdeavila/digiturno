@@ -40,12 +40,12 @@ abstract class FindAvailableModuleUtil
         $selectedModule = $freeModules[0];
         foreach ($freeModules as $module) {
           if (count($module->shifts()
-            ->where('state', 'pending')
+            // ->where('state', 'pending')
             ->whereDate(
               'created_at',
               now()->toDateString(),
             )->get()) < count($selectedModule->shifts()
-            ->where('state', 'pending')
+            // ->where('state', 'pending')
             ->whereDate(
               'created_at',
               now()->toDateString(),
