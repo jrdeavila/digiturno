@@ -21,7 +21,8 @@ Artisan::command('shifts:clear-incomplete', function () {
         ->delete();
     $this->info('Delete all incomplete shifts');
     $this->info("Total deleted: $res");
-})->purpose('Delete all incomplete shifts');
+})->purpose('Delete all incomplete shifts')
+    ->dailyAt('00:00');
 
 Artisan::command('attendant:put-offline', function () {
     $res = \App\Models\Attendant::query()
@@ -30,4 +31,18 @@ Artisan::command('attendant:put-offline', function () {
         ->update(['status' => \App\Enums\ModuleStatus::Offline]);
     $this->info('Put all busy attendants offline');
     $this->info("Total updated: $res");
-})->purpose('Put all busy attendants offline');
+})->purpose('Put all busy attendants offline')
+    ->dailyAt('00:00');
+
+
+// Command to delete all in_progress shifts
+Artisan::command('shifts:clear-in-progress', function () {
+    $res = \App\Models\Shift::query()
+        ->where('state', \App\Enums\ShiftState::InProgress)
+        ->delete();
+    $this->info('Delete all in_progress shifts');
+    $this->info("Total deleted: $res");
+})
+    ->purpose('Delete all in_progress shifts')
+    // 12:00 AM
+    ->dailyAt('00:00');

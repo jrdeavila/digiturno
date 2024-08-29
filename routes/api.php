@@ -81,3 +81,4 @@ Route::apiResource('absence_reasons', \App\Http\Controllers\AbsenceReasonControl
 Route::apiResource('attendant_accesses', \App\Http\Controllers\AttendantModuleAccessController::class)->only(['index'])->names('attendant_accesses');
 
 Route::get('/report', \App\Http\Controllers\ReportController::class)->name('report');
+Route::get('/report/to-json', [\App\Http\Controllers\ReportController::class, 'toJson'])->name('report.to-json');

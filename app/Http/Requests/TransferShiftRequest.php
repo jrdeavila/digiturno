@@ -31,6 +31,9 @@ class TransferShiftRequest extends FormRequest
     public function transferShift(
         \App\Models\Shift $shift
     ) {
+        if ($shift->state !== \App\Enums\ShiftState::InProgress) {
+            throw new \App\Exceptions\ShiftNotInProgressException();
+        }
         \Illuminate\Support\Facades\DB::beginTransaction();
 
         $shift->update([

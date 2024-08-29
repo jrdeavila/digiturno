@@ -53,4 +53,11 @@ class ReportController extends Controller
         $filepath = storage_path("app/temp/" . $filename);
         return response()->download($filepath)->deleteFileAfterSend(true);
     }
+
+
+    public function toJson()
+    {
+        $data = \App\Models\Shift::with('room', 'client', 'qualification', 'attentionProfile')->get();
+        return response()->json($data);
+    }
 }
