@@ -31,13 +31,13 @@ class TransferShiftRequest extends FormRequest
     public function transferShift(
         \App\Models\Shift $shift
     ) {
-        if ($shift->state !== \App\Enums\ShiftState::InProgress) {
+        if ($shift->state !== "in_progress") {
             throw new \App\Exceptions\ShiftNotInProgressException();
         }
         \Illuminate\Support\Facades\DB::beginTransaction();
 
         $shift->update([
-            'state' => \App\Enums\ShiftState::Transferred,
+            'state' => "transferred",
         ]);
 
         $shift->qualification()->create([
@@ -45,14 +45,14 @@ class TransferShiftRequest extends FormRequest
         ]);
 
         $shift->module?->currentAttendant()?->update([
-            'status' => \App\Enums\AttendantStatus::Free,
+            'status' => "free",
         ]);
 
         $module = \App\Utils\FindAvailableModuleUtil::findModule($shift->room_id, $this->attention_profile_id, $shift->module->id);
         $shiftTransferred = \App\Models\Shift::create([
             'client_id' => $shift->client_id,
             'attention_profile_id' => $this->attention_profile_id,
-            'state' => \App\Enums\ShiftState::PendingTransferred,
+            'state' => "pending-transferred",
             'room_id' => $shift->room_id,
             'module_id' => $module->id,
         ]);

@@ -9,11 +9,10 @@ class ModuleShiftController extends Controller
 {
     public function countShiftPerModule(Request $request)
     {
-        $modules = \App\Models\Module::where('enabled', true)
-            // ->where('status', \App\Enums\ModuleStatus::Online)
-            ->whereIn('module_type_id', [1, 2])
+        $modules = \App\Models\Module::whereIn('module_type_id', [1, 2])
             ->withCount(['shifts' => function ($query) {
                 $query->whereIn('state', [
+                    \App\Enums\ShiftState::Completed,
                     \App\Enums\ShiftState::Qualified,
                     \App\Enums\ShiftState::Transferred,
                 ])->whereDate('created_at', now());

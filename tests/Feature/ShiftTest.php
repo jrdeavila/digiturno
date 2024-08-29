@@ -101,6 +101,12 @@ class ShiftTest extends TestCase
         $attentionProfile = \App\Models\AttentionProfile::factory()->create();
         $services = \App\Models\Service::factory(3)->create()->pluck('id')->toArray();
         $attentionProfile->services()->attach($services);
+        $module = \App\Models\Module::factory()->create([
+            'enabled' => true,
+            'status' => 'online',
+            'attention_profile_id' => $attentionProfile->id,
+            'room_id' => $room->id,
+        ]);
         $clientType = \App\Models\ClientType::factory()->create();
         $client = \App\Models\Client::factory()->make([
             'client_type_id' =>  $clientType->id
@@ -108,9 +114,10 @@ class ShiftTest extends TestCase
 
         $data = [
             'room_id' => $room->id,
-            'services' => $services,
             'client' => $client,
             'state' => 'pending',
+            'services' => $services,
+            'module_id' => $module->id,
         ];
         $response = $this->post(route('shifts.store'), $data);
 
@@ -191,7 +198,9 @@ class ShiftTest extends TestCase
         $room = \App\Models\Room::factory()->create([
             'branch_id' => $branch->id
         ]);
-        $attentionProfile = \App\Models\AttentionProfile::factory()->create();
+        $attentionProfile = \App\Models\AttentionProfile::factory([
+            'room_id' => $room->id
+        ])->create();
         $clientType = \App\Models\ClientType::factory()->create();
         $client = \App\Models\Client::factory()->make([
             'client_type_id' =>  $clientType->id
@@ -225,6 +234,8 @@ class ShiftTest extends TestCase
         ];
 
         $response = $this->post(route('shifts.with-attention-profile'), $data);
+
+        echo $response->getContent();
 
         $response->assertStatus(201);
 
@@ -647,13 +658,13 @@ class ShiftTest extends TestCase
 
     public function test_transfer_shift_ok(): void
     {
-
-
         $branch = \App\Models\Branch::factory()->create();
         $room = \App\Models\Room::factory()->create([
             'branch_id' => $branch->id
         ]);
-        $attentionProfile = \App\Models\AttentionProfile::factory()->create();
+        $attentionProfile = \App\Models\AttentionProfile::factory([
+            'room_id' => $room->id
+        ])->create();
         $clientType = \App\Models\ClientType::factory()->create();
         $client = \App\Models\Client::factory()->create([
             'client_type_id' =>  $clientType->id
@@ -670,7 +681,7 @@ class ShiftTest extends TestCase
             'room_id' => $room->id,
             'attention_profile_id' => $attentionProfile->id,
             'client_id' => $client->id,
-            'state' => 'pending',
+            'state' => 'in_progress',
             'module_id' => $module->id,
         ]);
 
@@ -698,6 +709,10 @@ class ShiftTest extends TestCase
             'qualification' => 4,
             'attention_profile_id' => $attentionProfile2->id,
         ]);
+
+
+        echo $response->getContent();
+
 
         $response->assertStatus(201);
 

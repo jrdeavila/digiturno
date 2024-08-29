@@ -39,40 +39,59 @@ abstract class FindAvailableModuleUtil
       if (count($freeModules) > 0) {
         $selectedModule = $freeModules[0];
         foreach ($freeModules as $module) {
-          if (count($module->shifts()
-            ->where('state', 'pending')
+          if (
+            $module->shifts()
+            ->whereIn('state', [
+              'pending',
+              'pending-transferred',
+            ])
             ->whereDate(
               'created_at',
               now()->toDateString(),
-            )->get()) < count($selectedModule->shifts()
-            ->where('state', 'pending')
+            )->count() < $selectedModule->shifts()
+            ->whereIn('state', [
+              'pending',
+              'pending-transferred',
+            ])
             ->whereDate(
               'created_at',
               now()->toDateString(),
-            )->get())) {
-            $selectedModule = $module;
-          }
-        }
-      } else {
-        // If there are no free modules, assign the module with the least amount of shifts
-        $selectedModule = $busyModules[0];
-        foreach ($busyModules as $module) {
-          if (count($module->shifts()
-            ->where('state', 'pending')
-            ->whereDate(
-              'created_at',
-              now()->toDateString(),
-            )->get()) < count($selectedModule->shifts()
-            ->where('state', 'pending')
-            ->whereDate(
-              'created_at',
-              now()->toDateString(),
-            )->get())) {
+            )->count()
+          ) {
             $selectedModule = $module;
           }
         }
       }
-    } else {
+      if ($selectedModule === null && count($busyModules) > 0) {
+        // If there are no free modules, assign the module with the least amount of shifts
+        $selectedModule = $busyModules[0];
+        foreach ($busyModules as $module) {
+          if (
+            $module->shifts()
+            ->whereIn('state', [
+              'pending',
+              'pending-transferred',
+            ])
+            ->whereDate(
+              'created_at',
+              now()->toDateString(),
+            )->count() < $selectedModule->shifts()
+            ->whereIn('state', [
+              'pending',
+              'pending-transferred',
+
+            ])
+            ->whereDate(
+              'created_at',
+              now()->toDateString(),
+            )->count()
+          ) {
+            $selectedModule = $module;
+          }
+        }
+      }
+    }
+    if ($selectedModule === null) {
       throw new \App\Exceptions\NoAvailableModuleException();
     }
     return $selectedModule;

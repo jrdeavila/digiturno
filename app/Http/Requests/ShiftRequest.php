@@ -44,6 +44,7 @@ class ShiftRequest extends FormRequest
             ],
             'client.client_type_id' => 'required|exists:client_types,id',
             // 'attention_profile_id' => 'required|exists:attention_profiles,id',
+            'module_id' => 'required|exists:modules,id',
             'services' => [
                 'required',
                 'array',
@@ -80,6 +81,7 @@ class ShiftRequest extends FormRequest
             ...$this->validated(),
             'client_id' => $client->id,
             'attention_profile_id' => $attentionProfile->id,
+            'module_id' => $this->validated()['module_id'],
         ];
 
         $shift = \App\Models\Shift::create($data);
