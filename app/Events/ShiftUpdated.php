@@ -24,19 +24,11 @@ class ShiftUpdated implements ShouldBroadcast
 
     public function broadcastOn(): array
     {
-        // if ($this->shift->state === 'in_progress' || $this->shift->state === 'completed' || $this->shift->state === 'qualified' || $this->shift->state === 'transferred' || $this->shift->state === "pending") {
         return [
             new Channel('rooms.' . $this->shift->room->id . '.attention_profiles.' . $this->shift->attentionProfile->id . '.shifts'),
             new Channel('modules.' . $this->shift->module_id . '.current-shift'),
-            new Channel('modules.' . $this->shift->module_id . '.shifts'),
             new Channel('rooms.' . $this->shift->room->id . '.shifts'),
         ];
-        // }
-        // return [
-        //     new Channel('modules.' . $this->shift->module_id . '.shifts'),
-        //     new Channel('rooms.' . $this->shift->room->id . '.attention_profiles.' . $this->shift->attentionProfile->id . '.shifts'),
-        //     new Channel('rooms.' . $this->shift->room->id . '.shifts'),
-        // ];
     }
 
     public function broadcastAs()

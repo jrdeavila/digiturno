@@ -19,8 +19,7 @@ class AttentionProfileController extends Controller
     {
         $module = $request->module;
         $attentionProfiles = \Illuminate\Support\Facades\Cache::remember('attention_profiles', 60, function () use ($module) {
-            return \App\Models\AttentionProfile::where('room_id', $module->room_id)
-                ->latest()->get();
+            return $module->room->attentionProfiles;
         });
         return \App\Http\Resources\AttentionProfileResource::collection($attentionProfiles);
     }

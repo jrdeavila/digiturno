@@ -18,7 +18,6 @@ class AttentionProfileFactory extends Factory
     {
         return [
             'name' => $this->faker->name,
-            'room_id' => \App\Models\Room::factory(),
         ];
     }
 }

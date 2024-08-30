@@ -48,13 +48,13 @@ class TransferShiftRequest extends FormRequest
             'status' => "free",
         ]);
 
-        $module = \App\Utils\FindAvailableModuleUtil::findModule($shift->room_id, $this->attention_profile_id, $shift->module->id);
+        // $module = \App\Utils\FindAvailableModuleUtil::findModule($shift->room_id, $this->attention_profile_id, $shift->module->id);
         $shiftTransferred = \App\Models\Shift::create([
             'client_id' => $shift->client_id,
             'attention_profile_id' => $this->attention_profile_id,
             'state' => "pending-transferred",
             'room_id' => $shift->room_id,
-            'module_id' => $module->id,
+            'module_id' => null,
         ]);
         \Illuminate\Support\Facades\DB::commit();
         return $shiftTransferred;

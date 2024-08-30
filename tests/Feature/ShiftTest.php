@@ -198,9 +198,8 @@ class ShiftTest extends TestCase
         $room = \App\Models\Room::factory()->create([
             'branch_id' => $branch->id
         ]);
-        $attentionProfile = \App\Models\AttentionProfile::factory([
-            'room_id' => $room->id
-        ])->create();
+        $attentionProfile = \App\Models\AttentionProfile::factory()->create();
+        $room->attentionProfiles()->attach($attentionProfile->id);
         $clientType = \App\Models\ClientType::factory()->create();
         $client = \App\Models\Client::factory()->make([
             'client_type_id' =>  $clientType->id
@@ -301,6 +300,103 @@ class ShiftTest extends TestCase
 
         $response = $this->post(route('shifts.with-attention-profile'), $data);
         $response->assertStatus(422);
+    }
+
+    public function test_update_shift_with_attention_profile_ok(): void
+    {
+        $branch = \App\Models\Branch::factory()->create();
+        $room = \App\Models\Room::factory()->create([
+            'branch_id' => $branch->id
+        ]);
+        $attentionProfile = \App\Models\AttentionProfile::factory()->create();
+        $room->attentionProfiles()->attach($attentionProfile->id);
+        $clientType = \App\Models\ClientType::factory()->create();
+        $client = \App\Models\Client::factory()->create([
+            'client_type_id' =>  $clientType->id
+        ]);
+
+        $shift = \App\Models\Shift::factory()->create([
+            'room_id' => $room->id,
+            'attention_profile_id' => $attentionProfile->id,
+            'client_id' => $client->id,
+            'state' => 'pending',
+        ]);
+
+
+        $data = [
+            'attention_profile_id' => $attentionProfile->id,
+            'room_id' => $room->id,
+            'client' => $client->toArray(),
+            'state' => 'pending',
+        ];
+
+        $response = $this->put(route('shifts.update-with-attention-profile', $shift->id), $data);
+
+        $response->assertStatus(200);
+
+        $response->assertJsonStructure([
+            'data' => [
+                'id',
+                'room',
+                'attention_profile',
+                'client',
+                'state',
+                'created_at',
+                'updated_at',
+            ],
+        ]);
+    }
+
+    public function test_update_shift_with_attention_profile_update_room_ok(): void
+    {
+        $branch = \App\Models\Branch::factory()->create();
+        $room = \App\Models\Room::factory()->create([
+            'branch_id' => $branch->id
+        ]);
+        $room2 = \App\Models\Room::factory()->create([
+            'branch_id' => $branch->id
+        ]);
+        $attentionProfile = \App\Models\AttentionProfile::factory()->create([
+            'name' => 'attentionProfile',
+        ]);
+        $attentionProfile2 = \App\Models\AttentionProfile::factory()->create([
+            'name' => 'attentionProfile',
+        ]);
+        $clientType = \App\Models\ClientType::factory()->create();
+        $client = \App\Models\Client::factory()->create([
+            'client_type_id' =>  $clientType->id
+        ]);
+
+        $shift = \App\Models\Shift::factory()->create([
+            'room_id' => $room->id,
+            'attention_profile_id' => $attentionProfile->id,
+            'client_id' => $client->id,
+            'state' => 'pending',
+        ]);
+
+
+        $data = [
+            'attention_profile_id' => $attentionProfile->id,
+            'room_id' => $room->id,
+            'client' => $client->toArray(),
+            'state' => 'pending',
+        ];
+
+        $response = $this->put(route('shifts.update-with-attention-profile', $shift->id), $data);
+
+        $response->assertStatus(200);
+
+        $response->assertJsonStructure([
+            'data' => [
+                'id',
+                'room',
+                'attention_profile',
+                'client',
+                'state',
+                'created_at',
+                'updated_at',
+            ],
+        ]);
     }
 
 
@@ -662,9 +758,8 @@ class ShiftTest extends TestCase
         $room = \App\Models\Room::factory()->create([
             'branch_id' => $branch->id
         ]);
-        $attentionProfile = \App\Models\AttentionProfile::factory([
-            'room_id' => $room->id
-        ])->create();
+        $attentionProfile = \App\Models\AttentionProfile::factory()->create();
+        $room->attentionProfiles()->attach($attentionProfile->id);
         $clientType = \App\Models\ClientType::factory()->create();
         $client = \App\Models\Client::factory()->create([
             'client_type_id' =>  $clientType->id

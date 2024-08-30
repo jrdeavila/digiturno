@@ -17,6 +17,8 @@ class ShiftResource extends JsonResource
         return [
             'id' => $this->id,
             'room' => $this->room->name,
+            'room_id' => $this->room_id,
+            'attention_profile_id' => $this->attention_profile_id,
             'attention_profile' => $this->attentionProfile->name,
             'client' => new \App\Http\Resources\ClientResource($this->client),
             'state' => $this->state,

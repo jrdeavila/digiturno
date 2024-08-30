@@ -24,6 +24,7 @@ class AttendantFactory extends Factory
             'dni' => $dni,
             'password' => bcrypt($dni),
             'enabled' => true,
+            'status' => 'free',
         ];
     }
 }

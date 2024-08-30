@@ -31,7 +31,11 @@ class ShiftWithAttentionProfileRequest extends FormRequest
                 'regex:/^[0-9]+$/',
                 function ($attribute, $value, $fail) {
                     $client = \App\Models\Client::firstWhere('dni', $value);
-                    if ($client && $client->shifts()->where('state', 'pending')->exists()) {
+                    if (
+
+                        $client && $this->route('shift')?->client->id != $client->id &&
+                        $client->shifts()->where('state', 'pending')->exists()
+                    ) {
                         $fail('client_has_pending_shift');
                     }
                 },
@@ -53,14 +57,13 @@ class ShiftWithAttentionProfileRequest extends FormRequest
             $client->update($this->validated()['client']);
         }
 
-        $module = \App\Utils\FindAvailableModuleUtil::findModule($this->validated()['room_id'], $this->validated()['attention_profile_id']);
 
         $data = [
             'client_id' => $client->id,
             'room_id' => $this->validated()['room_id'],
             'attention_profile_id' => $this->validated()['attention_profile_id'],
             'state' => 'pending',
-            'module_id' => $module->id,
+            'module_id' => null,
         ];
 
         $shift = \App\Models\Shift::create($data);
@@ -76,17 +79,26 @@ class ShiftWithAttentionProfileRequest extends FormRequest
         $client = \App\Models\Client::firstWhere('dni', $this->validated()['client']['dni']);
         $client->update($this->validated()['client']);
 
+        $room = \App\Models\Room::find($this->validated()['room_id']);
+
+        if ($room->id != $shift->room->id && !($room->attentionProfiles()->where('id', $this->validated()['attention_profile_id'])->exists())) {
+            throw new \App\Exceptions\RoomNoContainAttentionProfileException();
+        }
+
         $data = [
             'client_id' => $client->id,
             'room_id' => $this->validated()['room_id'],
             'attention_profile_id' => $this->validated()['attention_profile_id'],
             'state' => 'pending',
-            'module_id' => $this->validated()['module_id'],
         ];
+        // If module_id is not provided, don't update this field
+        $data = array_merge($data, $this->module_id ? ['module_id' => $this->validated()['module_id']] : []);
 
         $shift->update($data);
 
         \Illuminate\Support\Facades\DB::commit();
+        $shift->refresh();
+        $client->refresh();
         return $shift;
     }
 }

@@ -25,6 +25,7 @@ Route::middleware([
   \App\Http\Middleware\VerifyModuleIp::class,
 ])->prefix('shifts')->group(function () {
   Route::post('/with-attention-profile', [\App\Http\Controllers\ShiftController::class, 'createShiftWithAttentionProfile'])->name('shifts.with-attention-profile');
+  Route::put('/{shift}/with-attention-profile', [\App\Http\Controllers\ShiftController::class, 'updateShiftWithAttentionProfile'])->name('shifts.update-with-attention-profile');
   Route::get('/distracted', [\App\Http\Controllers\ShiftController::class, 'distracted'])->name('shifts.distracted');
   Route::get('/in-progress', [\App\Http\Controllers\ShiftController::class, 'inProgress'])->name('shifts.in-progress');
   Route::put('/{shift}/completed', [\App\Http\Controllers\ShiftController::class, 'completedShift'])->name('shifts.completed');
@@ -41,12 +42,12 @@ Route::apiResource('branches', \App\Http\Controllers\BranchController::class)->n
 Route::middleware([
   \App\Http\Middleware\VerifyModuleIp::class,
 ])->prefix('modules')->group(function () {
+  Route::get('/myself', [\App\Http\Controllers\ModuleController::class, 'mySelf'])->name('modules.myself');
   Route::get('/shifts/current', [\App\Http\Controllers\ModuleShiftController::class, 'currentShift'])->name('modules.current-shift');
   Route::get('/shifts', [\App\Http\Controllers\ModuleShiftController::class, 'myShifts'])->name('modules.my-shifts');
 });
 
 Route::get("/modules/shifts/count", [\App\Http\Controllers\ModuleShiftController::class, 'countShiftPerModule'])->name('modules.shifts.count');
-Route::get('/modules/ip-address', [\App\Http\Controllers\ModuleController::class, 'getByIpAddress'])->name('modules.ip-address');
 Route::apiResource('modules', \App\Http\Controllers\ModuleController::class)->names('modules');
 
 Route::apiResource('module_types', \App\Http\Controllers\ModuleTypeController::class)->only(['index'])->names('module_types');

@@ -14,6 +14,7 @@ class RoomTest extends TestCase
      */
     public function test_get_all_room_ok(): void
     {
+        \App\Models\Room::factory()->count(5)->create();
         $response = $this->get(route('rooms.index'));
         $response->assertStatus(200);
 

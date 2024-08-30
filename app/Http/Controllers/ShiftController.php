@@ -25,6 +25,13 @@ class ShiftController extends Controller
         return new \App\Http\Resources\ShiftResource($shift);
     }
 
+    public function updateShiftWithAttentionProfile(\App\Models\Shift $shift, \App\Http\Requests\ShiftWithAttentionProfileRequest $request)
+    {
+        $shiftUpdated = $request->updateShift($shift);
+        return new \App\Http\Resources\ShiftResource($shiftUpdated);
+    }
+
+
     public function show(\App\Models\Shift $shift)
     {
         return new \App\Http\Resources\ShiftResource($shift);

@@ -192,11 +192,13 @@ class ModuleTest extends TestCase
         $response->assertStatus(404);
     }
 
-    public function test_get_module_by_ip_address_ok(): void
+    public function test_get_myself_module_ok(): void
     {
         $module = \App\Models\Module::factory()->create();
 
-        $response = $this->get(route('modules.ip-address', ['ip_address' => $module->ip_address]));
+        $response = $this
+            ->withHeader('X-Module-Ip', $module->ip_address)
+            ->get(route('modules.myself'));
         $response->assertStatus(200);
         $response->assertJsonStructure([
             'data' => [

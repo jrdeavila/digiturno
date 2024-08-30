@@ -43,11 +43,9 @@ class ModuleController extends Controller
         return response()->json(null, 204);
     }
 
-    public function getByIpAddress(
-        \App\Http\Requests\ModuleByIpAddressRequest $request,
-    ) {
-
-        $module = $request->getModuleByIpAddress();
+    public function mySelf(Request $request)
+    {
+        $module = $request->module;
         return new \App\Http\Resources\ModuleResource($module);
     }
 }

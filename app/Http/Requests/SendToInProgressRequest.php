@@ -41,6 +41,7 @@ class SendToInProgressRequest extends FormRequest
         }
         $shift->update([
             'state' => \App\Enums\ShiftState::InProgress,
+            'module_id' => $module->id
         ]);
 
         $shift->module?->currentAttendant()?->update([

@@ -17,6 +17,7 @@ class RoomShiftsTest extends TestCase
     {
         $room = \App\Models\Room::factory()->create();
         $attentionProfile = \App\Models\AttentionProfile::factory()->create();
+        $room->attentionProfiles()->attach($attentionProfile->id);
         \App\Models\Shift::factory()->create([
             'room_id' => $room->id,
             'state' => \App\Enums\ShiftState::Pending,
@@ -78,6 +79,7 @@ class RoomShiftsTest extends TestCase
     {
         $room = \App\Models\Room::factory()->create();
         $attentionProfile = \App\Models\AttentionProfile::factory()->create();
+        $room->attentionProfiles()->attach($attentionProfile->id);
         \App\Models\Shift::factory()->create([
             'room_id' => $room->id,
             'state' => \App\Enums\ShiftState::Distracted,

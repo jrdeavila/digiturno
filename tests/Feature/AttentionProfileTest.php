@@ -76,18 +76,15 @@ class AttentionProfileTest extends TestCase
     public function test_create_attention_profile_test_ok(): void
     {
 
-        $service = \App\Models\Service::factory()->create();
         $ap = \App\Models\AttentionProfile::factory()->make();
+        $service = \App\Models\Service::factory()->create();
 
         $response = $this->post(route('attention_profiles.store'), [
             'name' => $ap->name,
-            'room_id' => $ap->room_id,
             'services' => [
                 $service->id,
             ],
         ]);
-
-
         $response->assertStatus(201);
 
         $response->assertJsonStructure([
@@ -138,13 +135,15 @@ class AttentionProfileTest extends TestCase
     public function test_update_attention_profile_test_ok(): void
     {
         $service = \App\Models\Service::factory()->create();
+        $room = \App\Models\Room::factory()->create();
         $attentionProfile = \App\Models\AttentionProfile::factory()->create();
+        $room->attentionProfiles()->attach($attentionProfile->id);
 
 
 
         $response = $this->put(route('attention_profiles.update', $attentionProfile->id), [
             'name' => 'name',
-            'room_id' => $attentionProfile->room_id,
+            'room_id' => $room->id,
             'services' => [
                 $service->id,
             ],
