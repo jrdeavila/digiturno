@@ -10,7 +10,7 @@ Route::middleware([
 Route::prefix('admin')->group(function () {
   Route::get("/attention_profiles", [\App\Http\Controllers\AttentionProfileController::class, 'adminIndex'])->name('attention_profiles.admin');
   Route::post("/attention_profiles", [\App\Http\Controllers\AttentionProfileController::class, 'adminStore'])->name('attention_profiles.store');
-  Route::put("/attention_profiles/{attention_profile}", [\App\Http\Controllers\AttentionProfileController::class, 'adminUpdate'])->name('attention_profiles.update');
+  Route::patch("/attention_profiles/{attention_profile}", [\App\Http\Controllers\AttentionProfileController::class, 'adminUpdate'])->name('attention_profiles.update');
   Route::delete("/attention_profiles/{attention_profile}", [\App\Http\Controllers\AttentionProfileController::class, 'adminDestroy'])->name('attention_profiles.destroy');
 });
 Route::apiResource('services', \App\Http\Controllers\ServiceController::class)->names('services');
