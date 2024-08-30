@@ -234,7 +234,6 @@ class ShiftTest extends TestCase
 
         $response = $this->post(route('shifts.with-attention-profile'), $data);
 
-        echo $response->getContent();
 
         $response->assertStatus(201);
 
@@ -806,7 +805,6 @@ class ShiftTest extends TestCase
         ]);
 
 
-        echo $response->getContent();
 
 
         $response->assertStatus(201);
