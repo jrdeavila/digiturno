@@ -38,8 +38,9 @@ class ModuleShiftController extends Controller
     public function myShifts(Request $request)
     {
         $module = $request->module;
-        $shifts = \App\Models\Shift::where('module_id', $module->id)
-            ->whereDate('created_at', now())
+        $shifts = \App\Models\Shift::whereDate('created_at', now())
+            ->where('attention_profile_id', $module->attention_profile_id)
+            ->where('room_id', $module->room_id)
             ->whereIn('state', [\App\Enums\ShiftState::Pending, \App\Enums\ShiftState::PendingTransferred])
             ->get();
 

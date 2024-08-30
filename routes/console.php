@@ -12,17 +12,35 @@ Artisan::command('inspire', function () {
 // Command to delete all incomplete shifts
 Artisan::command('shifts:clear-incomplete', function () {
     $res = \App\Models\Shift::query()
-        // ->whereDate('created_at', now())
         ->whereIn('state', [
-            \App\Enums\ShiftState::Distracted,
             \App\Enums\ShiftState::Pending,
             \App\Enums\ShiftState::PendingTransferred,
         ])
+        ->whereDate(
+            'created_at',
+            '<',
+            now()->subHours(2)
+        )
         ->delete();
     $this->info('Delete all incomplete shifts');
     $this->info("Total deleted: $res");
 })->purpose('Delete all incomplete shifts')
-    ->dailyAt('00:00');
+    ->everyMinute();
+
+// Command to delete all distracted shifts
+Artisan::command('shifts:clear-distracted', function () {
+    $res = \App\Models\Shift::query()
+        ->whereDate(
+            'created_at',
+            '<',
+            now()->subMinutes(30)
+        )
+        ->where('state', \App\Enums\ShiftState::Distracted)
+        ->delete();
+    $this->info('Delete all distracted shifts');
+    $this->info("Total deleted: $res");
+})->purpose('Delete all distracted shifts')
+    ->everyMinute();
 
 Artisan::command('attendant:put-offline', function () {
     $res = \App\Models\Attendant::query()
@@ -38,11 +56,15 @@ Artisan::command('attendant:put-offline', function () {
 // Command to delete all in_progress shifts
 Artisan::command('shifts:clear-in-progress', function () {
     $res = \App\Models\Shift::query()
+        ->whereDate(
+            'created_at',
+            '<',
+            now()->subHours(2)
+        )
         ->where('state', \App\Enums\ShiftState::InProgress)
         ->delete();
     $this->info('Delete all in_progress shifts');
     $this->info("Total deleted: $res");
 })
     ->purpose('Delete all in_progress shifts')
-    // 12:00 AM
-    ->dailyAt('00:00');
+    ->everyMinute();

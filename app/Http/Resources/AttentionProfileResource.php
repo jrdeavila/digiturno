@@ -18,6 +18,7 @@ class AttentionProfileResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'services' => ServiceResource::collection($this->services),
+            'rooms' => RoomResource::collection($this->rooms),
         ];
     }
 }

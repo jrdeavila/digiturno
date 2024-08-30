@@ -9,10 +9,12 @@ Route::middleware([
 
 Route::prefix('admin')->group(function () {
   Route::get("/attention_profiles", [\App\Http\Controllers\AttentionProfileController::class, 'adminIndex'])->name('attention_profiles.admin');
+  Route::post("/attention_profiles", [\App\Http\Controllers\AttentionProfileController::class, 'adminStore'])->name('attention_profiles.store');
 });
 Route::apiResource('services', \App\Http\Controllers\ServiceController::class)->names('services');
 Route::apiResource('services.subservices', \App\Http\Controllers\SubserviceController::class)->names('services.subservices')->only(['index']);
 Route::apiResource('attention_profiles.services', \App\Http\Controllers\AttentionProfileServiceController::class)->names('attention_profiles.services')->only(['index', 'store', 'destroy']);
+Route::apiResource('attention_profiles.rooms', \App\Http\Controllers\RoomAttentionProfileController::class)->names('attention_profiles.rooms')->only(['store', 'update', 'destroy']);
 Route::apiResource('client_types', \App\Http\Controllers\ClientTypeController::class)->names('client_types');
 Route::apiResource('rooms', \App\Http\Controllers\RoomController::class)->names('rooms');
 Route::apiResource('rooms.attention_profiles.shifts', \App\Http\Controllers\RoomShiftController::class)->names('rooms.shifts')->only(['index']);

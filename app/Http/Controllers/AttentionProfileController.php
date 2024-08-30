@@ -15,6 +15,25 @@ class AttentionProfileController extends Controller
         return \App\Http\Resources\AttentionProfileResource::collection($attentionProfiles);
     }
 
+    public function adminStore(\App\Http\Requests\AttentionProfileRequest $request)
+    {
+        $attentionProfile =  $request->createAttentionProfile();
+        return new \App\Http\Resources\AttentionProfileResource($attentionProfile);
+    }
+
+    public function adminUpdate(\App\Http\Requests\AttentionProfileRequest $request, \App\Models\AttentionProfile $attentionProfile)
+    {
+        $request->updateAttentionProfile($attentionProfile);
+        return new \App\Http\Resources\AttentionProfileResource($attentionProfile);
+    }
+
+    public function adminDestroy(\App\Models\AttentionProfile $attentionProfile)
+    {
+        $attentionProfile->delete();
+        return response()->json(null, 204);
+    }
+
+
     public function index(Request $request)
     {
         $module = $request->module;
