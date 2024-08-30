@@ -7,6 +7,7 @@
     "require": {
         "php": "^8.2",
         "ably/ably-php": "^1.1",
+        "doctrine/dbal": "*",
         "laravel/framework": "^11.0",
         "laravel/reverb": "@beta",
         "laravel/tinker": "^2.9",

@@ -42,7 +42,6 @@ class ShiftWithAttentionProfileRequest extends FormRequest
             ],
             'client.client_type_id' => 'required|exists:client_types,id',
             'attention_profile_id' => 'required|exists:attention_profiles,id',
-            'module_id' => 'sometimes|exists:modules,id',
         ];
     }
 

@@ -27,7 +27,7 @@ class ShiftDeleted implements ShouldBroadcast
         return [
             new Channel('rooms.' . $this->shift->room->id . '.attention_profiles.' . $this->shift->attentionProfile->id . '.shifts'),
             new Channel('rooms.' . $this->shift->room->id . '.shifts'),
-            new Channel('modules.' . $this->shift->module->id . '.shifts'),
+            // new Channel('modules.' . $this->shift->module->id . '.shifts'),
         ];
     }
 
