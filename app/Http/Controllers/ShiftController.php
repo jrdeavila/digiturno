@@ -102,9 +102,21 @@ class ShiftController extends Controller
 
     public function call(\App\Models\Shift $shift)
     {
+        DB::beginTransaction();
+        if ($shift->module != null) {
+            throw new \App\Exceptions\ShiftAlreadyAssignedException();
+        }
         $module = request()->module;
-        $shift->module()->associate($module);
+        $shift->update([
+            'state' => \App\Enums\ShiftState::InProgress,
+            'module_id' => $module->id,
+        ]);
+
+        $module->currentAttendant()?->update([
+            'status' => "busy",
+        ]);
         \App\Events\CallClient::dispatch($shift, $module);
+        DB::commit();
         return new \App\Http\Resources\ShiftResource($shift);
     }
 
