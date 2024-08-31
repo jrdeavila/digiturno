@@ -37,7 +37,7 @@ class AttentionProfileController extends Controller
     public function index(Request $request)
     {
         $module = $request->module;
-        $attentionProfiles = \Illuminate\Support\Facades\Cache::remember('attention_profiles', 60, function () use ($module) {
+        $attentionProfiles = \Illuminate\Support\Facades\Cache::remember('attention_profiles.' . $module->id, 60, function () use ($module) {
             return $module->room->attentionProfiles;
         });
         return \App\Http\Resources\AttentionProfileResource::collection($attentionProfiles);
