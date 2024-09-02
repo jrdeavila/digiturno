@@ -69,9 +69,9 @@ class ShiftController extends Controller
         return \App\Http\Resources\ShiftResource::collection($shift);
     }
 
-    public function completedShift(\App\Models\Shift $shift)
+    public function completedShift(\App\Models\Shift $shift, \App\Http\Requests\CompletedShiftRequest $request)
     {
-        $shift->update(['state' => \App\Enums\ShiftState::Completed]);
+        $shift = $request->completedShift($shift);
         return new \App\Http\Resources\ShiftResource($shift);
     }
 

@@ -43,4 +43,9 @@ class Shift extends Model
     {
         return $this->hasOne(Qualification::class);
     }
+
+    public function services()
+    {
+        return $this->belongsToMany(Service::class, 'shift_has_service');
+    }
 }
