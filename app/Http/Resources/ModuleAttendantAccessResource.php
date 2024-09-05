@@ -18,7 +18,8 @@ class ModuleAttendantAccessResource extends JsonResource
             'id' => $this->id,
             'module' => new ModuleResource($this->module),
             'attendant' => new AttendantResource($this->attendant),
-            'access_date' => $this->created_at->format('Y-m-d H:i:s'),
+            'access_date' => $this->created_at->setTimezone('America/Bogota')->format('Y-m-d'),
+            'access_time' => $this->created_at->setTimezone('America/Bogota')->format('h:i A'),
         ];
     }
 }

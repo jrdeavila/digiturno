@@ -85,5 +85,11 @@ Route::prefix('clients')->group(function () {
 Route::apiResource('absence_reasons', \App\Http\Controllers\AbsenceReasonController::class)->names('absence_reason');
 Route::apiResource('attendant_accesses', \App\Http\Controllers\AttendantModuleAccessController::class)->only(['index'])->names('attendant_accesses');
 
-Route::get('/report', \App\Http\Controllers\ReportController::class)->name('report');
-Route::get('/report/to-json', [\App\Http\Controllers\ReportController::class, 'toJson'])->name('report.to-json');
+Route::prefix('report')->group(function () {
+  Route::get('/', \App\Http\Controllers\ReportController::class)->name('report');
+  Route::get('/json', [\App\Http\Controllers\ReportController::class, 'toJson'])->name('report.to-json');
+  Route::prefix('cae')->group(function () {
+    Route::get('/', [\App\Http\Controllers\ReportController::class, 'toCAE'])->name('report.to-cae');
+    Route::get('/json', [\App\Http\Controllers\ReportController::class, 'toCAEJson'])->name('report.to-cae-json');
+  });
+});

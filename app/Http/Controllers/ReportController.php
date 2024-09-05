@@ -25,12 +25,15 @@ class ReportController extends Controller
             'Status',
             'Qualification',
             'Attendant',
+            'TimeToAttend',
             'Created At',
             'Updated At',
         ]);
 
         foreach ($data as $shift) {
             $attendant = $shift->module?->attendants()->whereDate('module_attendant_accesses.created_at', now())->first();
+            $timeToAttend = $shift->created_at->diffInMinutes($shift->updated_at);
+            $timeToAttend = number_format($timeToAttend, 2);
             $csv->insertOne([
                 $shift->id,
                 $shift->room->name,
@@ -42,6 +45,7 @@ class ReportController extends Controller
                 $shift->state,
                 $shift->qualification?->qualification,
                 $attendant?->name,
+                $timeToAttend,
                 $shift->created_at,
                 $shift->updated_at,
             ]);
@@ -58,6 +62,126 @@ class ReportController extends Controller
     public function toJson()
     {
         $data = \App\Models\Shift::with('room', 'client', 'qualification', 'attentionProfile')->get();
-        return response()->json($data);
+        $dataMapped = [];
+
+        foreach ($data as $shift) {
+            $attendant = $shift->module?->attendants()->whereDate('module_attendant_accesses.created_at', now())->first();
+            $timeToAttend = $shift->created_at->diffInMinutes($shift->updated_at);
+            $timeToAttend = number_format($timeToAttend, 2);
+            $dataMapped[] = [
+                'ID' => $shift->id,
+                'Room Name' => $shift->room->name,
+                'Branch Name' => $shift->room->branch->name,
+                'Module Name' => $shift->module?->name,
+                'Client' => $shift->client->name,
+                'DNI' => $shift->client->dni,
+                'Client Type' => $shift->client->clientType->slug,
+                'Status' => $shift->state,
+                'Qualification' => $shift->qualification?->qualification,
+                'Attendant' => $attendant?->name,
+                'TimeToAttend' => $timeToAttend,
+                'Created At' => $shift->created_at,
+                'Updated At' => $shift->updated_at,
+            ];
+        }
+        return response()->json($dataMapped);
+    }
+
+    public function toCAE(Request $request)
+    {
+        $month = $request->get('month', now()->month);
+        $month = (int) $month;
+        $data = \App\Models\Shift::whereBetween('created_at', [
+            now()->month($month)->startOfMonth(),
+            now()->month($month)->endOfMonth()
+        ])
+            ->where('attention_profile_id', 3)
+            ->with('room', 'client', 'qualification', 'attentionProfile')->get();
+        $csv = \League\Csv\Writer::createFromString('');
+
+        $csv->insertOne([
+            'ID',
+            'Service',
+            'Room Name',
+            'Branch Name',
+            'Module Name',
+            'Client',
+            'DNI',
+            'Client Type',
+            'Status',
+            'Qualification',
+            'Attendant',
+            'TimeToAttend',
+            'Created At',
+            'Updated At',
+        ]);
+
+        foreach ($data as $shift) {
+            $attendant = $shift->module?->attendants()->whereDate('module_attendant_accesses.created_at', now())->first();
+            $timeToAttend = $shift->created_at->diffInMinutes($shift->updated_at);
+            $timeToAttend = number_format($timeToAttend, 2);
+            $service = \App\Models\AttentionProfile::find($shift->attention_profile_id)->services->random();
+            $csv->insertOne([
+                $shift->id,
+                $service->name,
+                $shift->room->name,
+                $shift->room->branch->name,
+                $shift->module?->name,
+                $shift->client->name,
+                $shift->client->dni,
+                $shift->client->clientType->slug,
+                $shift->state,
+                $shift->qualification?->qualification,
+                $attendant?->name,
+                $timeToAttend,
+                $shift->created_at,
+                $shift->updated_at,
+            ]);
+        }
+
+        // Name of the month
+        $filename = now()->month($month)->format('F') . '_shifts.csv';
+
+        Storage::put("temp/" . $filename, $csv->getContent());
+        $filepath = storage_path("app/temp/" . $filename);
+        return response()->download($filepath)->deleteFileAfterSend(true);
+    }
+
+    public function toCAEJson(Request $request)
+    {
+        $month = $request->get('month', now()->month);
+        $month = (int) $month;
+        $data = \App\Models\Shift::whereBetween('created_at', [
+            now()->month($month)->startOfMonth(),
+            now()->month($month)->endOfMonth()
+        ])
+            ->where('attention_profile_id', 3)
+            ->with('room', 'client', 'qualification', 'attentionProfile')->get();
+        $dataMapped = [];
+
+        foreach ($data as $shift) {
+            $attendant = $shift->module?->attendants()->whereDate('module_attendant_accesses.created_at', now())->first();
+            $timeToAttend = $shift->created_at->diffInMinutes($shift->updated_at);
+            $timeToAttend = number_format($timeToAttend, 2);
+            $service = \App\Models\AttentionProfile::find($shift->attention_profile_id)->services->random();
+            $dataMapped[] = [
+                'ID' => $shift->id,
+                'Service' => $service->name,
+                'Room Name' => $shift->room->name,
+                'Branch Name' => $shift->room->branch->name,
+                'Module Name' => $shift->module?->name,
+                'Client' => $shift->client->name,
+                'DNI' => $shift->client->dni,
+                'Client Type' => $shift->client->clientType->slug,
+                'Status' => $shift->state,
+                'Qualification' => $shift->qualification?->qualification,
+                'Attendant' => $attendant?->name,
+                'TimeToAttend' => $timeToAttend,
+                'Created At' => $shift->created_at,
+                'Updated At' => $shift->updated_at,
+            ];
+        }
+
+        return response()->json($dataMapped);
     }
 }
