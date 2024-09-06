@@ -7,10 +7,13 @@ use Illuminate\Support\Facades\Storage;
 
 class ReportController extends Controller
 {
-
-    public function __invoke()
+    public function __invoke(Request $request)
     {
-        $data = \App\Models\Shift::with('room', 'client', 'qualification', 'attentionProfile')->get();
+        $month = $request->get('month', now()->month);
+        $data = \App\Models\Shift::whereBetween('created_at', [
+            now()->month($month)->startOfMonth(),
+            now()->month($month)->endOfMonth()
+        ])->with('room', 'client', 'qualification', 'attentionProfile')->get();
 
         $csv = \League\Csv\Writer::createFromString('');
 
@@ -33,7 +36,7 @@ class ReportController extends Controller
         foreach ($data as $shift) {
             $attendant = $shift->module?->attendants()->whereDate('module_attendant_accesses.created_at', now())->first();
             $timeToAttend = $shift->created_at->diffInMinutes($shift->updated_at);
-            $timeToAttend = number_format($timeToAttend, 2);
+            $timeToAttend = floatval(number_format($timeToAttend, 2));
             $csv->insertOne([
                 $shift->id,
                 $shift->room->name,
@@ -41,7 +44,7 @@ class ReportController extends Controller
                 $shift->module?->name,
                 $shift->client->name,
                 $shift->client->dni,
-                $shift->client->clientType->slug,
+                $shift->client->clientType->getTypeAttribute($shift->client->clientType->slug),
                 $shift->state,
                 $shift->qualification?->qualification,
                 $attendant?->name,
@@ -59,15 +62,19 @@ class ReportController extends Controller
     }
 
 
-    public function toJson()
+    public function toJson(Request $request)
     {
-        $data = \App\Models\Shift::with('room', 'client', 'qualification', 'attentionProfile')->get();
+        $month = $request->get('month', now()->month);
+        $data = \App\Models\Shift::whereBetween('created_at', [
+            now()->month($month)->startOfMonth(),
+            now()->month($month)->endOfMonth()
+        ])->with('room', 'client', 'qualification', 'attentionProfile')->get();
         $dataMapped = [];
 
         foreach ($data as $shift) {
             $attendant = $shift->module?->attendants()->whereDate('module_attendant_accesses.created_at', now())->first();
             $timeToAttend = $shift->created_at->diffInMinutes($shift->updated_at);
-            $timeToAttend = number_format($timeToAttend, 2);
+            $timeToAttend = floatval(number_format($timeToAttend, 2));
             $dataMapped[] = [
                 'ID' => $shift->id,
                 'Room Name' => $shift->room->name,
@@ -75,7 +82,7 @@ class ReportController extends Controller
                 'Module Name' => $shift->module?->name,
                 'Client' => $shift->client->name,
                 'DNI' => $shift->client->dni,
-                'Client Type' => $shift->client->clientType->slug,
+                'Client Type' => $shift->client->clientType->getTypeAttribute($shift->client->clientType->slug),
                 'Status' => $shift->state,
                 'Qualification' => $shift->qualification?->qualification,
                 'Attendant' => $attendant?->name,
@@ -119,7 +126,7 @@ class ReportController extends Controller
         foreach ($data as $shift) {
             $attendant = $shift->module?->attendants()->whereDate('module_attendant_accesses.created_at', now())->first();
             $timeToAttend = $shift->created_at->diffInMinutes($shift->updated_at);
-            $timeToAttend = number_format($timeToAttend, 2);
+            $timeToAttend = floatval(number_format($timeToAttend, 2));
             $service = \App\Models\AttentionProfile::find($shift->attention_profile_id)->services->random();
             $csv->insertOne([
                 $shift->id,
@@ -129,7 +136,7 @@ class ReportController extends Controller
                 $shift->module?->name,
                 $shift->client->name,
                 $shift->client->dni,
-                $shift->client->clientType->slug,
+                $shift->client->clientType->getTypeAttribute($shift->client->clientType->slug),
                 $shift->state,
                 $shift->qualification?->qualification,
                 $attendant?->name,
@@ -162,7 +169,7 @@ class ReportController extends Controller
         foreach ($data as $shift) {
             $attendant = $shift->module?->attendants()->whereDate('module_attendant_accesses.created_at', now())->first();
             $timeToAttend = $shift->created_at->diffInMinutes($shift->updated_at);
-            $timeToAttend = number_format($timeToAttend, 2);
+            $timeToAttend = floatval(number_format($timeToAttend, 2));
             $service = \App\Models\AttentionProfile::find($shift->attention_profile_id)->services->random();
             $dataMapped[] = [
                 'ID' => $shift->id,
@@ -172,7 +179,7 @@ class ReportController extends Controller
                 'Module Name' => $shift->module?->name,
                 'Client' => $shift->client->name,
                 'DNI' => $shift->client->dni,
-                'Client Type' => $shift->client->clientType->slug,
+                'Client Type' => $shift->client->clientType->getTypeAttribute($shift->client->clientType->slug),
                 'Status' => $shift->state,
                 'Qualification' => $shift->qualification?->qualification,
                 'Attendant' => $attendant?->name,

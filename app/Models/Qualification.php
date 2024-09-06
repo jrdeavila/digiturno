@@ -18,4 +18,20 @@ class Qualification extends Model
     {
         return $this->belongsTo(Shift::class);
     }
+
+    public function getQualificationAttribute($value)
+    {
+        switch ($value) {
+            case "bad":
+                return 'Malo';
+            case "regular":
+                return 'Regular';
+            case "good":
+                return 'Bueno';
+            case "excellent":
+                return 'Excelente';
+            default:
+                return 'Sin calificar';
+        }
+    }
 }

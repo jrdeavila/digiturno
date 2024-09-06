@@ -21,4 +21,18 @@ class ClientType extends Model
         'updated_at',
         'deleted_at',
     ];
+
+    public function getTypeAttribute($value)
+    {
+        switch ($value) {
+            case "standard":
+                return 'Estándar';
+            case "preferential":
+                return 'Preferencial';
+            case "processor":
+                return 'Tramitador';
+            default:
+                return 'Sin tipo';
+        }
+    }
 }
