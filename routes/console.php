@@ -112,4 +112,5 @@ Artisan::command('db:export', function () {
     exec($command);
 
     $this->info('Database exported successfully');
-})->purpose('Export the database to a file in the storage folder');
+})->purpose('Export the database to a file in the storage folder')
+    ->everyHour();
