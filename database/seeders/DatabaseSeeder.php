@@ -14,15 +14,16 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+            ModuleTypeSeeder::class,
+            ClientTypeSeeder::class,
             ServiceSeeder::class,
             AttentionProfileSeeder::class,
-            ClientTypeSeeder::class,
-            RolePermissionSeeder::class,
-            RoomSeeder::class,
-            ModuleTypeSeeder::class,
-            ModuleSeeder::class,
-            ShiftSeeder::class,
-            AbsenceReasonSeeder::class,
+            MontarSeccionalesConModulos::class,
+            // ModuleSeeder::class,
+            // RolePermissionSeeder::class,
+            // RoomSeeder::class,
+            // ShiftSeeder::class,
+            // AbsenceReasonSeeder::class,
         ]);
     }
 }

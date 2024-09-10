@@ -51,7 +51,7 @@ class ShiftRequest extends FormRequest
                 'min:1',
             ],
             'state' => 'required|string|in:pending,completed,canceled,distracted,in_process',
-
+            'qualification' => 'nullable|integer|between:0,4',
         ];
     }
 
@@ -85,9 +85,43 @@ class ShiftRequest extends FormRequest
         ];
 
         $shift = \App\Models\Shift::create($data);
+
+        $qualification = $this->getQualificationOption($this->input('qualification'));
+        $shift->qualification()->create([
+            'qualification' => $qualification->value,
+        ]);
+
+        $shift->update([
+            'state' => "qualified",
+        ]);
+
+        $shift->module?->currentAttendant()?->update([
+            'status' => "free",
+        ]);
+
+
         \Illuminate\Support\Facades\DB::commit();
 
         return $shift;
+    }
+
+
+    private function getQualificationOption(int $qualification): \App\Enums\QualificationOption
+    {
+        switch ($qualification) {
+            case 0:
+                return \App\Enums\QualificationOption::NotQualified;
+            case 1:
+                return \App\Enums\QualificationOption::Bad;
+            case 2:
+                return \App\Enums\QualificationOption::Regular;
+            case 3:
+                return \App\Enums\QualificationOption::Good;
+            case 4:
+                return \App\Enums\QualificationOption::Excellent;
+            default:
+                return \App\Enums\QualificationOption::NotQualified;
+        }
     }
 
     public function updateShift(\App\Models\Shift $shift)

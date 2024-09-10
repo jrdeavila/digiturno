@@ -49,8 +49,8 @@ class ReportController extends Controller
                 $shift->qualification?->qualification,
                 $attendant?->name,
                 $timeToAttend,
-                $shift->created_at,
-                $shift->updated_at,
+                $shift->created_at->setTimezone('America/Bogota')->format('Y-m-d h:i A'),
+                $shift->updated_at->setTimezone('America/Bogota')->format('Y-m-d h:i A'),
             ]);
         }
 
@@ -87,8 +87,8 @@ class ReportController extends Controller
                 'Qualification' => $shift->qualification?->qualification,
                 'Attendant' => $attendant?->name,
                 'TimeToAttend' => $timeToAttend,
-                'Created At' => $shift->created_at,
-                'Updated At' => $shift->updated_at,
+                'Created At' => $shift->created_at->setTimezone('America/Bogota')->format('Y-m-d h:i A'),
+                'Updated At' => $shift->updated_at->setTimezone('America/Bogota')->format('Y-m-d h:i A'),
             ];
         }
         return response()->json($dataMapped);
@@ -141,8 +141,8 @@ class ReportController extends Controller
                 $shift->qualification?->qualification,
                 $attendant?->name,
                 $timeToAttend,
-                $shift->created_at,
-                $shift->updated_at,
+                $shift->created_at->setTimezone('America/Bogota')->format('Y-m-d h:i A'),
+                $shift->updated_at->setTimezone('America/Bogota')->format('Y-m-d h:i A'),
             ]);
         }
 
@@ -184,8 +184,8 @@ class ReportController extends Controller
                 'Qualification' => $shift->qualification?->qualification,
                 'Attendant' => $attendant?->name,
                 'TimeToAttend' => $timeToAttend,
-                'Created At' => $shift->created_at,
-                'Updated At' => $shift->updated_at,
+                'Created At' => $shift->created_at->setTimezone('America/Bogota')->format('Y-m-d h:i A'),
+                'Updated At' => $shift->updated_at->setTimezone('America/Bogota')->format('Y-m-d h:i A'),
             ];
         }
 

@@ -22,11 +22,14 @@ class AttentionProfileSeeder extends Seeder
                 // TODO: Add room_id to mount the relationship
             ]);
 
+            \App\Models\Room::all()->each(function ($room) use ($ap) {
+                $room->attentionProfiles()->attach($ap);
+            });
+
             foreach ($services as $service) {
                 // Find or create the service
                 $s = \App\Models\Service::firstOrCreate([
                     'name' => $service,
-                    'room_id' => 1,
                 ]);
                 $ap->services()->attach($s);
             }

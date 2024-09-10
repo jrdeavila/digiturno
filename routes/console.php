@@ -68,3 +68,22 @@ Artisan::command('shifts:clear-in-progress', function () {
 })
     ->purpose('Delete all in_progress shifts')
     ->everyMinute();
+
+
+// Command to delete all shifts replicated many times (> 5 times) in the current day.
+// Having in mind that the shift has a client_id
+
+Artisan::command('shifts:clear-replicated', function () {
+    $res = \App\Models\Shift::query()
+        ->whereDate('created_at', now())
+        ->whereNotNull('client_id')
+        ->select('client_id')
+        ->selectRaw('count(client_id) as total')
+        ->groupBy('client_id')
+        ->having('total', '>', 5)
+        ->delete();
+    $this->info('Delete all replicated shifts');
+    $this->info("Total deleted: $res");
+})
+    ->purpose('Delete all replicated shifts')
+    ->everyMinute();

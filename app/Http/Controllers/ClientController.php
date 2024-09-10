@@ -6,11 +6,9 @@ use Illuminate\Http\Request;
 
 class ClientController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $clients = \Illuminate\Support\Facades\Cache::remember('clients', 512, function () {
-            return \App\Models\Client::latest()->get();
-        });
+        $clients = \App\Models\Client::latest()->get();
         return \App\Http\Resources\ClientResource::collection($clients);
     }
 

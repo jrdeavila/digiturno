@@ -24,7 +24,10 @@ class Room extends Model
         return $this->belongsToMany(AttentionProfile::class, 'room_has_attention_profiles');
     }
 
-
+    public function modules()
+    {
+        return $this->hasMany(Module::class);
+    }
 
     public function shifts()
     {

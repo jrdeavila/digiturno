@@ -15,7 +15,7 @@ class ModuleShiftController extends Controller
                     \App\Enums\ShiftState::Completed,
                     \App\Enums\ShiftState::Qualified,
                     \App\Enums\ShiftState::Transferred,
-                ])->whereDate('created_at', now());
+                ])->whereDate('created_at', now()->toDateString());
             }])
             ->get();
         return response()->json($modules);
