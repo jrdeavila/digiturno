@@ -2,6 +2,7 @@
 
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schedule;
 
 Artisan::command('inspire', function () {
@@ -87,3 +88,28 @@ Artisan::command('shifts:clear-replicated', function () {
 })
     ->purpose('Delete all replicated shifts')
     ->everyMinute();
+
+// Export the database to a file in the storage folder
+
+Artisan::command('db:export', function () {
+    $folder = "backups";
+    $filename = 'database-' . now()->setTimezone('America/Bogota')->format('Y-m-d-H-i-s') . '.sql';
+    // create the folder if it does not exist
+    if (!is_dir(storage_path($folder))) {
+        mkdir(storage_path($folder));
+    }
+    $path = storage_path($folder . DIRECTORY_SEPARATOR . $filename);
+    // $path = storage_path($filename);
+    // Get the database credentials
+    $host = env('DB_HOST');
+    $port = env('DB_PORT');
+    $user = env('DB_USERNAME');
+    $pass = env('DB_PASSWORD');
+    $db = env('DB_DATABASE');
+
+    // Dump the pgsql database
+    $command = "PGPASSWORD=$pass pg_dump -h $host -p $port -U $user $db > $path";
+    exec($command);
+
+    $this->info('Database exported successfully');
+})->purpose('Export the database to a file in the storage folder');
