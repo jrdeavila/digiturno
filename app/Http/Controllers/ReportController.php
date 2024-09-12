@@ -19,6 +19,7 @@ class ReportController extends Controller
 
         $csv->insertOne([
             'ID',
+            'Services',
             'Room Name',
             'Branch Name',
             'Module Name',
@@ -37,8 +38,12 @@ class ReportController extends Controller
             $attendant = $shift->module?->attendants()->whereDate('module_attendant_accesses.created_at', now())->first();
             $timeToAttend = $shift->created_at->diffInMinutes($shift->updated_at);
             $timeToAttend = floatval(number_format($timeToAttend, 2));
+            $servicesToString = $shift->services->map(function ($service) {
+                return $service->name;
+            })->implode('|');
             $csv->insertOne([
                 $shift->id,
+                $servicesToString,
                 $shift->room->name,
                 $shift->room->branch->name,
                 $shift->module?->name,
@@ -54,7 +59,7 @@ class ReportController extends Controller
             ]);
         }
 
-        $filename = 'shifts.csv';
+        $filename = now()->month($month)->format('F') . '_shifts.csv';
 
         Storage::put("temp/" . $filename, $csv->getContent());
         $filepath = storage_path("app/temp/" . $filename);
@@ -69,6 +74,7 @@ class ReportController extends Controller
             now()->month($month)->startOfMonth(),
             now()->month($month)->endOfMonth()
         ])->with('room', 'client', 'qualification', 'attentionProfile')->get();
+
         $dataMapped = [];
 
         foreach ($data as $shift) {
@@ -77,6 +83,9 @@ class ReportController extends Controller
             $timeToAttend = floatval(number_format($timeToAttend, 2));
             $dataMapped[] = [
                 'ID' => $shift->id,
+                'Services' => $shift->services->map(function ($service) {
+                    return $service->name;
+                })->implode('|'),
                 'Room Name' => $shift->room->name,
                 'Branch Name' => $shift->room->branch->name,
                 'Module Name' => $shift->module?->name,
@@ -127,13 +136,16 @@ class ReportController extends Controller
             $attendant = $shift->module?->attendants()->whereDate('module_attendant_accesses.created_at', now())->first();
             $timeToAttend = $shift->created_at->diffInMinutes($shift->updated_at);
             $timeToAttend = floatval(number_format($timeToAttend, 2));
-            $service = \App\Models\AttentionProfile::find($shift->attention_profile_id)->services->random();
+            $servicesToString = $shift->services->map(function ($service) {
+                return $service->name;
+            })->implode('|');
             $csv->insertOne([
                 $shift->id,
-                $service->name,
+                $servicesToString,
                 $shift->room->name,
                 $shift->room->branch->name,
                 $shift->module?->name,
+                // UTF-8 characters
                 $shift->client->name,
                 $shift->client->dni,
                 $shift->client->clientType->getTypeAttribute($shift->client->clientType->slug),
@@ -162,7 +174,9 @@ class ReportController extends Controller
             now()->month($month)->startOfMonth(),
             now()->month($month)->endOfMonth()
         ])
-            ->where('attention_profile_id', 3)
+            ->whereHas('attentionProfile', function ($query) {
+                $query->where('name', 'CAE');
+            })
             ->with('room', 'client', 'qualification', 'attentionProfile')->get();
         $dataMapped = [];
 
@@ -170,10 +184,12 @@ class ReportController extends Controller
             $attendant = $shift->module?->attendants()->whereDate('module_attendant_accesses.created_at', now())->first();
             $timeToAttend = $shift->created_at->diffInMinutes($shift->updated_at);
             $timeToAttend = floatval(number_format($timeToAttend, 2));
-            $service = \App\Models\AttentionProfile::find($shift->attention_profile_id)->services->random();
+            $servicesToString = $shift->services->map(function ($service) {
+                return $service->name;
+            })->implode('|');
             $dataMapped[] = [
                 'ID' => $shift->id,
-                'Service' => $service->name,
+                'Service' => $servicesToString,
                 'Room Name' => $shift->room->name,
                 'Branch Name' => $shift->room->branch->name,
                 'Module Name' => $shift->module?->name,

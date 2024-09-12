@@ -58,15 +58,9 @@ class ShiftRequest extends FormRequest
 
     public function createShift()
     {
-        \Illuminate\Support\Facades\DB::beginTransaction();
 
-        // AttentionProfile belongs to many services, find the attention profile that has the services
-        $attentionProfiles = \App\Models\AttentionProfile::with('services')->get();
 
-        $attentionProfile = $attentionProfiles->first(function ($attentionProfile) {
-            return collect($this->validated()['services'])->diff($attentionProfile->services->pluck('id'))->isEmpty();
-        });
-
+        $attentionProfile = \App\Models\AttentionProfile::whereDoesntHave('rooms')->first();
 
         \throw_unless($attentionProfile, \App\Exceptions\AttentionProfileNotFoundException::class);
         $client = \App\Models\Client::firstWhere('dni', $this->validated()['client']['dni']);
@@ -86,6 +80,8 @@ class ShiftRequest extends FormRequest
 
         $shift = \App\Models\Shift::create($data);
 
+        $shift->services()->attach($this->input('services'));
+
         $qualification = $this->getQualificationOption($this->input('qualification'));
         $shift->qualification()->create([
             'qualification' => $qualification->value,
@@ -95,12 +91,6 @@ class ShiftRequest extends FormRequest
             'state' => "qualified",
         ]);
 
-        $shift->module?->currentAttendant()?->update([
-            'status' => "free",
-        ]);
-
-
-        \Illuminate\Support\Facades\DB::commit();
 
         return $shift;
     }
