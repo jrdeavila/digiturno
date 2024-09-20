@@ -48,4 +48,16 @@ class Shift extends Model
     {
         return $this->belongsToMany(Service::class, 'shift_has_service');
     }
+
+    // public function getStateAttribute()
+    // {
+    //     return $this->state_new;
+    // }
+
+    // protected $hidden = ['state_new'];
+
+    // public function setStateAttribute($value)
+    // {
+    //     $this->state_new = $value;
+    // }
 }

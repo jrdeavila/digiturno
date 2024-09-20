@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -9,11 +10,35 @@ class ReportController extends Controller
 {
     public function __invoke(Request $request)
     {
-        $month = $request->get('month', now()->month);
-        $data = \App\Models\Shift::whereBetween('created_at', [
-            now()->month($month)->startOfMonth(),
-            now()->month($month)->endOfMonth()
-        ])->with('room', 'client', 'qualification', 'attentionProfile')->get();
+        $month = $request->get('month', null); // => 1
+        $day = $request->get('day', null); // => 1
+        $branchId = $request->get('branch_id', null);
+        // If the day is not null, we will filter the data by the month and the day
+        // Else, we will filter the data by the month
+        $data = \App\Models\Shift::when($month, function ($query, $month) {
+            $month = (int) $month;
+            $startDate = now()->month($month)->startOfMonth();
+            $endDate = now()->month($month)->endOfMonth();
+            return $query->whereBetween('created_at', [
+                $startDate,
+                $endDate
+            ]);
+        })
+            ->when($day, function ($query, $day) {
+                $day = (int) $day;
+                $date = Carbon::now()->day($day);
+                return $query->whereDate('created_at', $date);
+            })
+
+            ->when($branchId, function ($query, $branchId) {
+                return $query->whereHas('room', function ($query) use ($branchId) {
+                    $query->where('branch_id', $branchId);
+                });
+            })
+
+            ->with('room', 'client', 'qualification', 'attentionProfile')->get();
+
+
 
         $csv = \League\Csv\Writer::createFromString('');
 
@@ -69,18 +94,42 @@ class ReportController extends Controller
 
     public function toJson(Request $request)
     {
-        $month = $request->get('month', now()->month);
-        $data = \App\Models\Shift::whereBetween('created_at', [
-            now()->month($month)->startOfMonth(),
-            now()->month($month)->endOfMonth()
-        ])->with('room', 'client', 'qualification', 'attentionProfile')->get();
+        $month = $request->get('month', null); // => 1
+        $day = $request->get('day', null); // => 1
+        $branchId = $request->get('branch_id', null);
+        // If the day is not null, we will filter the data by the month and the day
+        // Else, we will filter the data by the month
+        $data = \App\Models\Shift::when($month, function ($query, $month) {
+            $month = (int) $month;
+            $startDate = now()->month($month)->startOfMonth();
+            $endDate = now()->month($month)->endOfMonth();
+            return $query->whereBetween('created_at', [
+                $startDate,
+                $endDate
+            ]);
+        })
+            ->when($day, function ($query, $day) {
+                $day = (int) $day;
+                $date = Carbon::now()->day($day);
+                return $query->whereDate('created_at', $date);
+            })
+
+            ->when($branchId, function ($query, $branchId) {
+                return $query->whereHas('room', function ($query) use ($branchId) {
+                    $query->where('branch_id', $branchId);
+                });
+            })
+
+            ->with('room', 'client', 'qualification', 'attentionProfile')->get();
+
+
 
         $dataMapped = [];
 
         foreach ($data as $shift) {
             $attendant = $shift->module?->attendants()->whereDate('module_attendant_accesses.created_at', now())->first();
             $timeToAttend = $shift->created_at->diffInMinutes($shift->updated_at);
-            $timeToAttend = floatval(number_format($timeToAttend, 2));
+            $timeToAttend = intval(number_format($timeToAttend, 2));
             $dataMapped[] = [
                 'ID' => $shift->id,
                 'Services' => $shift->services->map(function ($service) {
@@ -105,12 +154,26 @@ class ReportController extends Controller
 
     public function toCAE(Request $request)
     {
-        $month = $request->get('month', now()->month);
-        $month = (int) $month;
-        $data = \App\Models\Shift::whereBetween('created_at', [
-            now()->month($month)->startOfMonth(),
-            now()->month($month)->endOfMonth()
-        ])
+        $month = $request->get('month', null); // => 1
+        $day = $request->get('day', null); // => 1
+        // If the day is not null, we will filter the data by the month and the day
+        // Else, we will filter the data by the month
+        $data = \App\Models\Shift::when($month, function ($query, $month) {
+            $month = (int) $month;
+            $startDate = now()->month($month)->startOfMonth();
+            $endDate = now()->month($month)->endOfMonth();
+            return $query->whereBetween('created_at', [
+                $startDate,
+                $endDate
+            ]);
+        })
+            ->when($day, function ($query, $day) {
+                $day = (int) $day;
+                $date = Carbon::now()->day($day);
+                return $query->whereDate('created_at', $date);
+            })
+
+
             ->where('attention_profile_id', 3)
             ->with('room', 'client', 'qualification', 'attentionProfile')->get();
         $csv = \League\Csv\Writer::createFromString('');
@@ -168,16 +231,29 @@ class ReportController extends Controller
 
     public function toCAEJson(Request $request)
     {
-        $month = $request->get('month', now()->month);
-        $month = (int) $month;
-        $data = \App\Models\Shift::whereBetween('created_at', [
-            now()->month($month)->startOfMonth(),
-            now()->month($month)->endOfMonth()
-        ])
-            ->whereHas('attentionProfile', function ($query) {
-                $query->where('name', 'CAE');
+        $month = $request->get('month', null); // => 1
+        $day = $request->get('day', null); // => 1
+        // If the day is not null, we will filter the data by the month and the day
+        // Else, we will filter the data by the month
+        $data = \App\Models\Shift::when($month, function ($query, $month) {
+            $month = (int) $month;
+            $startDate = now()->month($month)->startOfMonth();
+            $endDate = now()->month($month)->endOfMonth();
+            return $query->whereBetween('created_at', [
+                $startDate,
+                $endDate
+            ]);
+        })
+            ->when($day, function ($query, $day) {
+                $day = (int) $day;
+                $date = Carbon::now()->day($day);
+                return $query->whereDate('created_at', $date);
             })
+            ->where('attention_profile_id', 3)
             ->with('room', 'client', 'qualification', 'attentionProfile')->get();
+
+
+
         $dataMapped = [];
 
         foreach ($data as $shift) {

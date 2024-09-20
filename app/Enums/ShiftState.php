@@ -12,4 +12,5 @@ enum ShiftState: string
   case Cancelled = 'cancelled';
   case Distracted = 'distracted';
   case Qualified = 'qualified';
+  case Called = 'called';
 }

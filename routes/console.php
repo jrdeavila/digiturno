@@ -60,13 +60,14 @@ Artisan::command('shift:delete-replicated {dni}', function ($dni) {
         $this->error('Client not found');
         return;
     }
-    $shifts = \App\Models\Shift::query()
-        ->where('client_id', $client->id)
-        ->whereDate('created_at', now()->toDateString())
+    $shifts = \App\Models\Shift::where('client_id', $client->id)
+        // ->whereDate('created_at', now()->toDateString())
         ->get();
     $this->info('Shifts to delete: ' . $shifts->count());
     // Delete all shifts, except the first one
-    $shifts->slice(1)->each->deleted();
+    $shifts->slice(1)->each(function ($shift) {
+        $shift->delete();
+    });
     $this->info('Shifts deleted successfully');
 })->purpose('Delete all shifts replicated today assigned to a (dni) client registered in the system by an error');
 

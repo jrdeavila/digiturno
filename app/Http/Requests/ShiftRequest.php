@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\DB;
 
 class ShiftRequest extends FormRequest
 {
@@ -31,13 +32,11 @@ class ShiftRequest extends FormRequest
                 'regex:/^[0-9]+$/',
                 function ($attribute, $value, $fail) {
                     $client = \App\Models\Client::firstWhere('dni', $value);
-                    if ($client && $client->shifts()->where(
-                        'state',
-                        \App\Enums\ShiftState::Pending
-                    )->orWhere(
-                        'state',
-                        \App\Enums\ShiftState::PendingTransferred
-                    )->exists()) {
+                    if (
+
+                        $client && $this->route('shift')?->client->id != $client->id &&
+                        $client->shifts()->where('state', 'pending')->exists()
+                    ) {
                         $fail('client_has_pending_shift');
                     }
                 },
@@ -59,6 +58,7 @@ class ShiftRequest extends FormRequest
     public function createShift()
     {
 
+        DB::beginTransaction();
 
         $attentionProfile = \App\Models\AttentionProfile::whereDoesntHave('rooms')->first();
 
@@ -90,6 +90,8 @@ class ShiftRequest extends FormRequest
         $shift->update([
             'state' => "qualified",
         ]);
+
+        DB::commit();
 
 
         return $shift;

@@ -12,6 +12,23 @@ class ClientController extends Controller
         return \App\Http\Resources\ClientResource::collection($clients);
     }
 
+    // Filtrar por dni o nombre y retornar la primera coincidencia
+
+    public function find(Request $request)
+    {
+        $clients = \App\Models\Client::query();
+
+        if ($request->has('dni')) {
+            $clients->where('dni',  "%{$request->dni}%");
+        }
+
+        if ($request->has('name')) {
+            $clients->where('name', "%{$request->name}%");
+        }
+
+        return new \App\Http\Resources\ClientResource($clients->firstOrFail());
+    }
+
 
     public function store(
         \App\Http\Requests\ClientRequest $request,

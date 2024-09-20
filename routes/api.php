@@ -86,11 +86,12 @@ Route::prefix('attendants')->group(function () {
 
 Route::apiResource('module-types', \App\Http\Controllers\ModuleTypeController::class)->names('module-types');
 Route::apiResource('modules.attendants', \App\Http\Controllers\ModuleAttendantController::class)->names('modules.attendants')->only(['index']);
-Route::apiResource('clients', \App\Http\Controllers\ClientController::class)->names('clients');
 Route::prefix('clients')->group(function () {
+  Route::get('/find', [\App\Http\Controllers\ClientController::class, 'find'])->name('clients.find');
   Route::put('/{client}/restore', [\App\Http\Controllers\ClientController::class, 'restore'])->name('clients.restore');
   Route::delete('/{client}/force-delete', [\App\Http\Controllers\ClientController::class, 'forceDelete'])->name('clients.force-delete');
 });
+Route::apiResource('clients', \App\Http\Controllers\ClientController::class)->names('clients');
 
 Route::apiResource('absence_reasons', \App\Http\Controllers\AbsenceReasonController::class)->names('absence_reason');
 Route::apiResource('attendant_accesses', \App\Http\Controllers\AttendantModuleAccessController::class)->only(['index'])->names('attendant_accesses');
