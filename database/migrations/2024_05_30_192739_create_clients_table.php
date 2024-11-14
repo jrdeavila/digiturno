@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name', 255);
             $table->string('dni', 10)->unique();
-            $table->foreignId('client_type_id')->constrained()
+            $table->foreignId('client_type_id')
+                ->nullable()
+                ->constrained()
                 ->nullOnDelete()
                 ->cascadeOnUpdate();
             $table->softDeletes();
