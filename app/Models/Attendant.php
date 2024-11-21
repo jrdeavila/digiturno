@@ -79,4 +79,9 @@ class Attendant extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
+    public function juridicalCases()
+    {
+        return $this->hasMany(JuridicalCase::class);
+    }
 }

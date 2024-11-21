@@ -29,6 +29,7 @@ class ShiftRequest extends FormRequest
             'client.dni' => [
                 'required',
                 'string',
+                'max:10',
                 'regex:/^[0-9]+$/',
                 function ($attribute, $value, $fail) {
                     $client = \App\Models\Client::firstWhere('dni', $value);

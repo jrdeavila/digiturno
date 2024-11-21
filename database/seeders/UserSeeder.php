@@ -32,5 +32,11 @@ class UserSeeder extends Seeder
             'email' => 'desarrolladores@ccomerciodevalledupar.onmicrosoft.com',
             'password' => bcrypt('ccv2024*')
         ]);
+
+        User::create([
+            'name' => 'Observatorio Socioeconómico',
+            'email' => 'observatoriosocioeconomico@ccvalledupar.org.co',
+            'password' => bcrypt('ccv2024*')
+        ]);
     }
 }

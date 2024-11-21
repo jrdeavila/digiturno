@@ -80,8 +80,11 @@ Route::middleware([
 });
 Route::apiResource('attendants', \App\Http\Controllers\AttendantController::class)->names('attendants');
 Route::apiResource('attendants.absences', \App\Http\Controllers\AttendantAbsenceController::class)->names('attendant.absence')->only(['index', 'store']);
+Route::apiResource("attendants.juridical_cases", \App\Http\Controllers\JuridicalCaseController::class)->names('attendants.juridical_cases');
 Route::prefix('attendants')->group(function () {
   Route::put('/{attendant}/back-to-work', [\App\Http\Controllers\AttendantAbsenceController::class, 'backToWork'])->name('attendant.back-to-work');
+  Route::post("/{attendant}/juridical_cases/{juridical_case}/observations", [\App\Http\Controllers\JuridicalCaseController::class, 'addObservation'])->name('attendants.juridical_cases.observations.store');
+  Route::delete("/{attendant}/juridical_cases/observations/{observation}", [\App\Http\Controllers\JuridicalCaseController::class, 'destroyObservation'])->name('attendants.juridical_cases.observations.destroy');
 });
 
 Route::apiResource('module-types', \App\Http\Controllers\ModuleTypeController::class)->names('module-types');
