@@ -68,9 +68,7 @@ class ShiftRequest extends FormRequest
         if (!$client) {
             $client = \App\Models\Client::create($this->validated()['client']);
         } else {
-            $client->client_type_id = $this->validated()['client']['client_type_id'];
-            $client->name = $this->validated()['client']['name'];
-            $client->save();
+            $client->update($this->validated()['client']);
         }
         $data = [
             ...$this->validated(),

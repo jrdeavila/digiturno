@@ -49,6 +49,28 @@ Artisan::command('shift:reassign {from_module_id} {to_module_id} {date} {limit?}
 })->purpose('Get all shift of a (from_module_id) module in a specific (date) date and assign them to another (to_module_id) module')
     ->dailyAt('00:00');
 
+// Command to delete one shift assigned to a (dni) client registered in the system by an error
+Artisan::command('shift:delete {dni}', function ($dni) {
+    $client = \App\Models\Client::firstWhere('dni', $dni);
+    if (!$client) {
+        $this->error('Client not found');
+        return;
+    }
+    $shift = \App\Models\Shift::where('client_id', $client->id)
+        ->latest()
+        ->first();
+    if (!$shift) {
+        $this->error('Shift not found');
+        return;
+    }
+    // Show the shift created at and ask for confirmation (MM/DD/YYYY HH:mm AM/PM)
+    $this->info('Shift created at: ' . $shift->created_at->format('m/d/Y h:i A'));
+    if (!$this->confirm('Do you want to delete this shift?')) {
+        return;
+    }
+    $shift->delete();
+    $this->info('Shift deleted successfully');
+})->purpose('Delete one shift assigned to a (dni) client registered in the system by an error');
 
 
 
@@ -63,11 +85,48 @@ Artisan::command('shift:delete-replicated {dni}', function ($dni) {
     $shifts = \App\Models\Shift::where('client_id', $client->id)
         // ->whereDate('created_at', now()->toDateString())
         ->get();
-    $this->info('Shifts to delete: ' . $shifts->count());
+    if ($shifts->count() === 0) {
+        $this->error('Shifts not found');
+        return;
+    }
+    // Show the number of shifts to delete
+    $this->info('Client: ' . $client->name . ' - ' . $client->dni);
+    $this->info('Shifts to delete: ' . $shifts->count() . ' (except the first one)');
+    for ($i = 0; $i < $shifts->count(); $i++) {
+        $shift = $shifts[$i];
+        $this->info($i + 1 .  '. Shift created at: ' . $shift->created_at->format('m/d/Y h:i A') . ' - ' . $shift->room->name . ' - ' . $shift->state);
+    }
+    // Ask many indexes to delete separated by commas or ranges (1, 3, 5-7)
+    $indexes = $this->ask('Enter the indexes of the shifts to delete separated by commas or ranges (1, 3, 5-7)');
+    $indexes = collect(explode(',', $indexes))
+        ->map(function ($index) {
+            if (str_contains($index, '-')) {
+                $range = explode('-', $index);
+                return range($range[0], $range[1]);
+            }
+            return $index;
+        })
+        ->flatten()
+        ->map(function ($index) {
+            return (int) $index;
+        });
+
+    // Filter the shifts to delete
+    $shifts = $shifts->filter(function ($shift, $index) use ($indexes) {
+        return $indexes->contains($index + 1);
+    });
+
+
+
+    // Ask for confirmation
+    if (!$this->confirm('Do you want to delete these shifts?')) {
+        return;
+    }
     // Delete all shifts, except the first one
-    $shifts->slice(1)->each(function ($shift) {
+    $shifts->each(function ($shift) {
         $shift->delete();
     });
+
     $this->info('Shifts deleted successfully');
 })->purpose('Delete all shifts replicated today assigned to a (dni) client registered in the system by an error');
 

@@ -38,5 +38,11 @@ class UserSeeder extends Seeder
             'email' => 'observatoriosocioeconomico@ccvalledupar.org.co',
             'password' => bcrypt('ccv2024*')
         ]);
+
+        User::create([
+            'name' => 'Directora de Seccionales',
+            'email' => 'directorseccionales@ccvalledupar.org.co',
+            'password' => bcrypt('ccv2024*')
+        ]);
     }
 }
