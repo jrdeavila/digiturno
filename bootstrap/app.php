@@ -10,6 +10,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         api: __DIR__ . '/../routes/api.php',
         web: __DIR__ . '/../routes/web.php',
+        // /routes/commands folder has multiple php files with commands, how to import
         commands: __DIR__ . '/../routes/console.php',
         health: '/up',
     )

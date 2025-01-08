@@ -3,6 +3,7 @@
 /public/build
 /public/hot
 /public/storage
+/public/*.csv
 /storage/*.key
 /storage/backups
 /vendor

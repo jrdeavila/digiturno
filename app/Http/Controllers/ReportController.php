@@ -39,52 +39,70 @@ class ReportController extends Controller
 
     private function generateFilename(Request $request, $filename)
     {
-        $month = $request->get('month', null); // => 1
-        $month = intval($month);
-        $monthName = $month == 0 ? "todo" : Carbon::now()->month($month)->locale('es')->monthName;
-        $year = Carbon::now()->year;
-        return $monthName . '_' . $year . '_' . $filename;
+        $startDate = $request->get('start_date', null);
+        $endDate = $request->get('end_date', null);
+        if ($startDate) {
+            $startDate = Carbon::parse($startDate)->format('Y-m-d');
+        }
+        if ($endDate) {
+            $endDate = Carbon::parse($endDate)->format('Y-m-d');
+        }
+        $filename = $startDate . '_' . $endDate . '_' . $filename;
+        return $filename;
     }
 
     private function getShifts(Request $request)
     {
-        $month = $request->get('month', null); // => 1
-        $month = intval($month);
-        $day = $request->get('day', null); // => 1
-        $day = intval($day);
         $branchId = $request->get('branch_id', null);
+        $startDate = $request->get('start_date', null);
+        $endDate = $request->get('end_date', null);
+
+        // Validar formato de fecha
+        if ($startDate && !Carbon::parse($startDate, 'Y-m-d', 'es')->isValid()) {
+            return response()->json([
+                'message' => 'El formato de la fecha de inicio no es valido'
+            ], 400);
+        }
+
+        if ($endDate && !Carbon::parse($endDate, 'Y-m-d', 'es')->isValid()) {
+            return response()->json([
+                'message' => 'El formato de la fecha de fin no es valido'
+            ], 400);
+        }
+
+        // Validar fechas
+        if ($startDate && $endDate) {
+            $startDate = Carbon::parse($startDate);
+            $endDate = Carbon::parse($endDate);
+            if ($startDate->gt($endDate)) {
+                return response()->json([
+                    'message' => 'La fecha de inicio no puede ser mayor a la fecha de fin'
+                ], 400);
+            }
+        }
+
         // If the day is not null, we will filter the data by the month and the day
         // Else, we will filter the data by the month
+
         $data = \App\Models\Shift::whereIn('state', [
             ShiftState::Qualified,
             ShiftState::Transferred,
         ])
-            ->when($month, function ($query, $month) {
-                $month = (int) $month;
-                if ($month === 0) {
-                    return $query;
-                }
-                $startDate = now()->month($month)->startOfMonth();
-                $endDate = now()->month($month)->endOfMonth();
-                return $query->whereBetween('created_at', [
-                    $startDate,
-                    $endDate
-                ]);
-            })
-            ->when($day, function ($query, $day) {
-                $day = (int) $day;
-                if ($day === 0) {
-                    return $query;
-                }
-                $date = Carbon::now()->day($day);
-                return $query->whereDate('created_at', $date);
-            })
 
+            ->when($startDate, function ($query, $startDate) {
+                $startDate = Carbon::parse($startDate)->format('Y-m-d');
+                return $query->whereDate('created_at', '>=', $startDate);
+            })
+            ->when($endDate, function ($query, $endDate) {
+                $endDate = Carbon::parse($endDate)->format('Y-m-d');
+                return $query->whereDate('created_at', '<=', $endDate);
+            })
             ->when($branchId, function ($query, $branchId) {
                 return $query->whereHas('room', function ($query) use ($branchId) {
                     $query->where('branch_id', $branchId);
                 });
             })
+
 
             ->with('room', 'client', 'qualification', 'attentionProfile')->get();
 
@@ -93,35 +111,52 @@ class ReportController extends Controller
 
     private function getShiftsByAttentionProfile(Request $request, $attentionProfileId)
     {
-        $month = $request->get('month', null); // => 1
-        $month = intval($month);
-        $day = $request->get('day', null); // => 1
-        $day = intval($day);
+        $startDate = $request->get('start_date', null);
+        $endDate = $request->get('end_date', null);
+        $attentionProfileId = $request->get('attention_profile_id', null);
+
+        // Validar formato de fecha
+
+        if ($startDate && !Carbon::parse($startDate, 'Y-m-d', 'es')->isValid()) {
+            return response()->json([
+                'message' => 'El formato de la fecha de inicio no es valido'
+            ], 400);
+        }
+
+        if ($endDate && !Carbon::parse($endDate, 'Y-m-d', 'es')->isValid()) {
+            return response()->json([
+                'message' => 'El formato de la fecha de fin no es valido'
+            ], 400);
+        }
+
+        // Validar fechas
+
+        if ($startDate && $endDate) {
+            $startDate = Carbon::parse($startDate);
+            $endDate = Carbon::parse($endDate);
+            if ($startDate->gt($endDate)) {
+                return response()->json([
+                    'message' => 'La fecha de inicio no puede ser mayor a la fecha de fin'
+                ], 400);
+            }
+        }
+
+
         // If the day is not null, we will filter the data by the month and the day
         // Else, we will filter the data by the month
         $data = \App\Models\Shift::whereIn('state', [
             ShiftState::Qualified,
             ShiftState::Transferred,
         ])
-            ->when($month, function ($query, $month) {
-                $month = (int) $month;
-                if ($month === 0) {
-                    return $query;
-                }
-                $startDate = now()->month($month)->startOfMonth();
-                $endDate = now()->month($month)->endOfMonth();
-                return $query->whereBetween('created_at', [
-                    $startDate,
-                    $endDate
-                ]);
+
+            ->when($startDate, function ($query, $startDate) {
+                $startDate = Carbon::parse($startDate)->format('Y-m-d');
+                return $query->whereDate('created_at', '>=', $startDate);
             })
-            ->when($day, function ($query, $day) {
-                $day = (int) $day;
-                if ($day === 0) {
-                    return $query;
-                }
-                $date = Carbon::now()->day($day);
-                return $query->whereDate('created_at', $date);
+
+            ->when($endDate, function ($query, $endDate) {
+                $endDate = Carbon::parse($endDate)->format('Y-m-d');
+                return $query->whereDate('created_at', '<=', $endDate);
             })
 
             ->when($attentionProfileId, function ($query, $attentionProfileId) {

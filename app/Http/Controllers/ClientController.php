@@ -19,11 +19,11 @@ class ClientController extends Controller
         $clients = \App\Models\Client::query();
 
         if ($request->has('dni')) {
-            $clients->where('dni',  "%{$request->dni}%");
+            $clients->where('dni',  $request->dni);
         }
 
         if ($request->has('name')) {
-            $clients->where('name', "%{$request->name}%");
+            $clients->whereRaw('LOWER(name) LIKE ?', ["%{$request->name}%"]);
         }
 
         return new \App\Http\Resources\ClientResource($clients->firstOrFail());

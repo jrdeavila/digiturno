@@ -107,3 +107,7 @@ Route::prefix('report')->group(function () {
     Route::get('/json', [\App\Http\Controllers\ReportController::class, 'toCAEJson'])->name('report.to-cae-json');
   });
 });
+
+Route::get("/storage/{filepath}", function () {
+  return response()->file(storage_path("app/public/" . request()->filepath));
+});
