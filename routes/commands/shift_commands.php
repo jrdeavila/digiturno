@@ -60,6 +60,72 @@ function convertUtf8($string)
   return $string;
 }
 
+
+// Command to show all shifts in a specific (date) date or today with table format
+// With the flag --date, --attention_profile_id, --module_id, --branch_id, --limit
+Artisan::command('shift:show-table {--date= : datetime } {--attention_profile_id= : AttentionProfile id} {--module-id= : Module id} {--branch_id= : Branch id} {--limit= : int}
+', function ($date = null, $attention_profile_id = null, $module_id = null, $branch_id = null, $limit = 100) {
+  $date = $date ? now()->parse($date) : now();
+  $shifts = \App\Models\Shift::query()
+    ->whereDate('created_at', $date)
+    ->when($attention_profile_id, function ($query, $attention_profile_id) {
+      return $query->where('attention_profile_id', $attention_profile_id);
+    })
+    ->when($module_id, function ($query, $module_id) {
+      return $query->where('module_id', $module_id);
+    })
+    ->when($branch_id, function ($query, $branch_id) {
+      return $query->whereHas('room', function ($query) use ($branch_id) {
+        $query->where('branch_id', $branch_id);
+      });
+    })
+    ->when($limit, function ($query, $limit) {
+      return $query->limit($limit);
+    })
+    ->get();
+
+  $this->info('Fecha: ' . $date->format('m/d/Y'));
+  if ($attention_profile_id) {
+    $attentionProfile = \App\Models\AttentionProfile::find($attention_profile_id);
+    $this->info('Perfil de atención:  ' . $attentionProfile->name);
+  }
+
+  if ($branch_id) {
+    $branch = \App\Models\Branch::find($branch_id);
+    $this->info('Sede o Seccional:  ' . $branch->name);
+  }
+
+  if ($module_id) {
+    $module = \App\Models\Module::find($module_id);
+    $this->info('Module: ' . $module->name);
+  }
+  $this->info('Total atendidos: ' . $shifts->count());
+  $this->table(
+    ['ID', "Perfil", 'Cliente',  'Documento de Identidad', 'Tipo de Cliente', 'Calificación', 'Funcionario', 'Tiempo de Atención',],
+    $shifts->map(function ($shift) {
+      // Get last attendant connected to the module
+      $attendant = $shift->module?->attendants()->latest()->first();
+
+
+
+      $timeToAttend = $shift->created_at->diffInMinutes($shift->updated_at);
+      $timeToAttend = intval(number_format($timeToAttend, 2));
+
+      return [
+        $shift->id,
+        $shift->attentionProfile->name,
+        $shift->client->name,
+        $shift->client->dni,
+        $shift->client->clientType->getTypeAttribute($shift->client->clientType->slug),
+        $shift->qualification?->qualification,
+        $attendant?->name,
+        $timeToAttend,
+      ];
+    })
+  );
+})->purpose('Show all shifts in a specific (date) date or today with table format')
+  ->dailyAt('00:00');
+
 // Example: php artisan shift:csv branch=1 from=2021-11-01 to=2021-11-30
 Artisan::command('shift:csv {from?} {to?} {branch_id?}', function ($from = null, $to = null, $branch_id = null) {
 
@@ -206,6 +272,79 @@ Artisan::command('shift:show {module_id} {date?}', function ($module_id, $date =
   });
 })->purpose('Show all shifts of a (module_id) module in a specific (date) date or today')
   ->dailyAt('00:00');
+
+
+// Command to show all shifts of a (attention_profile_id) attention profile in a specific (date) date or today
+// Group by attendant and generate a csv file by each attendant with the shifts
+
+Artisan::command('shift:show-attention-profile {attention_profile_id} {date?}', function ($attention_profile_id, $date = null) {
+  $attention_profile = \App\Models\AttentionProfile::find($attention_profile_id);
+  if (!$attention_profile) {
+    $this->error('Attention profile not found');
+    return;
+  }
+  $date = $date ? now()->parse($date) : now();
+  $shifts = \App\Models\Shift::query()
+    ->where('attention_profile_id', $attention_profile_id)
+    ->whereDate('created_at', $date)
+    ->get();
+  $this->info('Attention Profile: ' . $attention_profile->name);
+  $this->info('Shifts: ' . $shifts->count());
+  $attendants = $shifts->groupBy('module_id');
+  $attendants->each(function ($shifts, $module_id) {
+    $csv = \League\Csv\Writer::createFromString('');
+    $csv->insertOne([
+      'ID',
+      'Servicios',
+      'Sala',
+      'Seccional',
+      'Modulo',
+      'Cliente',
+      'Documento de Identidad',
+      'Tipo de Cliente',
+      'Estado',
+      'Calificación',
+      'Funcionario',
+      'Tiempo de Atención',
+      'Creado En',
+      'Actualizado En',
+    ]);
+    foreach ($shifts as $shift) {
+      $createdAtShiftDate = $shift->created_at;
+      $attendant = $shift->module?->attendants()->whereDate('module_attendant_accesses.created_at', $createdAtShiftDate)->first();
+      $timeToAttend = $shift->created_at->diffInMinutes($shift->updated_at);
+      $timeToAttend = intval(number_format($timeToAttend, 2));
+      $servicesToString = $shift->services->map(function ($service) {
+        return $service->name;
+      })->implode('|');
+      $data = [
+        $shift->id,
+        $servicesToString,
+        $shift->room->name,
+        $shift->room->branch->name,
+        $shift->module?->name,
+        $shift->client->name,
+        $shift->client->dni,
+        $shift->client->clientType->getTypeAttribute($shift->client->clientType->slug),
+        convertShiftStatusToSpanish($shift->state),
+        $shift->qualification?->qualification,
+        $attendant?->name,
+        $timeToAttend,
+        $shift->created_at->setTimezone('America/Bogota')->format('Y-m-d h:i A'),
+        $shift->updated_at->setTimezone('America/Bogota')->format('Y-m-d h:i A'),
+      ];
+      $data = array_map('convertUtf8', $data);
+      $csv->insertOne($data);
+    }
+    // Save the file in the storage folder and public folder
+    $filename = 'shifts-' . now()->setTimezone('America/Bogota')->format('Y-m-d-H-i-s') . '.csv';
+    $path = public_path('storage/' . $filename);
+    file_put_contents($path, $csv->getContent());
+    // Generate url to download the file
+    $url = url('storage/' . $filename);
+    $this->info('File saved successfully: ' . $url);
+  });
+})->purpose('Show all shifts of a (attention_profile_id) attention profile in a specific (date) date or today');
 
 
 // Command to delete one shift assigned to a (dni) client registered in the system by an error
