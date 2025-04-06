@@ -10,7 +10,7 @@ class ClientController extends Controller
     public function index(Request $request)
     {
         // Agregar caché para la lista de clientes
-        $clients = Cache::remember('clients.all', 60, function () {
+        $clients = Cache::remember('clients.all', 3600, function () {
             return \App\Models\Client::latest()->get();
         });
 
@@ -23,7 +23,7 @@ class ClientController extends Controller
         // Crear una clave de caché basada en los parámetros de búsqueda
         $cacheKey = 'clients.find.' . ($request->dni ?? $request->name);
 
-        $client = Cache::remember($cacheKey, 60, function () use ($request) {
+        $client = Cache::remember($cacheKey, 3600, function () use ($request) {
             $clients = \App\Models\Client::query();
 
             if ($request->has('dni')) {

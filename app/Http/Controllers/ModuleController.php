@@ -8,7 +8,7 @@ class ModuleController extends Controller
 {
     public function index()
     {
-        $modules =  \Illuminate\Support\Facades\Cache::remember('modules', 60, function () {
+        $modules =  \Illuminate\Support\Facades\Cache::remember('modules', 3600, function () {
             return \App\Models\Module::latest()->get();
         });
         return \App\Http\Resources\ModuleResource::collection($modules);
@@ -23,7 +23,7 @@ class ModuleController extends Controller
 
     public function show(\App\Models\Module $module)
     {
-        $module = \Illuminate\Support\Facades\Cache::remember("module-{$module->id}", 60, function () use ($module) {
+        $module = \Illuminate\Support\Facades\Cache::remember("module-{$module->id}", 4600, function () use ($module) {
             return $module;
         });
         return new \App\Http\Resources\ModuleResource($module);
