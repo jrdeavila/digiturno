@@ -164,6 +164,7 @@ Artisan::command('shift:csv {from?} {to?} {branch_id?}', function ($from = null,
       return $query->where('created_at', '<=', $endDate);
     })
     ->whereIn('state', [
+        ShiftState::Pending,
       ShiftState::Qualified,
       ShiftState::Transferred,
     ])
@@ -200,9 +201,9 @@ Artisan::command('shift:csv {from?} {to?} {branch_id?}', function ($from = null,
       $shift->room->name,
       $shift->room->branch->name,
       $shift->module?->name,
-      $shift->client->name,
-      $shift->client->dni,
-      $shift->client->clientType->getTypeAttribute($shift->client->clientType->slug),
+      $shift->client?->name,
+      $shift->client?->dni,
+      $shift->client?->clientType->getTypeAttribute($shift->client->clientType->slug),
       convertShiftStatusToSpanish($shift->state),
       $shift->qualification?->qualification,
       $attendant?->name,

@@ -18,9 +18,9 @@ Route::prefix('admin')->group(function () {
   });
 
   Route::get("/attention_profiles", [\App\Http\Controllers\AttentionProfileController::class, 'adminIndex'])->name('attention_profiles.admin');
-  Route::post("/attention_profiles", [\App\Http\Controllers\AttentionProfileController::class, 'adminStore'])->name('attention_profiles.store');
-  Route::patch("/attention_profiles/{attention_profile}", [\App\Http\Controllers\AttentionProfileController::class, 'adminUpdate'])->name('attention_profiles.update');
-  Route::delete("/attention_profiles/{attention_profile}", [\App\Http\Controllers\AttentionProfileController::class, 'adminDestroy'])->name('attention_profiles.destroy');
+  Route::post("/attention_profiles", [\App\Http\Controllers\AttentionProfileController::class, 'adminStore'])->name('attention_profiles.admin.store');
+  Route::patch("/attention_profiles/{attention_profile}", [\App\Http\Controllers\AttentionProfileController::class, 'adminUpdate'])->name('attention_profiles.admin.update');
+  Route::delete("/attention_profiles/{attention_profile}", [\App\Http\Controllers\AttentionProfileController::class, 'adminDestroy'])->name('attention_profiles.admin.destroy');
 });
 
 Route::apiResource('services', \App\Http\Controllers\ServiceController::class)->names('services');
@@ -42,13 +42,13 @@ Route::middleware([
   Route::put('/{shift}/with-attention-profile', [\App\Http\Controllers\ShiftController::class, 'updateShiftWithAttentionProfile'])->name('shifts.update-with-attention-profile');
   Route::get('/distracted', [\App\Http\Controllers\ShiftController::class, 'distracted'])->name('shifts.distracted');
   Route::get('/in-progress', [\App\Http\Controllers\ShiftController::class, 'inProgress'])->name('shifts.in-progress');
-  Route::put('/{shift}/completed', [\App\Http\Controllers\ShiftController::class, 'completedShift'])->name('shifts.completed');
-  Route::put('/{shift}/qualified', [\App\Http\Controllers\ShiftController::class, 'qualifiedShift'])->name('shifts.qualified');
-  Route::put('/{shift}/distracted', [\App\Http\Controllers\ShiftController::class, 'distractedShift'])->name('shifts.distracted');
-  Route::put('/{shift}/transfer', [\App\Http\Controllers\ShiftController::class, 'transferShift'])->name('shifts.transfer');
-  Route::put('/{shift}/pending', [\App\Http\Controllers\ShiftController::class, 'sendToPending'])->name('shifts.pending');
-  Route::put('/{shift}/call', [\App\Http\Controllers\ShiftController::class, 'call'])->name('shifts.call');
-  Route::put('/{shift}/in-progress', [\App\Http\Controllers\ShiftController::class, 'sendToInProgress'])->name('shifts.in-progress');
+  Route::put('/{shift}/completed', [\App\Http\Controllers\ShiftController::class, 'completedShift'])->name('shifts.update.completed');
+  Route::put('/{shift}/qualified', [\App\Http\Controllers\ShiftController::class, 'qualifiedShift'])->name('shifts.update.qualified');
+  Route::put('/{shift}/distracted', [\App\Http\Controllers\ShiftController::class, 'distractedShift'])->name('shifts.update.distracted');
+  Route::put('/{shift}/transfer', [\App\Http\Controllers\ShiftController::class, 'transferShift'])->name('shifts.update.transfer');
+  Route::put('/{shift}/pending', [\App\Http\Controllers\ShiftController::class, 'sendToPending'])->name('shifts.update.pending');
+  Route::put('/{shift}/call', [\App\Http\Controllers\ShiftController::class, 'call'])->name('shifts.update.call');
+  Route::put('/{shift}/in-progress', [\App\Http\Controllers\ShiftController::class, 'sendToInProgress'])->name('shifts.update.in-progress');
 });
 Route::apiResource('shifts', \App\Http\Controllers\ShiftController::class)->names('shifts')->only(['index', 'store', 'show', 'destroy']);
 Route::apiResource('branches', \App\Http\Controllers\BranchController::class)->names('branches');

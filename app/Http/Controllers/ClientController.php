@@ -3,57 +3,75 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class ClientController extends Controller
 {
     public function index(Request $request)
     {
-        $clients = \App\Models\Client::latest()->get();
+        // Agregar caché para la lista de clientes
+        $clients = Cache::remember('clients.all', 60, function () {
+            return \App\Models\Client::latest()->get();
+        });
+
         return \App\Http\Resources\ClientResource::collection($clients);
     }
 
     // Filtrar por dni o nombre y retornar la primera coincidencia
-
     public function find(Request $request)
     {
-        $clients = \App\Models\Client::query();
+        // Crear una clave de caché basada en los parámetros de búsqueda
+        $cacheKey = 'clients.find.' . ($request->dni ?? $request->name);
 
-        if ($request->has('dni')) {
-            $clients->where('dni',  $request->dni);
-        }
+        $client = Cache::remember($cacheKey, 60, function () use ($request) {
+            $clients = \App\Models\Client::query();
 
-        if ($request->has('name')) {
-            $clients->whereRaw('LOWER(name) LIKE ?', ["%{$request->name}%"]);
-        }
+            if ($request->has('dni')) {
+                $clients->where('dni', $request->dni);
+            }
 
-        return new \App\Http\Resources\ClientResource($clients->firstOrFail());
-    }
+            if ($request->has('name')) {
+                $clients->whereRaw('LOWER(name) LIKE ?', ["%{$request->name}%"]);
+            }
 
+            return $clients->firstOrFail();
+        });
 
-    public function store(
-        \App\Http\Requests\ClientRequest $request,
-    ) {
-        $client = $request->createClient();
         return new \App\Http\Resources\ClientResource($client);
     }
 
+    public function store(\App\Http\Requests\ClientRequest $request)
+    {
+        $client = $request->createClient();
+
+        // Limpiar la caché de la lista de clientes
+        Cache::forget('clients.all');
+
+        return new \App\Http\Resources\ClientResource($client);
+    }
 
     public function show(\App\Models\Client $client)
     {
         return new \App\Http\Resources\ClientResource($client);
     }
 
-    public function update(
-        \App\Http\Requests\ClientRequest $request,
-        \App\Models\Client $client
-    ) {
+    public function update(\App\Http\Requests\ClientRequest $request, \App\Models\Client $client)
+    {
         $request->updateClient($client);
+
+        // Limpiar la caché de la lista de clientes
+        Cache::forget('clients.all');
+
         return new \App\Http\Resources\ClientResource($client);
     }
 
     public function destroy(\App\Models\Client $client)
     {
         $client->delete();
+
+        // Limpiar la caché de la lista de clientes
+        Cache::forget('clients.all');
+
         return response()->noContent();
     }
 
@@ -61,6 +79,10 @@ class ClientController extends Controller
     {
         $client = \App\Models\Client::withTrashed()->findOrFail($clientId);
         $client->restore();
+
+        // Limpiar la caché de la lista de clientes
+        Cache::forget('clients.all');
+
         return response()->noContent();
     }
 
@@ -68,6 +90,9 @@ class ClientController extends Controller
     {
         $client = \App\Models\Client::withTrashed()->findOrFail($clientId);
         $client->forceDelete();
+
+        Cache::forget('clients.all');
+
         return response()->noContent();
     }
 }

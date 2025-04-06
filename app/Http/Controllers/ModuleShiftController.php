@@ -9,7 +9,7 @@ class ModuleShiftController extends Controller
 {
     public function countShiftPerModule(Request $request)
     {
-        $modules = \App\Models\Module::whereIn('module_type_id', [1, 2])
+        $modules = \App\Models\Module::whereIn('module_type_id', [1, 2, 6])
             ->withCount(['shifts' => function ($query) {
                 $query->whereIn('state', [
                     \App\Enums\ShiftState::Completed,
