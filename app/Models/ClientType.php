@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ClientType extends Model
@@ -21,6 +22,11 @@ class ClientType extends Model
         'updated_at',
         'deleted_at',
     ];
+
+    public function modules(): HasMany
+    {
+        return $this->hasMany(Module::class);
+    }
 
     public function getTypeAttribute($value)
     {

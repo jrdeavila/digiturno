@@ -14,6 +14,8 @@ class Branch extends Model
         'address',
     ];
 
+    public $with = ['rooms'];
+
     public function rooms()
     {
         return $this->hasMany(Room::class);

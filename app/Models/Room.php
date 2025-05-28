@@ -14,6 +14,8 @@ class Room extends Model
         'branch_id',
     ];
 
+    public $with = ['attentionProfiles'];
+
     public function branch()
     {
         return $this->belongsTo(Branch::class);

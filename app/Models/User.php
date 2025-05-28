@@ -4,56 +4,79 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Spatie\Permission\Traits\HasRoles;
-use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable implements JWTSubject
+class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    protected $table = "usuarios";
+    protected $connection = "timeit";
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
+    protected $primaryKey = "id";
+
+    public $timestamps = false;
+
+
+    protected $appends = ['role', 'status', 'email', 'employee_id'];
+
     protected $hidden = [
-        'password',
-        'remember_token',
+        'clave',
+        'correo',
+        'rol',
+        'estado',
+        'Empleados_id'
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    public function employee(): BelongsTo
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->belongsTo(Employee::class, 'Empleados_id');
     }
 
-    public function getJWTIdentifier()
+    public function getAuthPassword()
     {
-        return $this->getKey();
+        return $this->clave;
     }
 
-    public function getJWTCustomClaims(): array
+
+    public function getEmailAttribute()
     {
-        return [];
+        return $this->attributes['correo'];
+    }
+
+    public function setEmailAttribute($value)
+    {
+        $this->attributes['correo'] = $value;
+    }
+
+    public function getRoleAttribute()
+    {
+        return $this->attributes['rol'];
+    }
+
+    public function setRoleAttribute($value)
+    {
+        $this->attributes['rol'] = $value;
+    }
+
+    public function getStatusAttribute()
+    {
+        return $this->attributes['estado'];
+    }
+
+    public function setStatusAttribute($value)
+    {
+        $this->attributes['estado'] = $value;
+    }
+
+    public function getEmployeeIdAttribute()
+    {
+        return $this->attributes['Empleados_id'];
+    }
+
+    public function setEmployeeIdAttribute($value)
+    {
+        $this->attributes['Empleados_id'] = $value;
     }
 }

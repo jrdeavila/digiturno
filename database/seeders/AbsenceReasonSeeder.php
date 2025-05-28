@@ -12,6 +12,20 @@ class AbsenceReasonSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\AbsenceReason::factory(10)->create();
+        \App\Models\AbsenceReason::create([
+            'name' => 'Ir al baño',
+        ]);
+
+        \App\Models\AbsenceReason::create([
+            'name' => 'Gestión interna',
+        ]);
+
+        \App\Models\AbsenceReason::create([
+            'name' => 'Pausa activa',
+        ]);
+
+        \App\Models\AbsenceReason::create([
+            'name' => 'Otro',
+        ]);
     }
 }

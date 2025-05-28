@@ -5,7 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
-
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[ObservedBy(\App\Observers\ModuleObserver::class)]
 class Module extends Model
@@ -21,45 +23,40 @@ class Module extends Model
         'enabled',
         'module_type_id',
         'status',
+        'user_id',
     ];
 
-    public function room()
+    public function room(): BelongsTo
     {
         return $this->belongsTo(Room::class);
     }
 
-    public function clientType()
+    public function clientType(): BelongsTo
     {
         return $this->belongsTo(ClientType::class);
     }
 
-    public function attendants()
+    public function responsable(): BelongsTo
     {
-        return $this->belongsToMany(Attendant::class, 'module_attendant_accesses')->withTimestamps();
+        return $this->belongsTo(User::class, 'responsable_id', 'id');
     }
 
-    public function currentAttendant(): ?\App\Models\Attendant
-    {
-        return $this->attendants()->whereDate(
-            'module_attendant_accesses.created_at',
-            now()->toDateString()
-        )
-            // Order by the last attendant that accessed the module
-            ->orderBy('module_attendant_accesses.created_at', 'desc')
-            ->first();
-    }
-
-    public function attentionProfile()
+    public function attentionProfile(): BelongsTo
     {
         return $this->belongsTo(AttentionProfile::class);
     }
 
-    public function shifts()
+    public function attentionProfiles(): BelongsToMany
+    {
+        return $this->belongsToMany(AttentionProfile::class, 'module_has_attention_profiles');
+    }
+
+    public function shifts(): HasMany
     {
         return $this->hasMany(Shift::class);
     }
 
-    public function moduleType()
+    public function moduleType(): BelongsTo
     {
         return $this->belongsTo(ModuleType::class);
     }
