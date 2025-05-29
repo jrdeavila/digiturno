@@ -37,5 +37,9 @@ return [
         'index' => 'Listar',
         'create' => 'Crear',
     ],
+    'shifts' => [
+        'label' => 'Turnos',
+        'index' => 'Listar',
+    ]
 
 ];

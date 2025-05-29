@@ -7,6 +7,7 @@ use App\Http\Controllers\UI\BranchController;
 use App\Http\Controllers\UI\ClientController;
 use App\Http\Controllers\UI\ModuleController;
 use App\Http\Controllers\UI\RoomController;
+use App\Http\Controllers\UI\ShiftController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -32,5 +33,8 @@ Route::middleware('auth')->group(function () {
         ->names('modules');
     Route::resource('attention-profiles', AttentionProfileController::class)
         ->names('attention-profiles');
+    Route::resource('shifts', ShiftController::class)
+        ->except(['create', 'store', 'edit', 'update'])
+        ->names('shifts');
     Route::get(trans('home'), HomeController::class)->name('home');
 });

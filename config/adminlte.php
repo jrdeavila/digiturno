@@ -377,6 +377,19 @@ return [
             ]
         ],
 
+        [
+            'type' => 'fullscreen',
+            'icon' => 'fas fa-users',
+            'text' => 'shifts.label',
+            'submenu' => [
+                [
+                    'text' => 'shifts.index',
+                    'icon' => 'fas fa-list',
+                    'route' => 'shifts.index',
+                ],
+            ]
+        ]
+
 
         // [
         //     'type' => 'fullscreen-widget',

@@ -68,113 +68,84 @@
                 </x-adminlte-datatable>
             </x-adminlte-card>
         </div>
-        <div class="col-md-12">
-            <x-adminlte-card title="Turnos del modulo ({{ $module->shifts()->count() }})" theme="primary"
-                icon="fas fa-list">
+        <div class="col-md-4">
+            <div class="timeline" style="height: calc(100vh - 200px); overflow-y: scroll">
                 @php
-                    $heads = [
-                        'ID',
-                        'Cliente',
-                        'Documento',
-                        'Estado',
-                        'Calificación',
-                        'Fecha de inicio',
-                        'Fecha de fin',
-                    ];
-                    $config = [
-                        'data' => [],
-                        'order' => [[0, 'asc'], [1, 'asc']],
-                    ];
+                    $groupedShifts = $module
+                        ->shifts()
+                        ->orderBy('created_at', 'desc')
+                        ->get()
+                        ->groupBy(function ($shift) {
+                            return $shift->created_at->format('Y-m-d');
+                        });
                 @endphp
-                <x-adminlte-datatable id="turns" :heads="$heads" :config="$config">
-                    @php
-                        $shifts = $module->shifts()->orderBy('created_at')->paginate(5);
-                    @endphp
-                    @if ($shifts->count() > 0)
+                @foreach ($groupedShifts as $date => $shifts)
+                    <div class="time-label">
+                        <span class="bg-primary"> {{ $date }}</span>
+                    </div>
+                    @foreach ($shifts->sortBy('created_at') as $item)
+                        <div>
+                            @switch($item->state)
+                                @case('pending')
+                                    <i class="fas fa-hourglass-half bg-info"></i>
+                                @break
 
-                        @foreach ($shifts as $shift)
-                            <tr>
-                                <td>{{ $shift->id }}</td>
-                                <td>{{ $shift->client->name }}</td>
-                                <td>{{ $shift->client->dni }}</td>
-                                <td>
-                                    @switch($shift->state)
-                                        @case('pending')
-                                            <div class="text-info">
-                                                <i class="fas fa-hourglass-half"></i>
-                                                <span>Pendiente</span>
-                                            </div>
-                                        @break
+                                @case('in_progress')
+                                    <i class="fas fa-hourglass-start bg-warning"></i>
+                                @break
 
-                                        @case('in_progress')
-                                            <div class="text-warning">
-                                                <i class="fas fa-clock"></i>
-                                                <span>En progreso</span>
-                                            </div>
-                                        @break
+                                @case('finished')
+                                    <i class="fas fa-hourglass-end bg-success"></i>
+                                @break
 
-                                        @case('finished')
-                                            <div class="text-success">
-                                                <i class="fas fa-check"></i>
-                                                <span>Finalizado</span>
-                                            </div>
-                                        @break
+                                @case('cancelled')
+                                    <i class="fas fa-times bg-danger"></i>
+                                @break
 
-                                        @case('cancelled')
-                                            <div class="text-danger">
-                                                <i class="fas fa-times"></i>
-                                                <span>Cancelado</span>
-                                            </div>
-                                        @break
+                                @case('transferred')
+                                    <i class="fas fa-exchange-alt bg-warning"></i>
+                                @break
 
-                                        @case('transferred')
-                                            <div class="text-warning">
-                                                <i class="fas fa-exchange-alt"></i>
-                                                <span>Transferido</span>
-                                            </div>
-                                        @break
+                                @case('pending-transferred')
+                                    <i class="fas fa-hourglass-half bg-info"></i>
+                                @break
 
-                                        @case('pending-transferred')
-                                            <div class="text-info">
-                                                <i class="fas fa-hourglass-half"></i>
-                                                <span>Transferido pendiente</span>
-                                            </div>
-                                        @case('qualified')
-                                            <div class="text-success">
-                                                <i class="fas fa-check"></i>
-                                                <span>Calificado</span>
-                                            </div>
-                                        @break
+                                @case('qualified')
+                                    <i class="fas fa-check bg-success"></i>
+                                @break
 
-                                        @case('distracted')
-                                            <div class="text-danger">
-                                                <i class="fas fa-times"></i>
-                                                <span>Distraido</span>
-                                            </div>
-                                        @break
+                                @case('distracted')
+                                    <i class="fas fa-times bg-danger"></i>
+                                @break
+                            @endswitch
+                            <div class="timeline-item">
+                                <span class="time">
+                                    <i class="fas fa-clock"></i>
+                                    {{ $item->created_at->format('H:i') }}
+                                </span>
+                                <h3 class="timeline-header">
+                                    <a href="{{ route('clients.show', $item->client) }}">
+                                        {{ $item->client->name }}
+                                    </a>
+                                    {{ $item->qualification?->qualification }}
+                                </h3>
 
-                                        @default
-                                    @endswitch
-                                </td>
-                                <td>{{ $shift->qualification->qualification }}</td>
-                                <td>{{ $shift->created_at }}</td>
-                                <td>{{ $shift->updated_at }}</td>
-                            </tr>
-                        @endforeach
-                        <tr>
-                            <td colspan="6">{{ $shifts->links('custom.pagination') }}></td>
-                        </tr>
-                    @else
-                        <tr>
-                            <td colspan="6">
-                                <span>No se encontraron turnos</span>
-                            </td>
-                        </tr>
-                    @endif
+                                <div class="timeline-body">
+                                    <strong>Servicios</strong>
+                                    <br>
+                                    <span class="text-muted">
 
-                </x-adminlte-datatable>
+                                        {{ $item->services->map(function ($service) {
+                                                return $service->name;
+                                            })->implode(', ') }}
+                                    </span>
+                                </div>
+                            </div>
 
-            </x-adminlte-card>
+                        </div>
+                    @endforeach
+                @endforeach
+            </div>
         </div>
     </div>
 @stop
