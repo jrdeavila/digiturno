@@ -56,7 +56,6 @@ class ShiftController extends Controller
         return view('shifts.show', compact('shift'));
     }
 
-
     public function destroy(Shift $shift)
     {
         try {
