@@ -12,5 +12,7 @@ return [
         'edit' => 'Editar',
         'delete' => 'Eliminar',
         'view' => 'Ver mas',
+        'enable' => 'Activar',
+        'disable' => 'Desactivar',
     ],
 ];

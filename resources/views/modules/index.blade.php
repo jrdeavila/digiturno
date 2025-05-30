@@ -127,7 +127,14 @@
                         @foreach ($modules as $module)
                             <tr>
                                 <td>{{ $module->id }}</td>
-                                <td>{{ $module->name }}</td>
+                                <td>
+                                    @if ($module->enabled)
+                                        <i class="fas fa-thumbs-up text-success"></i>
+                                    @else
+                                        <i class="fas fa-thumbs-down text-danger"></i>
+                                    @endif
+                                    {{ $module->name }}
+                                </td>
                                 <td>{{ $module->room?->name }}</td>
                                 <td>{{ $module->responsable?->employee->full_name }}</td>
                                 <td>{{ $module->clientType?->name }}</td>
@@ -153,6 +160,38 @@
                                                     </div>
                                                 </div>
                                             </a>
+                                            <div class="dropdown-divider"></div>
+
+
+                                            @if ($module->enabled)
+                                                <form action="{{ route('modules.disable', $module->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <button type="submit" class="dropdown-item">
+                                                        <div class="row">
+                                                            <div class="col-6">
+                                                                <i class="fas fa-thumbs-down"></i>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                {{ __('modules.actions.disable') }}
+                                                            </div>
+                                                    </button>
+                                                </form>
+                                            @else
+                                                <form action="{{ route('modules.enable', $module->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <button type="submit" class="dropdown-item">
+                                                        <div class="row">
+                                                            <div class="col-6">
+                                                                <i class="fas fa-thumbs-up"></i>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                {{ __('modules.actions.enable') }}
+                                                            </div>
+                                                    </button>
+                                                </form>
+                                            @endif
 
                                             <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" data-toggle="modal"

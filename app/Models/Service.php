@@ -20,6 +20,11 @@ class Service extends Model
         return $this->belongsTo(Service::class);
     }
 
+    public function services()
+    {
+        return $this->hasMany(Service::class, 'service_id');
+    }
+
     public function attentionProfiles()
     {
         return $this->belongsToMany(AttentionProfile::class, 'attention_profile_service', 'service_id', 'attention_profile_id');

@@ -379,7 +379,7 @@ return [
 
         [
             'type' => 'fullscreen',
-            'icon' => 'fas fa-users',
+            'icon' => 'fas fa-clock',
             'text' => 'shifts.label',
             'submenu' => [
                 [
@@ -387,6 +387,41 @@ return [
                     'icon' => 'fas fa-list',
                     'route' => 'shifts.index',
                 ],
+            ]
+        ],
+        [
+            'type' => 'fullscreen',
+            'icon' => 'fas fa-cogs',
+            'text' => 'services.label',
+            'submenu' => [
+                [
+                    'text' => 'services.index',
+                    'icon' => 'fas fa-list',
+                    'route' => 'services.index',
+                ],
+                [
+                    'text' => 'services.create',
+                    'icon' => 'fas fa-plus',
+                    'route' => 'services.create',
+                ]
+            ],
+        ],
+
+        [
+            'type' => 'fullscreen',
+            'icon' => 'fas fa-users-cog',
+            'text' => 'attention-profiles.label',
+            'submenu' => [
+                [
+                    'text' => 'attention-profiles.index',
+                    'icon' => 'fas fa-list',
+                    'route' => 'attention-profiles.index',
+                ],
+                [
+                    'text' => 'attention-profiles.create',
+                    'icon' => 'fas fa-plus',
+                    'route' => 'attention-profiles.create',
+                ]
             ]
         ]
 

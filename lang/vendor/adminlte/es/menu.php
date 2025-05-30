@@ -40,6 +40,16 @@ return [
     'shifts' => [
         'label' => 'Turnos',
         'index' => 'Listar',
+    ],
+    'services' => [
+        'label' => 'Servicios',
+        'index' => 'Listar',
+        'create' => 'Crear',
+    ],
+    'attention-profiles' => [
+        'label' => 'Perfiles de Atención',
+        'index' => 'Listar',
+        'create' => 'Crear',
     ]
 
 ];

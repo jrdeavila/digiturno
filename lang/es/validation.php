@@ -21,5 +21,6 @@ return [
         'use_qualification_module' => 'Uso de modulo de calificacion',
         'user_id' => 'Funcionario',
         'attention_profiles' => 'Perfiles de atencion',
+        'services' => 'Servicios',
     ]
 ];
