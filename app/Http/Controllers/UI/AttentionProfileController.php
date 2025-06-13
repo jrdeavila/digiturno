@@ -14,18 +14,18 @@ class AttentionProfileController extends Controller
     public function index()
     {
         $attentionProfiles = AttentionProfile::latest()->paginate(5);
-        return view('attention_profiles.index', compact('attentionProfiles'));
+        return view('admin.attention_profiles.index', compact('attentionProfiles'));
     }
 
     public function show(AttentionProfile $attentionProfile)
     {
-        return view('attention_profiles.show', compact('attentionProfile'));
+        return view('admin.attention_profiles.show', compact('attentionProfile'));
     }
 
     public function create()
     {
         $services = Service::all();
-        return view('attention_profiles.create', compact('services'));
+        return view('admin.attention_profiles.create', compact('services'));
     }
 
     public function store(Request $request)
@@ -40,7 +40,7 @@ class AttentionProfileController extends Controller
             $attentionProfile = AttentionProfile::create($request->all());
             $attentionProfile->services()->sync($request->services);
             DB::commit();
-            return redirect()->route('attention-profiles.index')->with('success', 'Perfil de Atencion creado con exito.');
+            return redirect()->route('admin.attention-profiles.index')->with('success', 'Perfil de Atencion creado con exito.');
         } catch (Exception $e) {
             DB::rollBack();
             return redirect()->back()->withInput()->with('error', 'El perfil de atencion no pudo ser creado.');
@@ -50,7 +50,7 @@ class AttentionProfileController extends Controller
     public function edit(AttentionProfile $attentionProfile)
     {
         $services = Service::all();
-        return view('attention_profiles.edit', compact('attentionProfile', 'services'));
+        return view('admin.attention_profiles.edit', compact('attentionProfile', 'services'));
     }
 
     public function update(Request $request, AttentionProfile $attentionProfile)
@@ -65,7 +65,7 @@ class AttentionProfileController extends Controller
             $attentionProfile->update($request->all());
             $attentionProfile->services()->sync($request->services);
             DB::commit();
-            return redirect()->route('attention-profiles.index')->with('success', 'Perfil de Atencion actualizado con exito.');
+            return redirect()->route('admin.attention-profiles.index')->with('success', 'Perfil de Atencion actualizado con exito.');
         } catch (Exception $e) {
             DB::rollBack();
             return redirect()->back()->withInput()->with('error', 'El perfil de atencion no pudo ser actualizado.');
@@ -76,7 +76,7 @@ class AttentionProfileController extends Controller
     {
         try {
             $attentionProfile->forceDelete();
-            return redirect()->route('attention-profiles.index')->with('success', 'Perfil de Atencion eliminado con exito.');
+            return redirect()->route('admin.attention-profiles.index')->with('success', 'Perfil de Atencion eliminado con exito.');
         } catch (Exception $e) {
             return redirect()->back()->with('error', 'El perfil de atencion no pudo ser eliminado.');
         }

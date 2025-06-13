@@ -227,7 +227,7 @@
                                         <br>
                                         <span>¿Desea continuar?</span>
                                         <x-slot name="footerSlot">
-                                            <form method="POST" action="{{ route('modules.destroy', $room) }}">
+                                            <form method="POST" action="{{ route('modules.destroy', $module) }}">
                                                 @csrf
                                                 @method('DELETE')
                                                 <x-adminlte-button type="submit" label="Eliminar" theme="danger"

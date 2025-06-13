@@ -47,7 +47,7 @@
         @if ($service->services->count() > 0)
             <div class="col-md-4">
                 <x-adminlte-card title="Subservicios" theme="primary" icon="fas fa-list">
-                    @include('services.partials.service_tree', [
+                    @include('admin.services.partials.service_tree', [
                         'services' => $service->services()->get(),
                         'root' => true,
                     ])

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -13,6 +14,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Module extends Model
 {
     use HasFactory;
+
+    protected $table = 'modules';
+    protected $connection = 'pgsql';
 
     protected $fillable = [
         'name',
@@ -59,5 +63,10 @@ class Module extends Model
     public function moduleType(): BelongsTo
     {
         return $this->belongsTo(ModuleType::class);
+    }
+
+    public function scopeEnabled(Builder $query): Builder
+    {
+        return $query->where('enabled', true);
     }
 }

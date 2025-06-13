@@ -26,18 +26,18 @@ class ClientController extends Controller
 
             ->latest()->paginate(5);
         $clientTypes = ClientType::latest()->get();
-        return view('clients.index', compact('clients', 'clientTypes'));
+        return view('admin.clients.index', compact('clients', 'clientTypes'));
     }
 
     public function create()
     {
         $clientTypes = ClientType::all();
-        return view('clients.create', compact('clientTypes'));
+        return view('admin.clients.create', compact('clientTypes'));
     }
 
     public function show(Client $client)
     {
-        return view('clients.show', compact('client'));
+        return view('admin.clients.show', compact('client'));
     }
 
 
@@ -53,7 +53,7 @@ class ClientController extends Controller
             DB::beginTransaction();
             Client::create($request->all());
             DB::commit();
-            return redirect()->route('clients.index')->with('success', 'El cliente fue creado con exito');
+            return redirect()->route('admin.clients.index')->with('success', 'El cliente fue creado con exito');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->withInput()->with('error', 'El cliente no pudo ser creado');
@@ -63,7 +63,7 @@ class ClientController extends Controller
     public function edit(Client $client)
     {
         $clientTypes = ClientType::all();
-        return view('clients.edit', compact('client', 'clientTypes'));
+        return view('admin.clients.edit', compact('client', 'clientTypes'));
     }
 
     public function update(Request $request, Client $client)
@@ -78,7 +78,7 @@ class ClientController extends Controller
             DB::beginTransaction();
             $client->update($request->all());
             DB::commit();
-            return redirect()->route('clients.index')->with('success', 'El cliente fue actualizado con exito');
+            return redirect()->route('admin.clients.index')->with('success', 'El cliente fue actualizado con exito');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->withInput()->with('error', 'El cliente no pudo ser actualizado');
@@ -89,9 +89,9 @@ class ClientController extends Controller
     {
         try {
             $client->forceDelete();
-            return redirect()->route('clients.index')->with('success', 'El cliente fue eliminado con exito');
+            return redirect()->route('admin.clients.index')->with('success', 'El cliente fue eliminado con exito');
         } catch (Exception $e) {
-            return redirect()->route('clients.index')->with('error', 'El cliente no pudo ser eliminado');
+            return redirect()->route('admin.clients.index')->with('error', 'El cliente no pudo ser eliminado');
         }
     }
 }

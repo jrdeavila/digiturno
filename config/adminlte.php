@@ -299,132 +299,152 @@ return [
     */
 
     'menu' => [
-        // Navbar items:
-        [
-            'text' => 'search',
-            'type' => 'navbar-search',
-            'search' => true,
-            'topnav' => true,
-            'icon' => 'fas fa-search',
-        ],
         [
             'type' => 'fullscreen',
-            'icon' => 'fas fa-home',
-            'text' => 'branches.label',
+            'icon' => 'fas fa-tachometer-alt',
+            'text' => 'Administración',
             'submenu' => [
                 [
-                    'text' => 'branches.index',
-                    'icon' => 'fas fa-list',
-                    'route' => 'branches.index',
+                    'type' => 'fullscreen',
+                    'icon' => 'fas fa-home',
+                    'text' => 'branches.label',
+                    'submenu' => [
+                        [
+                            'text' => 'branches.index',
+                            'icon' => 'fas fa-list',
+                            'route' => 'branches.index',
+                        ],
+                        [
+                            'text' => 'branches.create',
+                            'icon' => 'fas fa-plus',
+                            'route' => 'branches.create',
+                        ],
+                    ]
                 ],
-                [
-                    'text' => 'branches.create',
-                    'icon' => 'fas fa-plus',
-                    'route' => 'branches.create',
-                ],
-            ]
-        ],
 
-        [
-            'type' => 'fullscreen',
-            'icon' => 'fas fa-restroom',
-            'text' => 'rooms.label',
-            'submenu' => [
                 [
-                    'text' => 'rooms.index',
-                    'icon' => 'fas fa-list',
-                    'route' => 'rooms.index',
+                    'type' => 'fullscreen',
+                    'icon' => 'fas fa-restroom',
+                    'text' => 'rooms.label',
+                    'submenu' => [
+                        [
+                            'text' => 'rooms.index',
+                            'icon' => 'fas fa-list',
+                            'route' => 'rooms.index',
+                        ],
+                        [
+                            'text' => 'branches.create',
+                            'icon' => 'fas fa-plus',
+                            'route' => 'rooms.create',
+                        ],
+                    ]
                 ],
                 [
-                    'text' => 'branches.create',
-                    'icon' => 'fas fa-plus',
-                    'route' => 'rooms.create',
-                ],
-            ]
-        ],
-        [
-            'type' => 'fullscreen',
-            'icon' => 'fas fa-users',
-            'text' => 'clients.label',
-            'submenu' => [
-                [
-                    'text' => 'clients.index',
-                    'icon' => 'fas fa-list',
-                    'route' => 'clients.index',
-                ],
-                [
-                    'text' => 'clients.create',
-                    'icon' => 'fas fa-plus',
-                    'route' => 'clients.create',
-                ],
-            ]
-        ],
-        [
-            'type' => 'fullscreen',
-            'icon' => 'fas fa-desktop',
-            'text' => 'modules.label',
-            'submenu' => [
-                [
-                    'text' => 'modules.index',
-                    'icon' => 'fas fa-list',
-                    'route' => 'modules.index',
+                    'type' => 'fullscreen',
+                    'icon' => 'fas fa-users',
+                    'text' => 'clients.label',
+                    'submenu' => [
+                        [
+                            'text' => 'clients.index',
+                            'icon' => 'fas fa-list',
+                            'route' => 'clients.index',
+                        ],
+                        [
+                            'text' => 'clients.create',
+                            'icon' => 'fas fa-plus',
+                            'route' => 'clients.create',
+                        ],
+                    ]
                 ],
                 [
-                    'text' => 'modules.create',
-                    'icon' => 'fas fa-plus',
-                    'route' => 'modules.create',
+                    'type' => 'fullscreen',
+                    'icon' => 'fas fa-desktop',
+                    'text' => 'modules.label',
+                    'submenu' => [
+                        [
+                            'text' => 'modules.index',
+                            'icon' => 'fas fa-list',
+                            'route' => 'modules.index',
+                        ],
+                        [
+                            'text' => 'modules.create',
+                            'icon' => 'fas fa-plus',
+                            'route' => 'modules.create',
+                        ],
+                    ]
                 ],
-            ]
-        ],
 
-        [
-            'type' => 'fullscreen',
-            'icon' => 'fas fa-clock',
-            'text' => 'shifts.label',
-            'submenu' => [
                 [
-                    'text' => 'shifts.index',
-                    'icon' => 'fas fa-list',
-                    'route' => 'shifts.index',
-                ],
-            ]
-        ],
-        [
-            'type' => 'fullscreen',
-            'icon' => 'fas fa-cogs',
-            'text' => 'services.label',
-            'submenu' => [
-                [
-                    'text' => 'services.index',
-                    'icon' => 'fas fa-list',
-                    'route' => 'services.index',
+                    'type' => 'fullscreen',
+                    'icon' => 'fas fa-clock',
+                    'text' => 'shifts.label',
+                    'submenu' => [
+                        [
+                            'text' => 'shifts.index',
+                            'icon' => 'fas fa-list',
+                            'route' => 'shifts.index',
+                        ],
+                    ]
                 ],
                 [
-                    'text' => 'services.create',
-                    'icon' => 'fas fa-plus',
-                    'route' => 'services.create',
+                    'type' => 'fullscreen',
+                    'icon' => 'fas fa-cogs',
+                    'text' => 'services.label',
+                    'submenu' => [
+                        [
+                            'text' => 'services.index',
+                            'icon' => 'fas fa-list',
+                            'route' => 'services.index',
+                        ],
+                        [
+                            'text' => 'services.create',
+                            'icon' => 'fas fa-plus',
+                            'route' => 'services.create',
+                        ]
+                    ],
+                ],
+
+                [
+                    'type' => 'fullscreen',
+                    'icon' => 'fas fa-users-cog',
+                    'text' => 'attention-profiles.label',
+                    'submenu' => [
+                        [
+                            'text' => 'attention-profiles.index',
+                            'icon' => 'fas fa-list',
+                            'route' => 'attention-profiles.index',
+                        ],
+                        [
+                            'text' => 'attention-profiles.create',
+                            'icon' => 'fas fa-plus',
+                            'route' => 'attention-profiles.create',
+                        ]
+                    ]
                 ]
             ],
         ],
-
         [
             'type' => 'fullscreen',
-            'icon' => 'fas fa-users-cog',
-            'text' => 'attention-profiles.label',
+            'icon' => 'fas fa-bell',
+            'text' => 'Atención',
             'submenu' => [
                 [
-                    'text' => 'attention-profiles.index',
+                    'text' => 'Recepción de clientes',
                     'icon' => 'fas fa-list',
-                    'route' => 'attention-profiles.index',
+                    'route' => 'attention.customer-reception.index',
                 ],
                 [
-                    'text' => 'attention-profiles.create',
-                    'icon' => 'fas fa-plus',
-                    'route' => 'attention-profiles.create',
-                ]
-            ]
+                    'text' => 'Atención de clientes',
+                    'icon' => 'fas fa-mobile-alt',
+                    'route' => 'attention.attention.index',
+                ],
+                [
+                    'text' => 'Pantalla de espera',
+                    'icon' => 'fas fa-sign-in-alt',
+                    'route' => 'attention.waiting.index',
+                ],
+            ],
         ]
-
 
         // [
         //     'type' => 'fullscreen-widget',

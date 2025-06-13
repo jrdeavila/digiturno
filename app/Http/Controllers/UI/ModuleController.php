@@ -58,12 +58,12 @@ class ModuleController extends Controller
             ->get();
         $clientTypes = ClientType::query()->get();
         $moduleTypes = ModuleType::query()->get();
-        return view('modules.index', compact('modules', 'branches', 'rooms', 'attentionProfiles', 'clientTypes', 'moduleTypes'));
+        return view('admin.modules.index', compact('modules', 'branches', 'rooms', 'attentionProfiles', 'clientTypes', 'moduleTypes'));
     }
 
     public function show(Module $module)
     {
-        return view('modules.show', compact('module'));
+        return view('admin.modules.show', compact('module'));
     }
 
     public function create(?Room $room, Request $request)
@@ -86,7 +86,7 @@ class ModuleController extends Controller
         $branches = Branch::all();
         $clientTypes = ClientType::all();
         $moduleTypes = ModuleType::all();
-        return view('modules.create', compact('room', 'branches',   'clientTypes', 'moduleTypes', 'userSelected'));
+        return view('admin.modules.create', compact('room', 'branches',   'clientTypes', 'moduleTypes', 'userSelected'));
     }
 
     public function store(Request $request)
@@ -97,14 +97,22 @@ class ModuleController extends Controller
             'client_type_id' => 'nullable|exists:client_types,id',
             'module_type_id' => 'required|exists:module_types,id',
             'user_id' => 'nullable|exists:' . User::class . ',id',
-            'attention_profiles' => 'required|array',
+            // Validar perfiles de atencion solo si es un modulo de atencion, de lo contrario no es necesario
+            'attention_profiles' => 'required_if:module_type_id,1,6|array',
         ]);
 
         try {
             DB::beginTransaction();
             $module =  Module::create($request->all());
             if ($request->get('user_id')) {
-                $module->responsable()->associate($request->get('user_id'));
+                if ($user = User::find($request->get('user_id'))) {
+                    if ($user->modules->where('module_type_id', $module->module_type_id)->exists()) {
+                        DB::rollBack();
+                        return redirect()->back()->withInput()->with('error', 'Este modulo ya esta asignado a este usuario');
+                    }
+
+                    $module->responsable()->associate($request->get('user_id'));
+                }
             }
             if ($request->get('attention_profiles')) {
                 $module->attentionProfiles()->sync($request->attention_profiles);
@@ -139,7 +147,7 @@ class ModuleController extends Controller
         $clientTypes = ClientType::all();
         $moduleTypes = ModuleType::all();
         $attentionProfiles = AttentionProfile::all();
-        return view('modules.edit', compact('module', 'clientTypes', 'moduleTypes', 'userSelected', 'attentionProfiles'));
+        return view('admin.modules.edit', compact('module', 'clientTypes', 'moduleTypes', 'userSelected', 'attentionProfiles'));
     }
 
     public function update(Request $request, Module $module)
@@ -162,7 +170,14 @@ class ModuleController extends Controller
                 $module->attentionProfiles()->sync([$request->get('attention_profile_id')]);
             }
             if ($request->get('user_id')) {
-                $module->responsable()->associate($request->get('user_id'));
+                if ($user = User::find($request->get('user_id'))) {
+                    if ($user->modules->where('module_type_id', $module->module_type_id)->exists()) {
+                        DB::rollBack();
+                        return redirect()->back()->withInput()->with('error', 'Este modulo ya esta asignado a este usuario');
+                    }
+
+                    $module->responsable()->associate($request->get('user_id'));
+                }
             }
             $module->save();
             DB::commit();

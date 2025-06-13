@@ -42,7 +42,7 @@
                 </blockquote>
             @endif
         </div>
-        <div x-show="moduleTypeSelected == 1 || moduleTypeSelected == 6" class="col-md-6">
+        <div class="col-md-6">
             @if ($userSelected === null)
                 <x-adminlte-card title="Funcionario responsable" theme="primary" icon="fas fa-user">
                     <form action="{{ route('modules.create') }}" method="GET"

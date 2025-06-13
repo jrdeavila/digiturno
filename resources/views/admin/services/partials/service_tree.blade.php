@@ -70,7 +70,7 @@
             @endif
 
             @if ($item->services->count() > 0)
-                @include('services.partials.service_tree', ['services' => $item->services])
+                @include('admin.services.partials.service_tree', ['services' => $item->services])
             @endif
         </li>
     @endforeach

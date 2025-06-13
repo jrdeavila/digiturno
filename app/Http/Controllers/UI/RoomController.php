@@ -13,13 +13,13 @@ class RoomController extends Controller
     public function index()
     {
         $rooms = Room::latest()->paginate(5);
-        return view('rooms.index', compact('rooms'));
+        return view('admin.rooms.index', compact('rooms'));
     }
 
     public function create(?Branch $branch)
     {
         $branches = Branch::all();
-        return view('rooms.create', compact('branch', 'branches'));
+        return view('admin.rooms.create', compact('branch', 'branches'));
     }
 
     public function store(Request $request)
@@ -30,21 +30,21 @@ class RoomController extends Controller
         ]);
         try {
             Room::create($request->all());
-            return redirect()->route('rooms.index')->with('success', 'La sala fue creada con exito');
+            return redirect()->route('admin.rooms.index')->with('success', 'La sala fue creada con exito');
         } catch (Exception $e) {
-            return redirect()->route('rooms.index')->with('error', 'La sala no pudo ser creada');
+            return redirect()->route('admin.rooms.index')->with('error', 'La sala no pudo ser creada');
         }
     }
 
     public function show(Room $room)
     {
-        return view('rooms.show', compact('room'));
+        return view('admin.rooms.show', compact('room'));
     }
 
     public function edit(Room $room)
     {
         $branches = Branch::all();
-        return view('rooms.edit', compact('room', 'branches'));
+        return view('admin.rooms.edit', compact('room', 'branches'));
     }
 
     public function update(Request $request, Room $room)
@@ -55,9 +55,9 @@ class RoomController extends Controller
         ]);
         try {
             $room->update($request->all());
-            return redirect()->route('rooms.index')->with('success', 'La sala fue actualizada con exito');
+            return redirect()->route('admin.rooms.index')->with('success', 'La sala fue actualizada con exito');
         } catch (Exception $e) {
-            return redirect()->route('rooms.index')->with('error', 'La sala no pudo ser actualizada');
+            return redirect()->route('admin.rooms.index')->with('error', 'La sala no pudo ser actualizada');
         }
     }
 
@@ -65,9 +65,9 @@ class RoomController extends Controller
     {
         try {
             $room->delete();
-            return redirect()->route('rooms.index')->with('success', 'La sala fue eliminada con exito');
+            return redirect()->route('admin.rooms.index')->with('success', 'La sala fue eliminada con exito');
         } catch (Exception $e) {
-            return redirect()->route('rooms.index')->with('error', 'La sala no pudo ser eliminada');
+            return redirect()->route('admin.rooms.index')->with('error', 'La sala no pudo ser eliminada');
         }
     }
 }

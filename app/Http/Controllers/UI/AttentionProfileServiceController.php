@@ -15,7 +15,7 @@ class AttentionProfileServiceController extends Controller
     {
         $services = Service::whereNull('service_id')->orderBy('name')->get();
 
-        return view('attention_profiles.services.edit', compact('attentionProfile', 'services'));
+        return view('admin.attention_profiles.services.edit', compact('attentionProfile', 'services'));
     }
 
     public function update(AttentionProfile $attentionProfile, Request $request)

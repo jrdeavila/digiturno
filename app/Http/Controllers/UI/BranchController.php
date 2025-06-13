@@ -12,22 +12,22 @@ class BranchController extends Controller
     public function index()
     {
         $branches = Branch::latest()->paginate(5);
-        return view('branches.index', compact('branches'));
+        return view('admin.branches.index', compact('branches'));
     }
 
     public function create()
     {
-        return view('branches.create');
+        return view('admin.branches.create');
     }
 
     public function edit(Branch $branch)
     {
-        return view('branches.edit', compact('branch'));
+        return view('admin.branches.edit', compact('branch'));
     }
 
     public function show(Branch $branch)
     {
-        return view('branches.show', compact('branch'));
+        return view('admin.branches.show', compact('branch'));
     }
 
     public function store(Request $request)
@@ -40,10 +40,10 @@ class BranchController extends Controller
             DB::beginTransaction();
             Branch::create($request->all());
             DB::commit();
-            return redirect()->route('branches.index')->with('success', 'La seccional fue creada con exito');
+            return redirect()->route('admin.branches.index')->with('success', 'La seccional fue creada con exito');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('branches.index')->with('error', 'La seccional no pudo ser creada');
+            return redirect()->route('admin.branches.index')->with('error', 'La seccional no pudo ser creada');
         }
     }
 
@@ -57,10 +57,10 @@ class BranchController extends Controller
             DB::beginTransaction();
             $branch->update($request->all());
             DB::commit();
-            return redirect()->route('branches.index')->with('success', 'La seccional fue actualizada con exito');
+            return redirect()->route('admin.branches.index')->with('success', 'La seccional fue actualizada con exito');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('branches.index')->with('error', 'La seccional no pudo ser actualizada');
+            return redirect()->route('admin.branches.index')->with('error', 'La seccional no pudo ser actualizada');
         }
     }
 
@@ -71,10 +71,10 @@ class BranchController extends Controller
             DB::beginTransaction();
             $branch->delete();
             DB::commit();
-            return redirect()->route('branches.index')->with('success', 'La seccional fue eliminada con exito');
+            return redirect()->route('admin.branches.index')->with('success', 'La seccional fue eliminada con exito');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('branches.index')->with('error', 'La seccional no pudo ser eliminada');
+            return redirect()->route('admin.branches.index')->with('error', 'La seccional no pudo ser eliminada');
         }
     }
 }

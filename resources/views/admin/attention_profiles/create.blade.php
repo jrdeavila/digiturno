@@ -43,7 +43,7 @@
             </div>
             <div class="col-md-9">
                 <x-adminlte-card title="Listado de servicios" theme="primary" icon="fas fa-edit">
-                    @include('services.partials.service_tree', [
+                    @include('admin.services.partials.service_tree', [
                         'services' => $services->whereNull('service_id')->sortBy('name'),
                         'root' => true,
                         'edit' => true,

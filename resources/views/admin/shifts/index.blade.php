@@ -133,6 +133,10 @@
                     </div>
                 </form>
 
+
+
+
+
             </x-adminlte-card>
         </div>
         <div class="col-md-12">
@@ -329,7 +333,9 @@
             $('#create-room').click(function() {
                 window.location.href = "{{ route('rooms.create') }}";
             });
-            $("#export").click(function() {});
+            $('#export').click(function() {
+                window.location.href = "{{ route('shifts.report') }}";
+            })
             $("#clear-filters").click(function() {
                 window.location.href = "{{ route('shifts.index') }}";
             })

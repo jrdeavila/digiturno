@@ -25,5 +25,4 @@
             </x-adminlte-card>
         </div>
     </div>
-
 @stop

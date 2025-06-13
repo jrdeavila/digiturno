@@ -48,21 +48,21 @@ class ShiftController extends Controller
         $rooms = $request->get('branch_id') ? Room::where('branch_id', $request->get('branch_id'))->get() : Room::all();
         $attentionProfiles = $request->get('room_id') ? Room::find($request->get('room_id'))->attentionProfiles : AttentionProfile::all();
 
-        return view('shifts.index', compact('shifts', 'branches', 'rooms', 'attentionProfiles'));
+        return view('admin.shifts.index', compact('shifts', 'branches', 'rooms', 'attentionProfiles'));
     }
 
     public function show(Shift $shift)
     {
-        return view('shifts.show', compact('shift'));
+        return view('admin.shifts.show', compact('shift'));
     }
 
     public function destroy(Shift $shift)
     {
         try {
             $shift->forceDelete();
-            return redirect()->route('shifts.index')->with('success', 'El turno fue eliminado con exito');
+            return redirect()->route('admin.shifts.index')->with('success', 'El turno fue eliminado con exito');
         } catch (Exception $e) {
-            return redirect()->route('shifts.index')->with('error', 'El turno no pudo ser eliminado');
+            return redirect()->route('admin.shifts.index')->with('error', 'El turno no pudo ser eliminado');
         }
     }
 }
