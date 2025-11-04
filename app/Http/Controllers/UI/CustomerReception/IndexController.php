@@ -3,10 +3,8 @@
 namespace App\Http\Controllers\UI\CustomerReception;
 
 use App\Http\Controllers\Controller;
-use App\Models\AttentionProfile;
 use App\Models\Client;
 use App\Models\ClientType;
-use App\Models\Shift;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -43,7 +41,8 @@ class IndexController extends Controller
             'toDayCount',
             'distractedCount',
             'pendingCount',
-            'modules'
+            'modules',
+            'currentRoom'
         ));
     }
 }

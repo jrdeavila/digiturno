@@ -35,4 +35,9 @@ class Room extends Model
     {
         return $this->hasMany(Shift::class);
     }
+
+    public function distractedShifts()
+    {
+        return $this->hasMany(Shift::class, 'room_id', 'id')->where('state', \App\Enums\ShiftState::Distracted);
+    }
 }

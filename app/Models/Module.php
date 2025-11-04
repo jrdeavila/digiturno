@@ -69,4 +69,9 @@ class Module extends Model
     {
         return $query->where('enabled', true);
     }
+
+    public function pendingShifts(): HasMany
+    {
+        return $this->shifts()->pending();
+    }
 }

@@ -1,16 +1,16 @@
 @extends('adminlte::page')
 
-@section('title', 'Crear modulo')
+@section('title', 'Editar modulo')
 
 @section('content_header')
-    <h1>Crear modulo</h1>
+    <h1>Editar modulo</h1>
 @stop
 
 @section('content')
 
     <div x-data="{
-        moduleTypeSelected: {{ old('module_type_id', $module->module_type_id) }},
-        clientTypeSelected: {{ old('client_type_id', $module->client_type_id) }},
+        moduleTypeSelected: {{ old('module_type_id', $module->module_type_id ?? 1) }},
+        clientTypeSelected: {{ old('client_type_id', $module->client_type_id ?? 1) }},
         useQualificationModule: false,
     }" class="row">
         <div class="col-md-12">
@@ -31,7 +31,7 @@
                 </blockquote>
             @endif
         </div>
-        <div x-show="moduleTypeSelected == 1 || moduleTypeSelected == 6" class="col-md-6">
+        <div x-show="moduleTypeSelected == 1 || moduleTypeSelected == 6 || moduleTypeSelected == 3" class="col-md-6">
             @if ($userSelected === null)
                 <x-adminlte-card title="Funcionario responsable" theme="primary" icon="fas fa-user">
                     <form action="{{ route('modules.edit', $module) }}" method="GET"
@@ -48,7 +48,7 @@
                     </form>
                 </x-adminlte-card>
             @else
-                <x-adminlte-card title="Informacion del funcionario" theme="primary" icon="fas fa-user">
+                <x-adminlte-card title="Informacion del responsable" theme="primary" icon="fas fa-user">
                     <div class="row">
                         <div class="col-md-6">
                             <x-adminlte-input name="user-name" label="Nombre"
@@ -80,8 +80,8 @@
                 </x-adminlte-card>
             @endif
         </div>
-        <div class="col-md-6">
-            <x-adminlte-card title="Crear modulo" theme="primary" icon="fas fa-edit">
+        <div class="col-md-12">
+            <x-adminlte-card title="Actualizar modulo" theme="primary" icon="fas fa-edit">
                 <form action="{{ route('modules.update', $module) }}" method="POST" class="row">
                     @csrf
                     @method('PUT')

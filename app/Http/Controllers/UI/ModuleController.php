@@ -147,6 +147,7 @@ class ModuleController extends Controller
         $clientTypes = ClientType::all();
         $moduleTypes = ModuleType::all();
         $attentionProfiles = AttentionProfile::all();
+
         return view('admin.modules.edit', compact('module', 'clientTypes', 'moduleTypes', 'userSelected', 'attentionProfiles'));
     }
 
@@ -171,7 +172,7 @@ class ModuleController extends Controller
             }
             if ($request->get('user_id')) {
                 if ($user = User::find($request->get('user_id'))) {
-                    if ($user->modules->where('module_type_id', $module->module_type_id)->exists()) {
+                    if ($user->modules->where('module_type_id', $module->module_type_id)->count() > 0) {
                         DB::rollBack();
                         return redirect()->back()->withInput()->with('error', 'Este modulo ya esta asignado a este usuario');
                     }

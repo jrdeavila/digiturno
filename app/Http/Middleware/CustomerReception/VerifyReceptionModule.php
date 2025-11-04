@@ -23,7 +23,7 @@ class VerifyReceptionModule
         if ($user->modules->count() == 0) {
             throw new UserDoesNotHaveModuleException();
         }
-        $exists = $user->modules()->where('module_type_id', 3)->exists();
+        $exists = $user->modules()->where('module_type_id', 3)->count() > 0;
         if (!$exists) {
             throw new ModuleIsNotCustomerReceptionException();
         }

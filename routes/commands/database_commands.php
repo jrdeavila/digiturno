@@ -38,7 +38,7 @@ Artisan::command('db:export', function () {
     $db = env('DB_DATABASE');
 
     // Dump the pgsql database
-    $command = "PGPASSWORD=$pass pg_dump -h $host -p $port -U $user $db > $path";
+    $command = "PGPASSWORD='$pass' pg_dump -h $host -p $port -U $user $db > $path";
     exec($command);
 
     $this->info('Database exported successfully');
@@ -58,7 +58,7 @@ Artisan::command('db:import {filename}', function ($filename) {
     $db = env('DB_DATABASE');
 
     // Dump the pgsql database
-    $command = "PGPASSWORD=$pass psql -h $host -p $port -U $user $db < $path";
+    $command = "PGPASSWORD='$pass' psql -h $host -p $port -U $user $db < $path";
     exec($command);
 
     $this->info('Database imported successfully');

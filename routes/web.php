@@ -8,6 +8,9 @@ use App\Http\Controllers\UI\BranchController;
 use App\Http\Controllers\UI\ClientController;
 use App\Http\Controllers\UI\CustomerReception\CreateShiftController;
 use App\Http\Controllers\UI\CustomerReception\IndexController as CustomerReceptionIndexController;
+use App\Http\Controllers\UI\CustomerReception\RemoveAllDistractedShiftController;
+use App\Http\Controllers\UI\CustomerReception\RemoveShiftController;
+use App\Http\Controllers\UI\CustomerReception\ToUpShiftController;
 use App\Http\Controllers\UI\DisableModuleController;
 use App\Http\Controllers\UI\EnableModuleController;
 use App\Http\Controllers\UI\ModuleController;
@@ -54,11 +57,14 @@ Route::middleware('auth')->group(function () {
             ->name('attention-profiles.services.update');
         Route::resource('services', ServiceController::class)->names('services');
     });
-    Route::middleware([
+    Route::prefix('/customer-reception')->middleware([
         VerifyReceptionModule::class,
     ])->group(function () {
-        Route::get('/customer-reception', CustomerReceptionIndexController::class)->name('attention.customer-reception.index');
-        Route::post('/customer-reception/create-shift', CreateShiftController::class)->name('attention.customer-reception.create-shift');
+        Route::get('/', CustomerReceptionIndexController::class)->name('attention.customer-reception.index');
+        Route::post('/create-shift', CreateShiftController::class)->name('attention.customer-reception.create-shift');
+        Route::delete('/shifts/{shift}', RemoveShiftController::class)->name('attention.customer-reception.shifts.destroy');
+        Route::post('/shifts/{shift}/to-up', ToUpShiftController::class)->name('attention.customer-reception.shifts.to-up');
+        Route::delete('/rooms/{room}/shifts/distracted-delete', RemoveAllDistractedShiftController::class)->name('attention.customer-reception.shifts.distracted-delete');
     });
     Route::get('/attention', AttentionIndexController::class)->name('attention.attention.index');
     Route::get('/waiting', WaitingIndexController::class)->name('attention.waiting.index');

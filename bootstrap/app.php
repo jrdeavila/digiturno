@@ -18,6 +18,20 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions) {
+        // When exception has 403 code return json response with 403 status code
+        $exceptions->render(
+            function (
+                Exception $exception,
+                \Illuminate\Http\Request $request
+            ) {
+                if ($exception->getCode() === 403) {
+                    abort(403, $exception->getMessage());
+                }
+                if ($exception->getCode() === 500) {
+                    abort(500, $exception->getMessage());
+                }
+            }
+        );
         // When form validation fails return json response with validation errors
         $exceptions->render(function (
             \Illuminate\Validation\ValidationException $exception,

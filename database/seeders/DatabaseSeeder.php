@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
             ClientTypeSeeder::class,
             ServiceSeeder::class,
             AttentionProfileSeeder::class,
-            MontarSeccionalesConModulos::class,
+            // MontarSeccionalesConModulos::class,
             // ModuleSeeder::class,
             // RolePermissionSeeder::class,
             // RoomSeeder::class,
