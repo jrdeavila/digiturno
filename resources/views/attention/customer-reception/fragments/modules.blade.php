@@ -6,7 +6,7 @@
              <div class="d-flex flex-wrap">
                  <p class="col-12 font-weight-bold">{{ $name }}</p>
                  @foreach ($modules as $module)
-                     <div class="col-lg-3 col-md-6 mb-2">
+                     <div class="col-lg-6 col-md-6 mb-2">
                          @php
                              $theme = 'primary';
                              switch ($module->status) {
@@ -22,8 +22,8 @@
                                      break;
                              }
                          @endphp
-                         <x-adminlte-info-box title="{{ $module->name }}" text="{{ $module->description }}"
-                             theme="{{ $theme }}" icon="fas fa-desktop" />
+                         <x-adminlte-info-box title="Modulo {{ $module->name }} ({{ $module->pendingShifts->count() }})"
+                             text="{{ $module->description }}" theme="{{ $theme }}" icon="fas fa-desktop" />
                      </div>
                  @endforeach
              </div>
