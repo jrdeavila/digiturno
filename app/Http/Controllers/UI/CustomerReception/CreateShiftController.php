@@ -74,7 +74,9 @@ class CreateShiftController extends Controller
         $room = Room::find($request->get('room_id'));
         $module = $room->modules()
             ->where('client_type_id', $request->get('client_type_id'))
-            ->where('attention_profile_id', $request->get('attention_profile_id'))
+            ->whereHas('attentionProfiles', function ($query) use ($request) {
+                $query->where('attention_profiles.id', $request->get('attention_profile_id'));
+            })
             ->where('status', ModuleStatus::Online)
             // Ordenar por cantidad de turnos con estado pendientes
             ->withCount('pendingShifts')

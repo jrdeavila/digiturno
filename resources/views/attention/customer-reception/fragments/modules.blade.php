@@ -1,3 +1,6 @@
+     @props([
+         'modules' => collect([]),
+     ])
      <x-adminlte-card title="Modulos de la sala" icon="fas fa-desktop" maximizable collapsable>
          @php
              $modulePerProfile = $modules->groupBy('attentionProfile.name');

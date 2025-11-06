@@ -51,6 +51,11 @@ class Shift extends Model
         return $this->belongsToMany(Service::class, 'shift_has_service');
     }
 
+    public function histories()
+    {
+        return $this->hasMany(ShiftHistory::class);
+    }
+
 
     public function scopePending($query): Builder
     {
@@ -81,16 +86,4 @@ class Shift extends Model
     {
         return $query->whereDate('created_at', now()->format('Y-m-d'));
     }
-
-    // public function getStateAttribute()
-    // {
-    //     return $this->state_new;
-    // }
-
-    // protected $hidden = ['state_new'];
-
-    // public function setStateAttribute($value)
-    // {
-    //     $this->state_new = $value;
-    // }
 }

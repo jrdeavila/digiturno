@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 #[ObservedBy(\App\Observers\ModuleObserver::class)]
 class Module extends Model
@@ -73,5 +74,20 @@ class Module extends Model
     public function pendingShifts(): HasMany
     {
         return $this->shifts()->pending();
+    }
+
+    public function inProgressShifts(): HasMany
+    {
+        return $this->shifts()->inProgress();
+    }
+
+    public function completedShifts(): HasMany
+    {
+        return $this->shifts()->completed();
+    }
+
+    public function distractedShifts(): HasMany
+    {
+        return $this->shifts()->distracted();
     }
 }

@@ -157,9 +157,9 @@ class ModuleController extends Controller
             'name' => 'required|string',
             'client_type_id' => 'required|exists:client_types,id',
             'module_type_id' => 'required|exists:module_types,id',
-            'attention_profile_id' => 'nullable|exists:attention_profiles,id',
+            'attention_profiles' => 'nullable|array',
+            'attention_profiles.*' => 'exists:attention_profiles,id',
         ]);
-
         try {
             DB::beginTransaction();
             $module->name = $request->get('name', $module->name);
@@ -167,17 +167,18 @@ class ModuleController extends Controller
             $module->module_type_id = $request->get('module_type_id', $module->module_type_id);
             $module->responsable()->dissociate();
 
-            if ($request->get('attention_profile_id')) {
-                $module->attentionProfiles()->sync([$request->get('attention_profile_id')]);
+            if ($request->get('attention_profiles')) {
+                $module->attentionProfiles()->sync($request->attention_profiles);
             }
             if ($request->get('user_id')) {
                 if ($user = User::find($request->get('user_id'))) {
-                    if ($user->modules->where('module_type_id', $module->module_type_id)->count() > 0) {
+                    // Si el modulo ya tiene un responsable
+                    if (Module::whereNotNull('responsable_id')->where('responsable_id', '<>', $request->get('user_id'))->exists()) {
                         DB::rollBack();
-                        return redirect()->back()->withInput()->with('error', 'Este modulo ya esta asignado a este usuario');
+                        return redirect()->back()->withInput()->with('error', 'Este modulo ya esta asignado a otro usuario');
                     }
 
-                    $module->responsable()->associate($request->get('user_id'));
+                    $module->responsable()->associate($user->id);
                 }
             }
             $module->save();

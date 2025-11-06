@@ -1,7 +1,11 @@
 <?php
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\UI\Attention\CallShiftClientController;
+use App\Http\Controllers\UI\Attention\FinishShiftController;
 use App\Http\Controllers\UI\Attention\IndexController as AttentionIndexController;
+use App\Http\Controllers\UI\Attention\SendShiftToDistractedController;
+use App\Http\Controllers\UI\Attention\ToUpShiftController as AttentionToUpShiftController;
 use App\Http\Controllers\UI\AttentionProfileController;
 use App\Http\Controllers\UI\AttentionProfileServiceController;
 use App\Http\Controllers\UI\BranchController;
@@ -66,7 +70,13 @@ Route::middleware('auth')->group(function () {
         Route::post('/shifts/{shift}/to-up', ToUpShiftController::class)->name('attention.customer-reception.shifts.to-up');
         Route::delete('/rooms/{room}/shifts/distracted-delete', RemoveAllDistractedShiftController::class)->name('attention.customer-reception.shifts.distracted-delete');
     });
-    Route::get('/attention', AttentionIndexController::class)->name('attention.attention.index');
+    Route::prefix('attention')->group(function () {
+        Route::get('/', AttentionIndexController::class)->name('attention.attention.index');
+        Route::post('/shifts/{shift}/up', AttentionToUpShiftController::class)->name('attention.attention.shifts.up');
+        Route::post('/shifts/{shift}/distracted', SendShiftToDistractedController::class)->name('attention.attention.shifts.distracted');
+        Route::post('/shifts/{shift}/call', CallShiftClientController::class)->name('attention.attention.shifts.call');
+        Route::post('/shifts/{shift}/finish', FinishShiftController::class)->name('attention.attention.shifts.finish');
+    });
     Route::get('/waiting', WaitingIndexController::class)->name('attention.waiting.index');
     Route::get('/home', HomeController::class)->name('home');
 });

@@ -43,7 +43,7 @@
 
         <div class="col-md-4">
             @include('attention.customer-reception.fragments.statistics')
-            @include('attention.customer-reception.fragments.modules')
+            @include('attention.customer-reception.fragments.modules', ['modules' => $modules])
         </div>
     </div>
 @stop

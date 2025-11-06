@@ -120,9 +120,18 @@
 
                     <div class="col-md-3">
                         <div class="form-group" name="attention_profiles">
+                            @php
+                                $moduleApIds = $module->attentionProfiles->pluck(['id'])->toArray();
+                            @endphp
                             <label for="attentionProfiles">Perfiles de atencion</label>
                             <div x-show="(moduleTypeSelected == 1 || moduleTypeSelected == 6)">
                                 @foreach ($attentionProfiles as $attentionProfile)
+                                    @php
+                                        $selected = in_array(
+                                            $attentionProfile->id,
+                                            json_decode(old('attention_profiles', json_encode($moduleApIds))),
+                                        );
+                                    @endphp
                                     <div class="custom-control custom-checkbox">
                                         <input class="custom-control-input" type="checkbox"
                                             id="{{ $attentionProfile->id }}" value="{{ $attentionProfile->id }}"
@@ -132,19 +141,6 @@
                                             class="custom-control-label">{{ $attentionProfile->name }}</label>
                                     </div>
                                 @endforeach
-                                {{-- <template x-for="attentionProfile in attentionProfiles">
-                                    <div class="custom-control custom-checkbox">
-                                        <input class="custom-control-input" type="checkbox"
-                                            :id="'attentionProfile' + attentionProfile.id" :value="attentionProfile.id"
-                                            name="attention_profiles[]"
-                                            :checked="{{ json_encode(old('attention_profiles', $module->attention_profiles)) }}
-                                                .includes(attentionProfile
-                                                    .id
-                                                    .toString())">
-                                        <label :for="'attentionProfile' + attentionProfile.id" class="custom-control-label"
-                                            x-text="attentionProfile.name"></label>
-                                    </div>
-                                </template> --}}
                             </div>
                             <div x-show="moduleTypeSelected != 1 && moduleTypeSelected != 6">
                                 <span class="text-muted font-italic"

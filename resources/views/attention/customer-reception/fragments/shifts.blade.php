@@ -4,10 +4,38 @@
                 @else
                     <ul class="list-group">
                         @foreach ($shifts as $shift)
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <div>
-                                    <i class="fas fa-desktop text-primary"></i>
-                                    <strong class="text-primary ml-2">{{ $shift->module->name }}</strong>
+                            <li x-data="{
+                                moment: '{{ $shift->created_at }}',
+                                time: '',
+                                interval: null,
+                                updateTime() {
+                                    let interval = setInterval(() => {
+                                        // Calcular el timpo transcurrido en minutos
+                                        let now = new Date();
+                                        let then = new Date(this.moment);
+                                        let diff = now.getTime() - then.getTime();
+                                        let minutes = Math.floor(diff / 1000 / 60);
+                                        if (minutes < 1) {
+                                            let seconds = Math.floor(diff / 1000);
+                                            this.time = seconds + ' seg';
+                                        } else if (minutes < 60) {
+                                            this.time = minutes + ' min';
+                                        } else {
+                                            let hours = Math.floor(minutes / 60);
+                                            let remainingMinutes = minutes % 60;
+                                            this.time = hours + ' hr ' + remainingMinutes + ' min';
+                                        }
+                                    }, 1000);
+                                    this.interval = interval
+                                }
+                            }" x-init="updateTime()" x-on:destroy="onUnmount()"
+                                class="list-group-item d-flex justify-content-between align-items-center">
+                                <div class="d-flex flex-column">
+                                    <div>
+                                        <i class="fas fa-desktop text-primary"></i>
+                                        <strong class="text-primary ml-2">{{ $shift->module->name }}</strong>
+                                    </div>
+                                    <span class="text-muted" x-text="time"></span>
                                 </div>
                                 <div>
                                     <strong>{{ $shift->client->name }}</strong> ({{ $shift->client->dni }})
