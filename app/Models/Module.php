@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Enums\ModuleStatus;
+use App\Jobs\ModuleOffline;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -9,7 +12,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 #[ObservedBy(\App\Observers\ModuleObserver::class)]
 class Module extends Model
@@ -21,14 +23,16 @@ class Module extends Model
 
     protected $fillable = [
         'name',
-        'ip_address',
         'room_id',
         'client_type_id',
-        'attention_profile_id',
         'enabled',
         'module_type_id',
         'status',
-        'user_id',
+        'responsable_id',
+    ];
+
+    protected $with = [
+        'currentShifts',
     ];
 
     public function room(): BelongsTo
@@ -44,11 +48,6 @@ class Module extends Model
     public function responsable(): BelongsTo
     {
         return $this->belongsTo(User::class, 'responsable_id', 'id');
-    }
-
-    public function attentionProfile(): BelongsTo
-    {
-        return $this->belongsTo(AttentionProfile::class);
     }
 
     public function attentionProfiles(): BelongsToMany
@@ -89,5 +88,43 @@ class Module extends Model
     public function distractedShifts(): HasMany
     {
         return $this->shifts()->distracted();
+    }
+
+    public function currentShifts(): HasMany
+    {
+        return $this->shifts()->current();
+    }
+
+    public function setOnline(): void
+    {
+        $this->status = 'online';
+        $this->save();
+    }
+
+    // Si antes de las {MODULE_OFFLINE_CLOCK_TIME} del medio dia entonces se programara para una hora despues de la hora definida {MODULE_OFFLINE_CLOCK_TIME}
+    public function programAutoOff(): void
+    {
+        $job = new ModuleOffline($this);
+        $currentHour = now()->hour;
+        $time1 = env("MODULE_OFFLINE_CLOCK_TIME_1");
+        if ($currentHour < $time1) {
+            $delay =  ($time1 + 1 - $currentHour);
+        }
+        $time2 = env("MODULE_OFFLINE_CLOCK_TIME_2");
+        if ($currentHour >= $time1 && $currentHour < $time2) {
+            $delay =  ($time2 + 1 - $currentHour);
+        }
+        $date = new Carbon();
+        $date->addHours($delay);
+        $date->setMinutes(0);
+        dispatch($job->delay($date));
+    }
+
+    public function resetStatus(): void
+    {
+        if ($this->status === ModuleStatus::Offline->value) {
+            $this->programAutoOff();
+            $this->setOnline();
+        }
     }
 }

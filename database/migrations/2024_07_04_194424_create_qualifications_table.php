@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\QualificationOption;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,10 +12,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('attention_profiles', function (Blueprint $table) {
+        Schema::create('qualifications', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->softDeletes();
+            $table->foreignId('shift_id')
+                ->constrained()
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
+            $table->enum('qualification', array_keys(QualificationOption::cases()));
             $table->timestamps();
         });
     }
@@ -24,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('attention_profiles');
+        Schema::dropIfExists('qualifications');
     }
 };

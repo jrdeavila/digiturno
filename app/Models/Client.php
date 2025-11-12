@@ -18,6 +18,8 @@ class Client extends Model
         'client_type_id',
     ];
 
+    protected $with = ['clientType'];
+
     public function clientType()
     {
         return $this->belongsTo(ClientType::class);

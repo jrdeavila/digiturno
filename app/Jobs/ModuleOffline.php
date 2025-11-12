@@ -2,11 +2,13 @@
 
 namespace App\Jobs;
 
+use App\Enums\ModuleStatus;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\DB;
 
 class ModuleOffline implements ShouldQueue
 {
@@ -27,7 +29,14 @@ class ModuleOffline implements ShouldQueue
      */
     public function handle(): void
     {
-        $this->module->status = \App\Enums\ModuleStatus::Offline;
-        $this->module->save();
+        try {
+            DB::beginTransaction();
+            $this->module->status = ModuleStatus::Offline->value;
+            $this->module->save();
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 }

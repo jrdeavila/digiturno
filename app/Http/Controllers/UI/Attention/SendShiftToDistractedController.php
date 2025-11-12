@@ -17,7 +17,7 @@ class SendShiftToDistractedController extends Controller
             $shift->save();
             return redirect()->back();
         } catch (Exception $e) {
-            return redirect()->route('attention.index')->with('error', 'No se pudo enviar el turno a distraidos: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'No se pudo enviar el turno a distraidos: ' . $e->getMessage());
         }
     }
 }

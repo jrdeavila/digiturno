@@ -18,7 +18,7 @@ class ShiftCancelation implements ShouldQueue
     {
         if ($this->shift->state === ShiftState::Pending->value) {
 
-            $this->shift->state = ShiftState::Cancelled;
+            $this->shift->value = ShiftState::Cancelled->value;
             $this->shift->save();
         }
     }

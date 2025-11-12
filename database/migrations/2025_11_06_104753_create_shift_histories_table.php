@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('shift_id')
                 ->constrained('shifts')
                 ->cascadeOnDelete();
-            $table->enum('state', array_keys(ShiftState::cases()));
+            $table->enum('state', array_map(fn($state) => $state->value, ShiftState::cases()));
             $table->unsignedBigInteger('responsable_id')->nullable();
             $table->timestamps();
         });

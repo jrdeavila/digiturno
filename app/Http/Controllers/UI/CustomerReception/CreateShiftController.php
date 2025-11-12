@@ -11,6 +11,7 @@ use App\Models\Room;
 use App\Models\Shift;
 use App\Models\User;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -39,22 +40,29 @@ class CreateShiftController extends Controller
 
             $this->createShift($client, $request, $user);
             DB::commit();
-            return redirect()->route('attention.customer-reception.index')->with('success', 'El turno fue creado con exito');
+            return redirect()->back()->with('success', 'El turno fue creado con exito');
+        } catch (ModelNotFoundException $exception) {
+            DB::rollBack();
+            if ($exception->getModel() === Module::class) {
+                return redirect()->back()->with('error', 'No hay modulos disponibles')->withInput($request->all());
+            }
+            if ($exception->getModel() === Client::class) {
+                return redirect()->back()->with('error', 'No se encontro el cliente')->withInput($request->all());
+            }
         } catch (Exception $exception) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'No se pudo crear el turno: ' . $exception->getMessage());
+            return redirect()->back()->with('error', 'No se pudo crear el turno: ' . $exception->getMessage())->withInput($request->all());
         }
     }
 
     private function createShift(Client $client, Request $request, User $user)
     {
         $exists = Shift::where('client_id', $client->id)
-            ->whereIn('state', [
-                ShiftState::Pending,
-                ShiftState::InProgress,
-                ShiftState::PendingTransferred,
-                ShiftState::Transferred,
-                ShiftState::Distracted,
+            ->whereNotIn('state', [
+                ShiftState::Cancelled->value,
+                ShiftState::Completed->value,
+                ShiftState::Qualified->value,
+                ShiftState::Called->value,
             ])->exists();
 
         if ($exists) {
@@ -65,7 +73,7 @@ class CreateShiftController extends Controller
             'attention_profile_id' => $request->get('attention_profile_id'),
             'client_id' => $client->id,
             'room_id' => $request->get('room_id'),
-            'module_id' => $module->id
+            'module_id' => $module->id,
         ]);
     }
 
@@ -73,22 +81,18 @@ class CreateShiftController extends Controller
     {
         $room = Room::find($request->get('room_id'));
         $module = $room->modules()
-            ->where('client_type_id', $request->get('client_type_id'))
             ->whereHas('attentionProfiles', function ($query) use ($request) {
                 $query->where('attention_profiles.id', $request->get('attention_profile_id'));
             })
             ->where('status', ModuleStatus::Online)
-            // Ordenar por cantidad de turnos con estado pendientes
             ->withCount('pendingShifts')
             ->orderBy('pending_shifts_count', 'asc')
             ->firstOrFail();
-        // Distribuir la carga de los turnos en los módulos
 
         return $module;
     }
 
     private function refreshClientInfo(Request $request): Client
-
     {
         $client = Client::where('dni', $request->get('dni'))->first();
         if (!$client) {

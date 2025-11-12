@@ -18,10 +18,10 @@ class IndexController extends Controller
         $user = User::find(Auth::id());
         $clientTypes = ClientType::all();
         $currentRoom = $user->modules->where('module_type_id', 3)->first()->room;
-        $attentionProfiles = $currentRoom->attentionProfiles;
+        $attentionProfiles = $currentRoom->attentionProfiles()->distinct()->get();
 
         // Shifts
-        $shifts = $currentRoom->shifts()->pending()->paginate(10);
+        $shifts = $currentRoom->shifts()->pending()->get();
         $distractedShifts = $currentRoom->shifts()->distracted()->paginate(3);
 
         // Shift metrics

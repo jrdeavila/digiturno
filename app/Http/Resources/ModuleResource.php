@@ -22,9 +22,8 @@ class ModuleResource extends JsonResource
             'type' => $this->clientType?->name,
             'status' => $this->status,
             'enabled' => $this->enabled,
-            'attention_profile_id' => $this->attentionProfile?->id,
+            'attention_profiles' => AttentionProfileResource::collection($this->attentionProfiles),
             'module_type_id' => $this->module_type_id,
-            'current_attendant_id' => $this->currentAttendant()?->id,
         ];
     }
 }

@@ -17,8 +17,7 @@ class IndexController extends Controller
         $currentModule = null;
         if ($request->get('module')) {
             $currentModule = $modules->where('id', $request->get('module'))->firstOrFail();
-            $currentModule->status = ModuleStatus::Online;
-            $currentModule->save();
+            $currentModule->resetStatus();
         }
         return view('attention.attention.index', [
             'modules' => $modules,

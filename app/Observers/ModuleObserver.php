@@ -2,10 +2,12 @@
 
 namespace App\Observers;
 
+use App\Events\ModuleUpdated;
+
 class ModuleObserver
 {
     public function updated(\App\Models\Module $module)
     {
-        \App\Events\ModuleUpdated::dispatch($module);
+        ModuleUpdated::dispatch($module);
     }
 }

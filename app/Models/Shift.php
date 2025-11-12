@@ -22,6 +22,13 @@ class Shift extends Model
         'module_id',
     ];
 
+    protected $with = [
+        'attentionProfile',
+        'room',
+        'client',
+        'module',
+    ];
+
     public function room()
     {
         return $this->belongsTo(Room::class);
@@ -56,7 +63,6 @@ class Shift extends Model
         return $this->hasMany(ShiftHistory::class);
     }
 
-
     public function scopePending($query): Builder
     {
         return $query->where('state', ShiftState::Pending);
@@ -80,6 +86,16 @@ class Shift extends Model
     public function scopeDistracted($query): Builder
     {
         return $query->where('state', ShiftState::Distracted);
+    }
+
+    public function scopeCurrent($query): Builder
+    {
+        return $query->where('state', ShiftState::InProgress)
+            ->orWhere('state', ShiftState::PendingTransferred)
+            ->orWhere('state', ShiftState::PendingTransferred)
+            ->orWhere('state', ShiftState::Pending)
+            ->orWhere('state', ShiftState::Completed)
+            ->orWhere('state', ShiftState::Distracted);
     }
 
     public function scopeToDay($query): Builder

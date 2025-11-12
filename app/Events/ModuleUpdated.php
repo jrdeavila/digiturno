@@ -2,25 +2,26 @@
 
 namespace App\Events;
 
+use App\Http\Resources\ModuleResource;
+use App\Models\Module;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
 class ModuleUpdated implements ShouldBroadcast
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable, InteractsWithSockets, SerializesModels, Queueable;
 
-    public \App\Models\Module $module;
+    public Module $module;
 
     /**
      * Create a new event instance.
      */
     public function __construct(
-        \App\Models\Module $module
+        Module $module
     ) {
         $this->module = $module;
     }
@@ -41,12 +42,5 @@ class ModuleUpdated implements ShouldBroadcast
     public function broadcastAs()
     {
         return "module.updated";
-    }
-
-    public function broadcastWith()
-    {
-        return [
-            'module' => new \App\Http\Resources\ModuleResource($this->module)
-        ];
     }
 }

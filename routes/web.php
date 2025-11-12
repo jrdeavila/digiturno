@@ -14,6 +14,7 @@ use App\Http\Controllers\UI\CustomerReception\CreateShiftController;
 use App\Http\Controllers\UI\CustomerReception\IndexController as CustomerReceptionIndexController;
 use App\Http\Controllers\UI\CustomerReception\RemoveAllDistractedShiftController;
 use App\Http\Controllers\UI\CustomerReception\RemoveShiftController;
+use App\Http\Controllers\UI\CustomerReception\SetOffAllModuleController;
 use App\Http\Controllers\UI\CustomerReception\ToUpShiftController;
 use App\Http\Controllers\UI\DisableModuleController;
 use App\Http\Controllers\UI\EnableModuleController;
@@ -69,6 +70,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/shifts/{shift}', RemoveShiftController::class)->name('attention.customer-reception.shifts.destroy');
         Route::post('/shifts/{shift}/to-up', ToUpShiftController::class)->name('attention.customer-reception.shifts.to-up');
         Route::delete('/rooms/{room}/shifts/distracted-delete', RemoveAllDistractedShiftController::class)->name('attention.customer-reception.shifts.distracted-delete');
+        Route::put('rooms/{room}/modules/offline', SetOffAllModuleController::class)->name('attention.customer-reception.modules.offline');
     });
     Route::prefix('attention')->group(function () {
         Route::get('/', AttentionIndexController::class)->name('attention.attention.index');

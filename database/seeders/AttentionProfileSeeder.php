@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\AttentionProfile;
+use App\Models\Service;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -17,21 +19,12 @@ class AttentionProfileSeeder extends Seeder
         $attentionProfiles = require __DIR__ . '/data/attentionProfiles.php';
 
         foreach ($attentionProfiles as $attentionProfile => $services) {
-            $ap = \App\Models\AttentionProfile::create([
+            $a = AttentionProfile::create([
                 'name' => $attentionProfile,
-                // TODO: Add room_id to mount the relationship
             ]);
-
-            \App\Models\Room::all()->each(function ($room) use ($ap) {
-                $room->attentionProfiles()->attach($ap);
-            });
-
             foreach ($services as $service) {
-                // Find or create the service
-                $s = \App\Models\Service::firstOrCreate([
-                    'name' => $service,
-                ]);
-                $ap->services()->attach($s);
+                $s = Service::where('name', $service)->firstOrFail();
+                $a->services()->attach($s);
             }
         }
     }

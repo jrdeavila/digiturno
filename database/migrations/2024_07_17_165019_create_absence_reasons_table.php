@@ -15,13 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('name');
         });
-
-        Schema::create('attendant_absence_reason', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('attendant_id')->constrained()->onDelete('cascade');
-            $table->foreignId('absence_reason_id')->constrained()->onDelete('cascade');
-            $table->timestamps();
-        });
     }
 
 
@@ -31,6 +24,5 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('absence_reasons');
-        Schema::dropIfExists('attendant_absence_reason');
     }
 };

@@ -1,35 +1,69 @@
-     @props([
-         'modules' => collect([]),
-     ])
-     <x-adminlte-card title="Modulos de la sala" icon="fas fa-desktop" maximizable collapsable>
-         @php
-             $modulePerProfile = $modules->groupBy('attentionProfile.name');
-         @endphp
-         @foreach ($modulePerProfile as $name => $modules)
-             <div class="d-flex flex-wrap">
-                 <p class="col-12 font-weight-bold">{{ $name }}</p>
-                 @foreach ($modules as $module)
-                     <div class="col-lg-6 col-md-6 mb-2">
-                         @php
-                             $theme = 'primary';
-                             switch ($module->status) {
-                                 case 'offline':
-                                     $theme = 'danger';
-                                     break;
+@props([
+    'modules' => collect([]),
+])
+<div>
+    <x-adminlte-card title="Modulos de la sala" icon="fas fa-desktop">
+        <x-slot name="toolsSlot">
+            <x-adminlte-button label="Acciones" theme="primary" id="dropdownMenuButton" class="dropdown-toggle"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" />
+            <div class="dropdown-menu" role="menu"
+                style="position: absolute; transform: translate3d(68px, 38px, 0px); top: 0px; left: 0px; will-change: transform;"
+                x-placement="bottom-start">
 
-                                 case 'online':
-                                     $theme = 'success';
-                                     break;
-                                 default:
-                                     $theme = 'warning';
-                                     break;
-                             }
-                         @endphp
-                         <x-adminlte-info-box title="Modulo {{ $module->name }} ({{ $module->pendingShifts->count() }})"
-                             text="{{ $module->description }}" theme="{{ $theme }}" icon="fas fa-desktop" />
-                     </div>
-                 @endforeach
-             </div>
-         @endforeach
+                <div class="dropdown-divider"></div>
 
-     </x-adminlte-card>
+                <form id="form-delete-modules-offline"
+                    action="{{ route('attention.customer-reception.modules.offline', $currentRoom) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <a class="dropdown-item" onclick="document.getElementById('form-delete-modules-offline').submit();">
+                        <div class="row">
+                            <div class="col-2">
+                                <i class="fas fa-upload"></i>
+                            </div>
+                            <div class="col-10">
+                                Desactivar todos los modulos
+                            </div>
+                        </div>
+                    </a>
+                </form>
+            </div>
+        </x-slot>
+        @php
+            // Los modulos tienen muchos perfiles de atencion "attentionProfiles" y necesito agruparlos por perfil de atencion sin importar si el modulo se repite
+            $modulePerProfile = $modules->groupBy('attentionProfiles.*.name');
+        @endphp
+        @foreach ($modulePerProfile as $name => $modules)
+            <div x-data="{
+                modules: {{ json_encode($modules->toArray()) }},
+                listener() {
+                    this.modules.forEach((module) => {
+                        let channel = Echo.channel('modules.' + module.id);
+                        channel.listen('.module.updated', (e) => {
+                            let module = e.module;
+                            this.modules = this.modules.map((m) => {
+                                if (m.id === module.id) {
+                                    return module;
+                                }
+                                return m;
+                            })
+                        })
+                    })
+                }
+            }" x-init="listener()" class="d-flex flex-wrap">
+                <p class="col-12 font-weight-bold">{{ $name }}</p>
+                <template x-for="module in modules">
+                    <div class="col-lg-3 col-md-6 mb-2">
+                        <i class="fas fa-desktop"
+                            x-bind:class="`text-${({ offline: 'danger', online: 'success',})[module.status]}`"></i>
+                        <strong class="ml-2"
+                            x-bind:class="`text-${({ offline: 'danger', online: 'success',})[module.status]}`"
+                            x-text="`${module.name} (${module.current_shifts.length})`">
+                        </strong>
+                    </div>
+                </template>
+            </div>
+        @endforeach
+
+    </x-adminlte-card>
+</div>

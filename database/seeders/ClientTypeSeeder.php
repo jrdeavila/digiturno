@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\ClientType;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -12,24 +13,33 @@ class ClientTypeSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\ClientType::create([
+        ClientType::create([
+            'id' => 1,
             'name' => 'Tramitador',
             'slug' => 'processor',
-            'priority' => 2,
+            'priority' => 3
         ]);
 
-        \App\Models\ClientType::create([
+        ClientType::create([
+            'id' => 2,
             'name' => 'Preferencial',
             'slug' => 'preferential',
-            'priority' => 1,
+            'priority' => 2
 
         ]);
 
-        \App\Models\ClientType::create([
+        ClientType::create([
+            'id' => 3,
+            'name' => 'Afiliado',
+            'slug' => 'affiliate',
+            'priority' => 1
+        ]);
+
+        ClientType::create([
+            'id' => 4,
             'name' => 'Estandar',
             'slug' => 'standard',
-            'priority' => 3,
-
+            'priority' => 4
         ]);
     }
 }

@@ -11,10 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('attention_profiles', function (Blueprint $table) {
+        Schema::create('attention_profiles', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
             $table->foreignId('room_id')
                 ->nullable()
                 ->constrained()->cascadeOnDelete();
+            $table->timestamps();
         });
     }
 
@@ -23,9 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('attention_profiles', function (Blueprint $table) {
-            $table->dropForeign(['room_id']);
-            $table->dropColumn('room_id');
-        });
+        Schema::dropIfExists('attention_profiles');
     }
 };

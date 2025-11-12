@@ -66,26 +66,7 @@ Route::apiResource('modules', \App\Http\Controllers\ModuleController::class)->na
 
 Route::apiResource('module_types', \App\Http\Controllers\ModuleTypeController::class)->only(['index'])->names('module_types');
 
-Route::middleware([
-    \App\Http\Middleware\VerifyModuleIp::class,
-])->prefix('attendants')->group(function () {
-    Route::post('/login', [\App\Http\Controllers\AuthenticationController::class, 'login'])->name('attendants.login');
-    Route::middleware([
-        \App\Http\Middleware\VerifyAttendantToken::class,
-    ])->group(function () {
-        Route::get('/profile', [\App\Http\Controllers\AuthenticationController::class, 'profile'])->name('attendants.profile');
-        Route::post('/logout', [\App\Http\Controllers\AuthenticationController::class, 'logout'])->name('attendants.logout');
-        Route::post('/refresh', [\App\Http\Controllers\AuthenticationController::class, 'refresh'])->name('attendants.refresh');
-    });
-});
-Route::apiResource('attendants', \App\Http\Controllers\AttendantController::class)->names('attendants');
-Route::apiResource('attendants.absences', \App\Http\Controllers\AttendantAbsenceController::class)->names('attendant.absence')->only(['index', 'store']);
-Route::apiResource("attendants.juridical_cases", \App\Http\Controllers\JuridicalCaseController::class)->names('attendants.juridical_cases');
-Route::prefix('attendants')->group(function () {
-    Route::put('/{attendant}/back-to-work', [\App\Http\Controllers\AttendantAbsenceController::class, 'backToWork'])->name('attendant.back-to-work');
-    Route::post("/{attendant}/juridical_cases/{juridical_case}/observations", [\App\Http\Controllers\JuridicalCaseController::class, 'addObservation'])->name('attendants.juridical_cases.observations.store');
-    Route::delete("/{attendant}/juridical_cases/observations/{observation}", [\App\Http\Controllers\JuridicalCaseController::class, 'destroyObservation'])->name('attendants.juridical_cases.observations.destroy');
-});
+
 
 Route::apiResource('module-types', \App\Http\Controllers\ModuleTypeController::class)->names('module-types');
 Route::apiResource('modules.attendants', \App\Http\Controllers\ModuleAttendantController::class)->names('modules.attendants')->only(['index']);
@@ -97,7 +78,6 @@ Route::prefix('clients')->group(function () {
 Route::apiResource('clients', \App\Http\Controllers\ClientController::class)->names('clients');
 
 Route::apiResource('absence_reasons', \App\Http\Controllers\AbsenceReasonController::class)->names('absence_reason');
-Route::apiResource('attendant_accesses', \App\Http\Controllers\AttendantModuleAccessController::class)->only(['index'])->names('attendant_accesses');
 
 Route::prefix('report')->group(function () {
     Route::get('/', \App\Http\Controllers\ReportController::class)->name('report');

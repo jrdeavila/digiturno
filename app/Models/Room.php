@@ -38,6 +38,6 @@ class Room extends Model
 
     public function distractedShifts()
     {
-        return $this->hasMany(Shift::class, 'room_id', 'id')->where('state', \App\Enums\ShiftState::Distracted);
+        return $this->hasMany(Shift::class, 'room_id', 'id')->with(['client', 'attentionProfile', 'module'])->where('state', \App\Enums\ShiftState::Distracted);
     }
 }

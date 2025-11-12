@@ -15,8 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
-            $table->integer('priority')->default(0);
-            $table->softDeletes();
+            $table->integer('priority')->default(1);
             $table->timestamps();
         });
     }
