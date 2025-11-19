@@ -29,8 +29,8 @@ class IndexController extends Controller
         $distractedCount = $currentRoom->shifts()->distracted()->count();
         $pendingCount = $currentRoom->shifts()->pending()->count();
 
+        $modules = $currentRoom->modules()->where('module_type_id', 1)->enabled()->with('currentShifts')->orderBy('name', 'asc')->get();
         // Modules
-        $modules = $currentRoom->modules()->where('module_type_id', 1)->enabled()->orderBy('name', 'asc')->get();
         return view('attention.customer-reception.index', compact(
             'clientTypes',
             'searched',

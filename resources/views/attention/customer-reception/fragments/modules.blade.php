@@ -48,6 +48,9 @@
                                 return m;
                             })
                         })
+                        channel.listen('.shift.updated', (e) => {
+            
+                        })
                     })
                 }
             }" x-init="listener()" class="d-flex flex-wrap">
@@ -58,7 +61,7 @@
                             x-bind:class="`text-${({ offline: 'danger', online: 'success',})[module.status]}`"></i>
                         <strong class="ml-2"
                             x-bind:class="`text-${({ offline: 'danger', online: 'success',})[module.status]}`"
-                            x-text="`${module.name} (${module.current_shifts.length})`">
+                            x-text="`${module.name} (${module.current_shifts_count})`">
                         </strong>
                     </div>
                 </template>

@@ -31,9 +31,11 @@ class Module extends Model
         'responsable_id',
     ];
 
-    protected $with = [
-        'currentShifts',
+    // Agregar atributos
+    protected $appends = [
+        'current_shifts_count',
     ];
+
 
     public function room(): BelongsTo
     {
@@ -93,6 +95,11 @@ class Module extends Model
     public function currentShifts(): HasMany
     {
         return $this->shifts()->current();
+    }
+
+    public function getCurrentShiftsCountAttribute(): int
+    {
+        return $this->currentShifts()->count();
     }
 
     public function setOnline(): void

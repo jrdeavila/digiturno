@@ -1,41 +1,104 @@
-<div class="p-2" style="max-height: inherit; width: 25%;">
+<div x-data="{
+    distractedShifts: JSON.parse('{{ json_encode($distractedShifts->toArray()) }}'),
+    total: {{ $distractedShifts->count() }},
+    upShift(shift) {
+        let url = '{{ route('attention.attention.shifts.up', '__ID__') }}';
+        $refs.upShiftForm.action = url.replace('__ID__', shift.id);
+        $refs.upShiftForm.submit();
+    },
+    listener() {
+        let channel = Echo.channel('modules.' + {{ $currentModule->id }} + '.shifts');
+
+        channel.subscribed(() => {
+            console.log('subscribed to modules.' + {{ $currentModule->id }} + '.shifts');
+        })
+
+        channel.cancelSubscription = () => {
+            console.log('unsubscribed from modules.' + {{ $currentModule->id }} + '.shifts');
+        }
+
+        channel.listen('.shift.updated', (e) => {
+            this.distractedShifts = this.distractedShifts.filter((shift) => {
+                return shift.state !== '{{ \App\Enums\ShiftState::Distracted }}'
+            })
+        })
+
+        channel.listen('.shift.deleted', (e) => {
+            this.shifts = this.distractedShifts.filter((shift) => {
+                return shift.id !== e.shift.id
+            })
+        })
+    }
+}" x-init="listener()" class="p-2" style="max-height: inherit; width: 25%;">
     <x-adminlte-card title="Distraidos" icon="fas fa-times-circle">
-        @if ($distractedShifts->isEmpty())
+        <x-slot name="toolsSlot">
+            Total: <strong><span class="badge badge-success" x-text="total">/span></strong>
+        </x-slot>
+
+        <template x-if="distractedShifts.length == 0">
             <p class="text-center">No hay turnos distraidos.</p>
-        @else
+        </template>
+        <template x-if="distractedShifts.length > 0">
             <ul class="list-group">
-                @foreach ($distractedShifts as $shift)
+                <template x-for="shift in distractedShifts">
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <div class="d-flex align-items-center">
-                            @php
-                                $definition = \App\Utils\ClientDefinitionProvider::getDefinition(
-                                    $shift->client->clientType->slug,
-                                );
-                            @endphp
-                            <div class="avatar {{ $definition['color'] }} avatar-xs rounded-circle  mr-1 d-flex align-items-center justify-content-center"
+                        <span x-text="shift.client.name"></span>
+                        <div class="d-flex align-items-center" x-data="{
+                            shift: shift,
+                            slug: shift.client.client_type.slug,
+                            definition: {
+                                color: '',
+                                icon: '',
+                                text: ''
+                            },
+                            loadDefinition() {
+                                let definition = null;
+                                if (this.slug == 'standard') {
+                                    definition = {
+                                        color: 'bg-primary',
+                                        icon: 'fas fa-user',
+                                        text: 'Estándar'
+                                    }
+                                }
+                                if (this.slug == 'preferential') {
+                                    definition = {
+                                        color: 'bg-warning',
+                                        icon: 'fas fa-star',
+                                        text: 'Preferencial'
+                                    }
+                                }
+                                if (this.slug == 'processor') {
+                                    definition = {
+                                        color: 'bg-info',
+                                        icon: 'fas fa-bolt',
+                                        text: 'Tramitador'
+                                    }
+                                }
+                                if (this.slug == 'afiliate') {
+                                    definition = {
+                                        color: 'bg-success',
+                                        icon: 'fas fa-users',
+                                        text: 'Afiliado'
+                                    }
+                                }
+                                this.definition = definition
+                            }
+                        }" x-init="loadDefinition()">
+                            <div x-bind:class="`${definition.color} avatar-xs rounded-circle mr-2 d-flex align-items-center justify-content-center`"
                                 style="width: 30px; height: 30px;">
-                                <i class="{{ $definition['icon'] }}"></i>
+                                <i x-bind:class="definition.icon"></i>
                             </div>
-                            <div>
-                                <strong>{{ $shift->client->name }}</strong> ({{ $shift->client->dni }})
-                            </div>
+                            <span class="text-muted font-italic mr-2" x-text="definition.text"></span>
                         </div>
-                        <div class="d-flex align-items-center">
+                        <form x-ref="upShiftForm" method="POST">
+                            @csrf
+                        </form>
+                        <x-adminlte-button icon="fas fa-arrow-up" theme="success" x-on:click="upShift(shift)" />
 
-
-                            <form id="form-to-up-{{ $shift->id }}"
-                                action="{{ route('attention.attention.shifts.distracted', $shift) }}" method="POST">
-                                @csrf
-                                @method('POST')
-                                <x-adminlte-button class="ml-1" type="submit" theme="success"
-                                    icon="fas fa-arrow-up" />
-                            </form>
-                        </div>
                     </li>
-                @endforeach
+                </template>
             </ul>
-        @endif
-
+        </template>
     </x-adminlte-card>
 
 </div>

@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'title' => 'Digiturno',
+    'title' => strtoupper(env('APP_NAME')),
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -63,9 +63,9 @@ return [
     |
     */
 
-    'logo' => '<b>DIGI</b>Turno',
-    'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
-    'logo_img_class' => 'brand-image img-circle elevation-3',
+    'logo' => '<b>' . strtoupper(env('APP_NAME')) . '</b>',
+    'logo_img' => 'vendor/adminlte/dist/img/logo.png',
+    'logo_img_class' => 'brand-image img-circle bg-white',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
     'logo_img_alt' => 'Admin Logo',
@@ -86,7 +86,7 @@ return [
     'auth_logo' => [
         'enabled' => false,
         'img' => [
-            'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
+            'path' => 'vendor/adminlte/dist/img/logo.png',
             'alt' => 'Auth Logo',
             'class' => '',
             'width' => 50,
@@ -113,11 +113,11 @@ return [
         'enabled' => true,
         'mode' => 'fullscreen',
         'img' => [
-            'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
+            'path' => 'vendor/adminlte/dist/img/logo.png',
             'alt' => 'AdminLTE Preloader Image',
             'effect' => 'animation__shake',
-            'width' => 60,
-            'height' => 60,
+            'width' => 150,
+            'height' => 150,
         ],
     ],
 
@@ -171,11 +171,11 @@ return [
     |
     */
 
-    'classes_auth_card' => 'card-outline card-primary',
-    'classes_auth_header' => '',
+    'classes_auth_card' => '',
+    'classes_auth_header' => 'bg-gradient-primary',
     'classes_auth_body' => '',
-    'classes_auth_footer' => '',
-    'classes_auth_icon' => '',
+    'classes_auth_footer' => 'text-center',
+    'classes_auth_icon' => 'fa-lg text-primary',
     'classes_auth_btn' => 'btn-flat btn-primary',
 
     /*
@@ -196,8 +196,8 @@ return [
     'classes_content_wrapper' => '',
     'classes_content_header' => '',
     'classes_content' => '',
-    'classes_sidebar' => 'position-fixed sidebar-dark-primary elevation-4',
-    'classes_sidebar_nav' => '',
+    'classes_sidebar' => 'position-fixed sidebar-light-secondary elevation-1',
+    'classes_sidebar_nav' => 'text-white',
     'classes_topnav' => 'navbar-white navbar-light',
     'classes_topnav_nav' => 'navbar-expand',
     'classes_topnav_container' => 'container',
@@ -215,8 +215,8 @@ return [
     */
 
     'sidebar_mini' => 'lg',
-    'sidebar_collapse' => false,
-    'sidebar_collapse_auto_size' => false,
+    'sidebar_collapse' => true,
+    'sidebar_collapse_auto_size' => true,
     'sidebar_collapse_remember' => false,
     'sidebar_collapse_remember_no_transition' => true,
     'sidebar_scrollbar_theme' => 'os-theme-light',
@@ -263,7 +263,7 @@ return [
     'register_url' => 'register',
     'password_reset_url' => 'password/reset',
     'password_email_url' => 'password/email',
-    'profile_url' => false,
+    'profile_url' => true,
     'disable_darkmode_routes' => false,
 
     /*
@@ -373,7 +373,6 @@ return [
                         ],
                     ]
                 ],
-
                 [
                     'type' => 'fullscreen',
                     'icon' => 'fas fa-clock',
@@ -426,26 +425,9 @@ return [
         [
             'type' => 'fullscreen',
             'icon' => 'fas fa-bell',
-            'text' => 'Atención',
-            'submenu' => [
-                [
-                    'text' => 'Recepción de clientes',
-                    'icon' => 'fas fa-list',
-                    'route' => 'attention.customer-reception.index',
-                ],
-                [
-                    'text' => 'Atención de clientes',
-                    'icon' => 'fas fa-mobile-alt',
-                    'route' => 'attention.attention.index',
-                ],
-                [
-                    'text' => 'Pantalla de espera',
-                    'icon' => 'fas fa-sign-in-alt',
-                    'route' => 'attention.waiting.index',
-                ],
-            ],
-        ]
-
+            'text' => 'Atención de clientes',
+            'route' => 'attention.attention.index',
+        ],
     ],
     'filters' => [
         JeroenNoten\LaravelAdminLte\Menu\Filters\GateFilter::class,
@@ -561,17 +543,17 @@ return [
             'title' => null,
         ],
         'buttons' => [
-            'close' => true,
-            'close_all' => true,
-            'close_all_other' => true,
-            'scroll_left' => true,
-            'scroll_right' => true,
-            'fullscreen' => true,
+            'close' => false,
+            'close_all' => false,
+            'close_all_other' => false,
+            'scroll_left' => false,
+            'scroll_right' => false,
+            'fullscreen' => false,
         ],
         'options' => [
             'loading_screen' => 1000,
-            'auto_show_new_tab' => true,
-            'use_navbar_items' => true,
+            'auto_show_new_tab' => false,
+            'use_navbar_items' => false,
         ],
     ],
 

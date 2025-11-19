@@ -4,7 +4,6 @@ namespace App\Events;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -25,9 +24,8 @@ class ShiftDeleted implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new Channel('rooms.' . $this->shift->room->id . '.attention_profiles.' . $this->shift->attentionProfile->id . '.shifts'),
             new Channel('rooms.' . $this->shift->room->id . '.shifts'),
-            // new Channel('modules.' . $this->shift->module->id . '.shifts'),
+            new Channel('modules.' . $this->shift->module->id . '.shifts'),
         ];
     }
 

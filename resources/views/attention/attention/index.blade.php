@@ -1,4 +1,4 @@
-@extends('adminlte::page')
+@extends('layouts.app')
 
 @section('title', 'Atención')
 
@@ -33,11 +33,9 @@
                     'attentionProfiles' => $currentModule->attentionProfiles,
                 ])
             @else
-                @if ($currentModule->distractedShifts->count() > 0)
-                    @include('attention.attention.fragments.distracted', [
-                        'distractedShifts' => $currentModule->distractedShifts,
-                    ])
-                @endif
+                @include('attention.attention.fragments.distracted', [
+                    'distractedShifts' => $currentModule->distractedShifts,
+                ])
             @endif
 
             @if ($completedShift)
@@ -53,7 +51,7 @@
                     ])
                 @else
                     @include('attention.attention.fragments.shifts', [
-                        'shifts' => $currentModule->shifts,
+                        'shifts' => $currentModule->currentShifts,
                         'full' => !$showLeftColumn,
                     ])
                 @endif

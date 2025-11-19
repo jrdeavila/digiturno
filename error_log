@@ -22173,3 +22173,6 @@ Stack trace:
 #2 Command line code(1): require_once('/home/ccvalledu...')
 #3 {main}
   thrown in /home/ccvalledupar/public_html/qa/digiturno/vendor/composer/platform_check.php on line 26
+[13-Nov-2025 10:17:56 America/Bogota] PHP Fatal error:  Allowed memory size of 1073741824 bytes exhausted (tried to allocate 2097160 bytes) in /home/ccvalledupar/public_html/digiturnov2.ccvalledupar.org.co/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Concerns/HasRelationships.php on line 733
+[13-Nov-2025 10:17:56 America/Bogota] PHP Fatal error:  Allowed memory size of 1073741824 bytes exhausted (tried to allocate 2621440 bytes) in /home/ccvalledupar/public_html/digiturnov2.ccvalledupar.org.co/vendor/nunomaduro/collision/src/Writer.php on line 263
+[13-Nov-2025 10:23:05 America/Bogota] PHP Fatal error:  Allowed memory size of 1073741824 bytes exhausted (tried to allocate 2097160 bytes) in /home/ccvalledupar/public_html/digiturnov2.ccvalledupar.org.co/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Concerns/HasRelationships.php on line 733

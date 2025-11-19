@@ -4,7 +4,6 @@ namespace App\Events;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
@@ -28,7 +27,7 @@ class ShiftCreated implements ShouldBroadcast
     public function broadcastOn()
     {
         return [
-            new Channel('rooms.' . $this->shift->room_id . '.attention_profiles.' . $this->shift->attention_profile_id . '.shifts'),
+            new Channel('modules.' . $this->shift->module_id),
             new Channel('modules.' . $this->shift->module_id . '.shifts'),
             new Channel('rooms.' . $this->shift->room_id . '.shifts'),
         ];
@@ -37,12 +36,5 @@ class ShiftCreated implements ShouldBroadcast
     public function broadcastAs()
     {
         return 'shift.created';
-    }
-
-    public function broadcastWith()
-    {
-        return [
-            'shift' => new \App\Http\Resources\ShiftResource($this->shift)
-        ];
     }
 }

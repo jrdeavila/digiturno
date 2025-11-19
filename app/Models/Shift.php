@@ -90,13 +90,14 @@ class Shift extends Model
 
     public function scopeCurrent($query): Builder
     {
-        return $query->where('state', ShiftState::InProgress)
-            ->orWhere('state', ShiftState::PendingTransferred)
-            ->orWhere('state', ShiftState::PendingTransferred)
-            ->orWhere('state', ShiftState::Pending)
-            ->orWhere('state', ShiftState::Completed)
-            ->orWhere('state', ShiftState::Distracted);
+        return $query->whereIn('state', array_map(fn($state) => $state->value, [
+            ShiftState::Pending,
+            ShiftState::PendingTransferred,
+            ShiftState::InProgress,
+            ShiftState::Called,
+        ]));
     }
+
 
     public function scopeToDay($query): Builder
     {

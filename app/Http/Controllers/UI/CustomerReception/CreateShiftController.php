@@ -58,12 +58,7 @@ class CreateShiftController extends Controller
     private function createShift(Client $client, Request $request, User $user)
     {
         $exists = Shift::where('client_id', $client->id)
-            ->whereNotIn('state', [
-                ShiftState::Cancelled->value,
-                ShiftState::Completed->value,
-                ShiftState::Qualified->value,
-                ShiftState::Called->value,
-            ])->exists();
+            ->current()->exists();
 
         if ($exists) {
             return redirect()->back()->with('error', 'El cliente ya tiene un turno pendiente');
