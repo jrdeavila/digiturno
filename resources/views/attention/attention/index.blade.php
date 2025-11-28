@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Atención')
+@section('title', 'Modulos')
 
 @section('content_header')
     @if (null !== $currentModule)
@@ -11,8 +11,16 @@
     @endif
 @stop
 
+@php
+    $completedShift = $currentModule?->completedShifts->first();
+    $currentShift = $currentModule?->inProgressShifts->first();
+@endphp
+
 @section('content')
+
+
     <div class="row p-2" style="min-height: calc(100vh - 130px); width:100%;">
+
         @if (null === $currentModule)
             <div class="row h-100 w-100">
                 <div class="col-md-12 mb-2">
@@ -23,14 +31,11 @@
                 </div>
             </div>
         @else
-            @php
-                $completedShift = $currentModule->completedShifts->first();
-                $currentShift = $currentModule->inProgressShifts->first();
-                $showLeftColumn = null !== $currentShift || $currentModule->distractedShifts->count() > 0;
-            @endphp
             @if (null !== $currentShift)
                 @include('attention.attention.fragments.attention-profiles', [
-                    'attentionProfiles' => $currentModule->attentionProfiles,
+                    'attentionProfiles' => $currentModule->attentionProfiles->where(
+                        'id',
+                        $currentShift->attention_profile_id),
                 ])
             @else
                 @include('attention.attention.fragments.distracted', [
@@ -41,18 +46,18 @@
             @if ($completedShift)
                 @include('attention.attention.fragments.qualify-shift', [
                     'shift' => $completedShift,
-                    'full' => !$showLeftColumn,
+                    'full' => false,
                 ])
             @else
                 @if ($currentShift)
                     @include('attention.attention.fragments.current-shift', [
                         'shift' => $currentShift,
-                        'full' => !$showLeftColumn,
+                        'full' => false,
                     ])
                 @else
                     @include('attention.attention.fragments.shifts', [
                         'shifts' => $currentModule->currentShifts,
-                        'full' => !$showLeftColumn,
+                        'full' => false,
                     ])
                 @endif
             @endif
@@ -63,4 +68,14 @@
 
 @push('js')
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
+    <script src="{{ asset('vendor/sweetalert2/sweetalert2.all.min.js') }}"></script>
+    <script>
+        let sweetalert = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-primary',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+        });
+    </script>
 @endpush

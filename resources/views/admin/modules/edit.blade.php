@@ -129,7 +129,7 @@
                                     @php
                                         $selected = in_array(
                                             $attentionProfile->id,
-                                            json_decode(old('attention_profiles', json_encode($moduleApIds))),
+                                            json_decode(json_encode(old('attention_profiles', $moduleApIds))),
                                         );
                                     @endphp
                                     <div class="custom-control custom-checkbox">

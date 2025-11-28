@@ -20,6 +20,9 @@ class IndexController extends Controller
             if ($currentModule->moduleType->id === 3) {
                 return redirect()->route('attention.customer-reception.index');
             }
+            if ($currentModule->moduleType->id === 4) {
+                return redirect()->route('attention.screen.index', ['room' => $currentModule->room]);
+            }
         }
         return view('attention.attention.index', [
             'modules' => $modules,

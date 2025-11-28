@@ -2,14 +2,21 @@
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UI\Attention\CallShiftClientController;
+use App\Http\Controllers\UI\Attention\ChangeShiftModuleController;
 use App\Http\Controllers\UI\Attention\FinishShiftController;
 use App\Http\Controllers\UI\Attention\IndexController as AttentionIndexController;
+use App\Http\Controllers\UI\Attention\QualifyShiftController;
+use App\Http\Controllers\UI\Screen\IndexController as ScreenIndexController;
 use App\Http\Controllers\UI\Attention\SendShiftToDistractedController;
 use App\Http\Controllers\UI\Attention\ToUpShiftController as AttentionToUpShiftController;
+use App\Http\Controllers\UI\Attention\TransferShiftController;
 use App\Http\Controllers\UI\AttentionProfileController;
 use App\Http\Controllers\UI\AttentionProfileServiceController;
 use App\Http\Controllers\UI\BranchController;
 use App\Http\Controllers\UI\ClientController;
+use App\Http\Controllers\UI\CustomerReception\ChangeShiftAttentionProfileController;
+use App\Http\Controllers\UI\CustomerReception\ChangeShiftModuleController as CustomerReceptionChangeShiftModuleController;
+use App\Http\Controllers\UI\CustomerReception\ChangeShiftRoomController;
 use App\Http\Controllers\UI\CustomerReception\CreateShiftController;
 use App\Http\Controllers\UI\CustomerReception\IndexController as CustomerReceptionIndexController;
 use App\Http\Controllers\UI\CustomerReception\RemoveAllDistractedShiftController;
@@ -71,6 +78,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/shifts/{shift}/to-up', ToUpShiftController::class)->name('attention.customer-reception.shifts.to-up');
         Route::delete('/rooms/{room}/shifts/distracted-delete', RemoveAllDistractedShiftController::class)->name('attention.customer-reception.shifts.distracted-delete');
         Route::put('rooms/{room}/modules/offline', SetOffAllModuleController::class)->name('attention.customer-reception.modules.offline');
+        Route::post('/shifts/{shift}/change-module', CustomerReceptionChangeShiftModuleController::class)->name('attention.customer-reception.shifts.change-module');
+        Route::post('/shifts/{shift}/change-attention-profile', ChangeShiftAttentionProfileController::class)->name('attention.customer-reception.shifts.change-attention-profile');
+        Route::post('/shifts/{shift}/change-room', ChangeShiftRoomController::class)->name('attention.customer-reception.shifts.change-room');
     });
     Route::prefix('attention')->group(function () {
         Route::get('/', AttentionIndexController::class)->name('attention.attention.index');
@@ -78,6 +88,12 @@ Route::middleware('auth')->group(function () {
         Route::post('/shifts/{shift}/distracted', SendShiftToDistractedController::class)->name('attention.attention.shifts.distracted');
         Route::post('/shifts/{shift}/call', CallShiftClientController::class)->name('attention.attention.shifts.call');
         Route::post('/shifts/{shift}/finish', FinishShiftController::class)->name('attention.attention.shifts.finish');
+        Route::post('/shifts/{shift}/qualify', QualifyShiftController::class)->name('attention.attention.shifts.qualify');
+        Route::post('/shifts/{shift}/transfer', TransferShiftController::class)->name('attention.attention.shifts.transfer');
+        Route::post('/shifts/{shift}/change-module', ChangeShiftModuleController::class)->name('attention.attention.shifts.change-module');
+    });
+    Route::prefix('screen')->group(function () {
+        Route::get('/{room}', ScreenIndexController::class)->name('attention.screen.index');
     });
     Route::get('/waiting', WaitingIndexController::class)->name('attention.waiting.index');
     Route::get('/home', HomeController::class)->name('home');

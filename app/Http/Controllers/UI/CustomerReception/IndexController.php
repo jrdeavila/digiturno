@@ -5,6 +5,7 @@ namespace App\Http\Controllers\UI\CustomerReception;
 use App\Http\Controllers\Controller;
 use App\Models\Client;
 use App\Models\ClientType;
+use App\Models\MregEstInscrito;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +15,20 @@ class IndexController extends Controller
     public function __invoke(Request $request)
     {
         $searched = $request->has('dni');
-        $client = Client::where('dni', $request->dni)->first();
+        $client = null;
+        if ($request->dni) {
+            $client = Client::where('dni', $request->dni)->first();
+            if (!$client) {
+                $mreg = MregEstInscrito::where('is_member', 1)->where('is_member_since', now()->year)->where('id_number', $request->dni)->first();
+                if ($mreg) {
+                    $client = Client::create([
+                        'name' => $mreg->name,
+                        'dni' => $mreg->id_number,
+                        'client_type_id' => 3, // Afiliado
+                    ]);
+                }
+            }
+        }
         $user = User::find(Auth::id());
         $clientTypes = ClientType::all();
         $currentRoom = $user->modules->where('module_type_id', 3)->first()->room;

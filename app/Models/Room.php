@@ -40,4 +40,9 @@ class Room extends Model
     {
         return $this->hasMany(Shift::class, 'room_id', 'id')->with(['client', 'attentionProfile', 'module'])->where('state', \App\Enums\ShiftState::Distracted);
     }
+
+    public function calledShifts()
+    {
+        return $this->hasMany(Shift::class, 'room_id', 'id')->with(['client', 'attentionProfile', 'module'])->where('state', \App\Enums\ShiftState::Called);
+    }
 }

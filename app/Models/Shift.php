@@ -29,6 +29,10 @@ class Shift extends Model
         'module',
     ];
 
+    public $appends = [
+        'in_progress_started_at',
+    ];
+
     public function room()
     {
         return $this->belongsTo(Room::class);
@@ -98,9 +102,16 @@ class Shift extends Model
         ]));
     }
 
-
     public function scopeToDay($query): Builder
     {
         return $query->whereDate('created_at', now()->format('Y-m-d'));
+    }
+
+    public function getInProgressStartedAtAttribute(): ?string
+    {
+        // Last in progress
+        $inProgress = $this->histories()->inProgress()->latest()->first();
+
+        return $inProgress ? $inProgress->created_at->setTimezone('America/Bogota')->format('Y-m-d h:i A') : null;
     }
 }

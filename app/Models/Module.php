@@ -72,6 +72,21 @@ class Module extends Model
         return $query->where('enabled', true);
     }
 
+    public function scopeDisabled(Builder $query): Builder
+    {
+        return $query->where('enabled', false);
+    }
+
+    public function scopeOnline(Builder $query): Builder
+    {
+        return $query->where('status', ModuleStatus::Online);
+    }
+
+    public function scopeOffline(Builder $query): Builder
+    {
+        return $query->where('status', ModuleStatus::Offline);
+    }
+
     public function pendingShifts(): HasMany
     {
         return $this->shifts()->pending();

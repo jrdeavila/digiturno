@@ -5,6 +5,7 @@ return [
     'unique' => 'El campo :attribute ya existe.',
     'exists' => 'El campo :attribute no existe.',
     'numeric' => 'El campo :attribute debe ser numerico.',
+    'in' => 'El campo :attribute no es valido.',
     'attributes' => [
         'name' => 'Nombre',
         'description' => 'Descripción',
@@ -22,5 +23,6 @@ return [
         'user_id' => 'Funcionario',
         'attention_profiles' => 'Perfiles de atencion',
         'services' => 'Servicios',
+        'qualification' => 'Calificacion',
     ]
 ];

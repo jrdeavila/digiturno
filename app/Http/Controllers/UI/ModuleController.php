@@ -172,11 +172,6 @@ class ModuleController extends Controller
             }
             if ($request->get('user_id')) {
                 if ($user = User::find($request->get('user_id'))) {
-                    // Si el modulo ya tiene un responsable
-                    if (Module::whereNotNull('responsable_id')->where('responsable_id', '<>', $request->get('user_id'))->exists()) {
-                        DB::rollBack();
-                        return redirect()->back()->withInput()->with('error', 'Este modulo ya esta asignado a otro usuario');
-                    }
 
                     $module->responsable()->associate($user->id);
                 }

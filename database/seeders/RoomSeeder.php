@@ -178,7 +178,6 @@ class RoomSeeder extends Seeder
                                 "name" => "Receptor 1",
                                 "module_type_id" => 3,
                                 "responsable_id" => 639
-
                             ],
                             [
                                 "name" => "Receptor 2",
@@ -187,10 +186,12 @@ class RoomSeeder extends Seeder
                             [
                                 "name" => "Pantalla 1",
                                 "module_type_id" => 4,
+                                "responsable_id" => 639
                             ],
                             [
                                 "name" => "Pantalla 2",
                                 "module_type_id" => 4,
+                                "responsable_id" => 639
                             ]
                         ]
                     ],

@@ -9,7 +9,7 @@
             <ul>
                 @foreach ($attentionProfile->services as $service)
                     <li>
-                        <input type="checkbox" name="services[{{ $service->id }}]" />
+                        <input class="service-checkbox" type="checkbox" name="services[{{ $service->id }}]" />
                         <label id="{{ $service->name }}" for="service-{{ $service->id }}">{{ $service->name }}</label>
                     </li>
                 @endforeach

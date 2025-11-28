@@ -57,12 +57,15 @@
                 <p class="col-12 font-weight-bold">{{ $name }}</p>
                 <template x-for="module in modules">
                     <div class="col-lg-3 col-md-6 mb-2">
-                        <i class="fas fa-desktop"
-                            x-bind:class="`text-${({ offline: 'danger', online: 'success',})[module.status]}`"></i>
-                        <strong class="ml-2"
-                            x-bind:class="`text-${({ offline: 'danger', online: 'success',})[module.status]}`"
-                            x-text="`${module.name} (${module.current_shifts_count})`">
-                        </strong>
+                        <div class="badge badge-light p-2">
+
+                            <i class="fas fa-desktop"
+                                x-bind:class="`text-${({ offline: 'danger', online: 'success',})[module.status]}`"></i>
+                            <strong class="ml-2"
+                                x-bind:class="`text-${({ offline: 'danger', online: 'success',})[module.status]}`"
+                                x-text="`${module.name} (${module.current_shifts_count})`">
+                            </strong>
+                        </div>
                     </div>
                 </template>
             </div>

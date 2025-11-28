@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('client_type_id')->constrained()
                 ->nullOnDelete()
                 ->cascadeOnUpdate();
+            $table->string('email')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
