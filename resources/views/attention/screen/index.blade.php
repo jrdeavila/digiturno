@@ -98,14 +98,14 @@
             <div class="col-md-12 mb-2">
                 <x-adminlte-button label="Cambiar voz" theme="primary" icon="fas fa-check" x-on:click="voice = null" />
             </div>
-            <div class="col-lg-4 col-md-6">
+            <div class="col-lg-5 col-md-6">
                 @include('attention.screen.fragments.distracted', [
                     'distractedShifts' => $distractedShifts->take(5),
                     'currentRoom' => $currentRoom,
                 ])
             </div>
 
-            <div class="col-lg-8 col-md-6">
+            <div class="col-lg-7 col-md-6">
                 @include('attention.screen.fragments.shifts', ['shifts' => $shifts])
             </div>
         </div>

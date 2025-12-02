@@ -7,7 +7,7 @@
 @stop
 
 @section('content')
-    <div x-data="{ edit: {{ $searched && !isset($client) ? 'true' : 'false' }} }" class="row h-100">
+    <div class="row h-100">
         <div class="col-lg-12">
             @foreach (['error', 'success'] as $type)
                 @if (session()->has($type))

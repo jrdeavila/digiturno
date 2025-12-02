@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\UI\CustomerReception;
 
 use App\Enums\ModuleStatus;
-use App\Enums\ShiftState;
 use App\Http\Controllers\Controller;
 use App\Models\Client;
 use App\Models\Module;
+use App\Models\MregEstInscrito;
 use App\Models\Room;
 use App\Models\Shift;
 use App\Models\User;
@@ -23,21 +23,24 @@ class CreateShiftController extends Controller
         $request->validate([
             'attention_profile_id' => 'required|exists:attention_profiles,id',
             'dni' => 'required|string|regex:/^[0-9]+$/',
-            'name' => 'required|string',
-            'client_type_id' => 'required|exists:client_types,id',
-            'client_id' => 'nullable|exists:clients,id',
+            'name' => 'nullable|string',
+            'client_type_id' => 'nullable|exists:client_types,id',
             'room_id' => 'required|exists:rooms,id',
         ]);
 
-        $user = User::find(Auth::id());
-        if (is_null($user)) {
+        $user = User::query()->find(Auth::id());
+        if (null === $user) {
             return redirect()->back()->with('error', 'El usuario no esta logueado');
         }
 
         try {
             DB::beginTransaction();
             $client = $this->refreshClientInfo($request);
-
+            if (null === $client) {
+                $exception = new ModelNotFoundException();
+                $exception->setModel(Client::class);
+                throw $exception;
+            }
             $this->createShift($client, $request, $user);
             DB::commit();
             return redirect()->back()->with('success', 'El turno fue creado con exito');
@@ -47,7 +50,7 @@ class CreateShiftController extends Controller
                 return redirect()->back()->with('error', 'No hay modulos disponibles')->withInput($request->all());
             }
             if ($exception->getModel() === Client::class) {
-                return redirect()->back()->with('error', 'No se encontro el cliente')->withInput($request->all());
+                return redirect()->back()->with('error', 'No se encontro el cliente')->with('searched', true)->withInput($request->all());
             }
         } catch (Exception $exception) {
             DB::rollBack();
@@ -57,14 +60,14 @@ class CreateShiftController extends Controller
 
     private function createShift(Client $client, Request $request, User $user)
     {
-        $exists = Shift::where('client_id', $client->id)
+        $exists = Shift::query()->where('client_id', $client->id)
             ->current()->exists();
 
         if ($exists) {
             return redirect()->back()->with('error', 'El cliente ya tiene un turno pendiente');
         }
         $module = $this->searchModule($request);
-        Shift::create([
+        Shift::query()->create([
             'attention_profile_id' => $request->get('attention_profile_id'),
             'client_id' => $client->id,
             'room_id' => $request->get('room_id'),
@@ -74,7 +77,7 @@ class CreateShiftController extends Controller
 
     private function searchModule(Request $request): Module
     {
-        $room = Room::find($request->get('room_id'));
+        $room = Room::query()->find($request->get('room_id'));
         $module = $room->modules()
             ->whereHas('attentionProfiles', function ($query) use ($request) {
                 $query->where('attention_profiles.id', $request->get('attention_profile_id'));
@@ -87,21 +90,33 @@ class CreateShiftController extends Controller
         return $module;
     }
 
-    private function refreshClientInfo(Request $request): Client
+
+    private function refreshClientInfo(Request $request): ?Client
     {
-        $client = Client::where('dni', $request->get('dni'))->first();
-        if (!$client) {
-            if ($request->get('client_id')) {
-                $client = Client::find($request->get('client_id'));
+        $client = Client::query()->where('dni', $request->get('dni'))->first();
+
+        if (!$client) { // Si no se encuentra el cliente por dni buscamos en los registros del S.I.I
+            $mreg = MregEstInscrito::query()->where('is_member', 1)->where('is_member_since', now()->year)->where('id_number', $request->get('dni'))->first();
+            if ($mreg) {
+                $client = Client::query()->create([
+                    'name' => $mreg->name,
+                    'dni' => $mreg->id_number,
+                    'client_type_id' => 3, // Afiliado
+                ]);
             }
         }
 
-        if (is_null($client)) {
+        if (!$request->get('name') && !$request->get('client_type_id') && !$client) { // Si no se envio el nombre ni el tipo de cliente y no se encontro el cliente por dni
+            return null;
+        }
+
+        if (!$client) { // Si aun no se encontro el cliente entonces creamos uno
             $client = new Client();
         }
-        $client->name = $request->get('name');
-        $client->dni = $request->get('dni');
-        $client->client_type_id = $request->get('client_type_id');
+
+        $client->name = $request->get('name', $client?->name);
+        $client->dni = $request->get('dni', $client?->dni);
+        $client->client_type_id = $request->get('client_type_id', $client?->client_type_id);
         $client->save();
 
         return $client;

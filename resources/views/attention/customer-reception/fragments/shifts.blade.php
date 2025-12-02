@@ -150,7 +150,7 @@
     },
     filterShifts(shifts) {
         this.shifts = shifts.filter((shift) => {
-            return shift.state === '{{ \App\Enums\ShiftState::Pending }}';
+            return shift.state === '{{ \App\Enums\ShiftState::Pending }}' || shift.state === '{{ \App\Enums\ShiftState::PendingTransferred }}';
         })
     },
     listener() {

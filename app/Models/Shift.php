@@ -69,13 +69,19 @@ class Shift extends Model
 
     public function scopePending($query): Builder
     {
-        return $query->where('state', ShiftState::Pending);
+        return $query->where('state', ShiftState::Pending)->orWhere('state', ShiftState::PendingTransferred);
+    }
+
+    public function scopeQualified($query): Builder
+    {
+        return $query->where('state', ShiftState::Qualified);
     }
 
     public function scopeCompleted($query): Builder
     {
         return $query->where('state', ShiftState::Completed);
     }
+
 
     public function scopeCancelled($query): Builder
     {

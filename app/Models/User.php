@@ -30,6 +30,16 @@ class User extends Authenticatable
         'Empleados_id'
     ];
 
+    public function adminlte_image()
+    {
+        return $this->employee->curriculum->photo;
+    }
+
+    public function adminlte_desc()
+    {
+        return $this->employee->job->name;
+    }
+
     public function employee(): BelongsTo
     {
         return $this->belongsTo(Employee::class, 'Empleados_id');

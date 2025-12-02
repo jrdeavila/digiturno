@@ -69,6 +69,16 @@
             })
         }
     },
+    filterShifts() {
+        this.shifts = this.shifts.filter((shift) => {
+            return (
+                (shift.state === '{{ \App\Enums\ShiftState::Pending }}' ||
+                    shift.state === '{{ \App\Enums\ShiftState::PendingTransferred }}') &&
+                shift.module_id === {{ $currentModule->id }}
+            )
+        })
+
+    },
 
     listener() {
         let channel = Echo.channel('modules.' + {{ $currentModule->id }} + '.shifts');
@@ -103,49 +113,33 @@
             });
             if (findShift) {
 
+
                 this.shifts = this.shifts.map((shift) => {
-                    if (shift.id === e.shift.id && (e.shift.state ===
-                            '{{ \App\Enums\ShiftState::Pending }}' || e.shift.state ===
-                            '{{ \App\Enums\ShiftState::PendingTransferred }}')) {
+                    if (shift.id === e.shift.id) {
                         return e.shift;
                     }
                     return shift;
                 })
             } else {
-                if (e.shift.state === '{{ \App\Enums\ShiftState::Pending }}' || e.shift.state ===
-                    '{{ \App\Enums\ShiftState::PendingTransferred }}' && e.shift.module_id === {{ $currentModule->id }}) {
-                    this.shifts.push(e.shift)
-                }
+                this.shifts.push(e.shift)
+
             }
 
-            this.shifts = this.shifts.filter((shift) => {
-                return shift.module_id === {{ $currentModule->id }}
-            })
+            this.filterShifts();
         });
         roomChannel.listen('.shift.updated', (e) => {
             let findShift = this.shifts.find((shift) => {
                 return shift.id === e.shift.id
             });
             if (findShift) {
-
                 this.shifts = this.shifts.map((shift) => {
-                    if (shift.id === e.shift.id && (e.shift.state ===
-                            '{{ \App\Enums\ShiftState::Pending }}' || e.shift.state ===
-                            '{{ \App\Enums\ShiftState::PendingTransferred }}')) {
+                    if (shift.id === e.shift.id) {
                         return e.shift;
                     }
                     return shift;
                 })
-            } else {
-                if (e.shift.state === '{{ \App\Enums\ShiftState::Pending }}' || e.shift.state ===
-                    '{{ \App\Enums\ShiftState::PendingTransferred }}' && e.shift.module_id === {{ $currentModule->id }}) {
-                    this.shifts.push(e.shift)
-                }
             }
-
-            this.shifts = this.shifts.filter((shift) => {
-                return shift.module_id === {{ $currentModule->id }}
-            })
+            this.filterShifts();
         });
 
         channel.listen('.shift.deleted', (e) => {
