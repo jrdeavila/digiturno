@@ -110,7 +110,7 @@ class Shift extends Model
 
     public function scopeToDay($query): Builder
     {
-        return $query->whereDate('created_at', now()->format('Y-m-d'));
+        return $query->qualified()->whereDate('created_at', now()->format('Y-m-d'));
     }
 
     public function getInProgressStartedAtAttribute(): ?string
