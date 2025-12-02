@@ -31,9 +31,6 @@
     }
 }" x-init="listener()" x-effect="console.log(distractedShifts)" class="p-2">
     <x-adminlte-card title="Distraidos" icon="fas fa-times-circle">
-        <x-slot name="toolsSlot">
-            Total: <strong><span class="badge badge-success" x-text="total">/span></strong>
-        </x-slot>
 
         <template x-if="distractedShifts.length == 0">
             <p class="text-center">No hay turnos distraidos.</p>

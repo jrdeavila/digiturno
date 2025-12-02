@@ -152,9 +152,6 @@
     style="max-height: inherit; width: {{ $width }}; position: relative;">
     <x-adminlte-card title="Turnos pendientes" theme="primary" icon="fas fa-users"
         style="position: fixed; width: calc({{ $width }} - 100px);">
-        <x-slot name="toolsSlot">
-            Total: <strong><span class="badge badge-success" x-text="total">/span></strong>
-        </x-slot>
         <div>
             <template x-if="shifts.length == 0">
                 <p class="text-center">No hay turnos pendientes.</p>
