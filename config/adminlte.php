@@ -377,13 +377,7 @@ return [
                     'type' => 'fullscreen',
                     'icon' => 'fas fa-clock',
                     'text' => 'shifts.label',
-                    'submenu' => [
-                        [
-                            'text' => 'shifts.index',
-                            'icon' => 'fas fa-list',
-                            'route' => 'shifts.index',
-                        ],
-                    ]
+                    'route' => 'shifts.index',
                 ],
                 [
                     'type' => 'fullscreen',

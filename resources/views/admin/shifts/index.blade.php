@@ -6,35 +6,32 @@
     <h1>Turnos</h1>
 @stop
 
-
 @section('content')
-
     <div class="row">
         <div class="col-md-12">
             @session('success')
-                <blockquote class="quote quote-success">
-                    <h5>Genial! </h5>
-                    <p>{{ session('success') }}</p>
-                </blockquote>
+                <x-adminlte-alert theme="success" title="Genial!" dismissable>
+                    {{ session('success') }}
+                </x-adminlte-alert>
             @endsession
             @session('error')
-                <blockquote class="quote quote-danger">
-                    <h5>Error! </h5>
-                    <p>{{ session('error') }}</p>
-                </blockquote>
+                <x-adminlte-alert theme="danger" title="Error!" dismissable>
+                    {{ session('error') }}
+                </x-adminlte-alert>
             @endsession
         </div>
 
         <div class="col-md-12">
-            <x-adminlte-card theme="light" icon="fas fa-list" title="Filtros">
-                <form class="row" action="{{ route('shifts.index') }}" method="GET">
+            <x-adminlte-card theme="light" icon="fas fa-list" title="Filtros" class="elevation-1">
+                <form id="filters-form" class="row" action="{{ route('shifts.index') }}" method="GET">
                     @csrf
                     <div class="col-md-2">
                         <x-adminlte-select id="branch_id" label="Seccional" name="branch_id">
                             <option value="">Todos</option>
                             @foreach ($branches as $branch)
                                 <option value="{{ $branch->id }}"
-                                    {{ request()->get('branch_id') == $branch->id ? 'selected' : '' }}>{{ $branch->name }}
+                                    {{ request()->get('branch_id') == $branch->id ? 'selected' : '' }}>
+                                    {{ $branch->name }}
                                 </option>
                             @endforeach
                         </x-adminlte-select>
@@ -44,18 +41,20 @@
                             <option value="">Todos</option>
                             @foreach ($rooms as $room)
                                 <option value="{{ $room->id }}"
-                                    {{ request()->get('room_id') == $room->id ? 'selected' : '' }}>{{ $room->name }}
+                                    {{ request()->get('room_id') == $room->id ? 'selected' : '' }}>
+                                    {{ $room->name }}
                                 </option>
                             @endforeach
                         </x-adminlte-select>
                     </div>
                     <div class="col-md-2">
-                        <x-adminlte-select id="attention_profile_id" label="Perfil de atencion" name="attention_profile_id">
+                        <x-adminlte-select id="attention_profile_id" label="Perfil de atención" name="attention_profile_id">
                             <option value="">Todos</option>
                             @foreach ($attentionProfiles as $attentionProfile)
                                 <option value="{{ $attentionProfile->id }}"
                                     {{ request()->get('attention_profile_id') == $attentionProfile->id ? 'selected' : '' }}>
-                                    {{ $attentionProfile->name }}</option>
+                                    {{ $attentionProfile->name }}
+                                </option>
                             @endforeach
                         </x-adminlte-select>
                     </div>
@@ -67,7 +66,8 @@
                                 'transferred' => 'Transferido',
                                 'distracted' => 'Distraido',
                                 'in_progress' => 'En progreso',
-                                'completed' => 'Completado',
+                                'finished' => 'Finalizado',
+                                'cancelled' => 'Cancelado',
                                 'qualified' => 'Calificado',
                             ];
                         @endphp
@@ -76,7 +76,8 @@
                             @foreach ($states as $key => $state)
                                 <option value="{{ $key }}"
                                     {{ request()->get('state') == $key ? 'selected' : '' }}>
-                                    {{ $state }}</option>
+                                    {{ $state }}
+                                </option>
                             @endforeach
                         </x-adminlte-select>
                     </div>
@@ -91,12 +92,12 @@
                             ];
                         @endphp
                         <x-adminlte-select id="qualification_id" label="Calificación" name="qualification">
-
                             <option value="">Todos</option>
                             @foreach ($qualifications as $key => $qualification)
                                 <option value="{{ $key }}"
                                     {{ request()->get('qualification') == $key ? 'selected' : '' }}>
-                                    {{ $qualification }}</option>
+                                    {{ $qualification }}
+                                </option>
                             @endforeach
                         </x-adminlte-select>
                     </div>
@@ -106,55 +107,75 @@
                                 <label for="date">Rango de fechas</label>
                             </div>
                             <div class="col-md-6">
-                                <x-adminlte-input value="{{ request()->get('start_date') }}" type="date" id="date"
+                                <x-adminlte-input value="{{ request()->get('start_date') }}" type="date" id="start_date"
                                     name="start_date" />
                             </div>
                             <div class="col-md-6">
-                                <x-adminlte-input value="{{ request()->get('end_date') }}" type="date" id="date"
+                                <x-adminlte-input value="{{ request()->get('end_date') }}" type="date" id="end_date"
                                     name="end_date" />
                             </div>
                         </div>
-
                     </div>
-                    <div class="col-md-2 row justify-content-start align-items-center">
+
+                    <div class="col-md-2 d-flex align-items-end">
                         <x-adminlte-button type="submit" label="Filtrar" theme="primary" icon="fas fa-filter"
                             id="filter" class="w-100 mt-3 mr-2" />
                     </div>
-
-                    <div class="col-md-2 row justify-content-start align-items-center">
+                    <div class="col-md-2 d-flex align-items-end">
                         <x-adminlte-button type="button" label="Exportar" theme="primary" icon="fas fa-download"
                             class="w-100 mt-3 mr-2" id="export" />
                     </div>
-
-
-                    <div class="col-md-2 row justify-content-start align-items-center">
-                        <x-adminlte-button label="Limpiar" theme="primary" id="clear-filters" class="w-100 mt-3 mr-2"
+                    <div class="col-md-2 d-flex align-items-end">
+                        <x-adminlte-button type="button" label="Limpiar" theme="outline-primary" class="w-100 mt-3 mr-2"
                             icon="fas fa-eraser" id="clear-filters" />
                     </div>
                 </form>
-
-
-
-
-
             </x-adminlte-card>
         </div>
-        <div class="col-md-12">
-            <x-adminlte-card theme="light" icon="fas fa-list" title="Turnos ({{ $shifts->total() }})">
 
+        <div class="col-md-12">
+            <x-adminlte-card theme="light" icon="fas fa-list" title="Turnos ({{ $shifts->total() }})" class="elevation-1">
                 @php
                     $heads = ['ID', 'Cliente', 'Modulo', 'Estado', 'Calificación', 'Creado En', 'Acciones'];
-                    $heads = array_map(function ($head) {
-                        return trans($head);
-                    }, $heads);
+                    $heads = array_map(fn($head) => __($head), $heads);
                     $config = [
                         'data' => $shifts,
-                        'order' => [[1, 'asc']],
-                        'columns' => [null, null, null, null, null, ['orderable' => false]],
+                        'order' => [[0, 'asc']],
+                        'columns' => [
+                            null, // ID
+                            null, // Cliente
+                            null, // Modulo
+                            ['orderable' => false], // Estado
+                            null, // Calificación
+                            null, // Creado En
+                            ['orderable' => false], // Acciones
+                        ],
+                    ];
+                    $stateMap = [
+                        'pending' => ['class' => 'text-info', 'icon' => 'fas fa-hourglass-half', 'text' => 'Pendiente'],
+                        'in_progress' => ['class' => 'text-warning', 'icon' => 'fas fa-clock', 'text' => 'En progreso'],
+                        'finished' => ['class' => 'text-success', 'icon' => 'fas fa-check', 'text' => 'Finalizado'],
+                        'cancelled' => ['class' => 'text-danger', 'icon' => 'fas fa-times', 'text' => 'Cancelado'],
+                        'transferred' => [
+                            'class' => 'text-warning',
+                            'icon' => 'fas fa-exchange-alt',
+                            'text' => 'Transferido',
+                        ],
+                        'pending-transferred' => [
+                            'class' => 'text-info',
+                            'icon' => 'fas fa-hourglass-half',
+                            'text' => 'Transferido pendiente',
+                        ],
+                        'qualified' => ['class' => 'text-success', 'icon' => 'fas fa-check', 'text' => 'Calificado'],
+                        'distracted' => ['class' => 'text-danger', 'icon' => 'fas fa-times', 'text' => 'Distraido'],
                     ];
                 @endphp
+
                 <x-adminlte-datatable id="table1" :heads="$heads" :config="$config">
                     @foreach ($shifts as $shift)
+                        @php
+                            $stateDef = $stateMap[$shift->state] ?? null;
+                        @endphp
                         <tr>
                             <td>{{ $shift->id }}</td>
                             <td>
@@ -180,165 +201,135 @@
                                 @endif
                             </td>
                             <td>
-                                <div class="d-flex flex-column">
-                                    <span class="text-bold">
-                                        @switch($shift->state)
-                                            @case('pending')
-                                                <div class="text-info">
-                                                    <i class="fas fa-hourglass-half"></i>
-                                                    <span>Pendiente</span>
-                                                </div>
-                                            @break
-
-                                            @case('in_progress')
-                                                <div class="text-warning">
-                                                    <i class="fas fa-clock"></i>
-                                                    <span>En progreso</span>
-                                                </div>
-                                            @break
-
-                                            @case('finished')
-                                                <div class="text-success">
-                                                    <i class="fas fa-check"></i>
-                                                    <span>Finalizado</span>
-                                                </div>
-                                            @break
-
-                                            @case('cancelled')
-                                                <div class="text-danger">
-                                                    <i class="fas fa-times"></i>
-                                                    <span>Cancelado</span>
-                                                </div>
-                                            @break
-
-                                            @case('transferred')
-                                                <div class="text-warning">
-                                                    <i class="fas fa-exchange-alt"></i>
-                                                    <span>Transferido</span>
-                                                </div>
-                                            @break
-
-                                            @case('pending-transferred')
-                                                <div class="text-info">
-                                                    <i class="fas fa-hourglass-half"></i>
-                                                    <span>Transferido pendiente</span>
-                                                </div>
-                                            @break
-
-                                            @case('qualified')
-                                                <div class="text-success">
-                                                    <i class="fas fa-check"></i>
-                                                    <span>Calificado</span>
-                                                </div>
-                                            @break
-
-                                            @case('distracted')
-                                                <div class="text-danger">
-                                                    <i class="fas fa-times"></i>
-                                                    <span>Distraido</span>
-                                                </div>
-                                            @break
-
-                                            @default
-                                        @endswitch
-                                    </span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="d-flex flex-column">
-                                    <span class="text-bold">
-                                        {{ $shift->qualification?->qualification }}
-                                    </span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="d-flex flex-column">
-                                    <span class="text-bold">
-                                        {{ Carbon\Carbon::parse($shift->created_at)->translatedFormat('j \d\e F \d\e\l Y') }}
-                                    </span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-default">Acciones</button>
-                                    <button type="button" class="btn btn-default dropdown-toggle dropdown-icon"
-                                        data-toggle="dropdown" aria-expanded="true">
-                                        <span class="sr-only">Toggle Dropdown</span>
-                                    </button>
-                                    <div class="dropdown-menu" role="menu"
-                                        style="position: absolute; transform: translate3d(68px, 38px, 0px); top: 0px; left: 0px; will-change: transform;"
-                                        x-placement="bottom-start">
-                                        <a class="dropdown-item" data-toggle="modal"
-                                            data-target="#modal-delete-{{ $shift->id }}">
-                                            <div class="row">
-                                                <div class="col-6">
-                                                    <i class="fas fa-trash"></i>
-                                                </div>
-                                                <div class="col-6">
-                                                    Eliminar
-                                                </div>
-                                            </div>
-                                        </a>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="{{ route('shifts.show', $shift->id) }}">
-                                            <div class="row">
-                                                <div class="col-6">
-                                                    <i class="fas fa-eye"></i>
-                                                </div>
-                                                <div class="col-6">
-                                                    Ver mas
-                                                </div>
-                                            </div>
-                                        </a>
+                                @if ($stateDef)
+                                    <div class="d-flex align-items-center {{ $stateDef['class'] }}">
+                                        <i class="{{ $stateDef['icon'] }} mr-2"></i>
+                                        <span class="text-bold">{{ $stateDef['text'] }}</span>
                                     </div>
+                                @else
+                                    <span class="text-muted">-</span>
+                                @endif
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column">
+                                    <span class="text-bold">
+                                        {{ optional($shift->qualification)->qualification ?? '—' }}
+                                    </span>
                                 </div>
-                                <x-adminlte-modal id="modal-delete-{{ $shift->id }}" theme="danger"
-                                    title="Eliminar el turno del cliente ({{ $shift->client->name }})">
-                                    <span>Esta seguro de eliminar el turno del cliente ({{ $shift->client->name }})</span>
-                                    <br>
-                                    <span>¿Desea continuar?</span>
-                                    <x-slot name="footerSlot">
-                                        <form method="POST" action="{{ route('shifts.destroy', $shift) }}">
-                                            @csrf
-                                            @method('DELETE')
-                                            <x-adminlte-button type="submit" label="Eliminar" theme="danger"
-                                                icon="fas fa-lg fa-trash" class="mr-2" />
-                                            <x-adminlte-button theme="default" label="Cerrar" data-dismiss="modal"
-                                                icon="fas fa-lg fa-times" />
-                                        </form>
-                                    </x-slot>
-                                </x-adminlte-modal>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column">
+                                    <span class="text-bold">
+                                        {{ \Carbon\Carbon::parse($shift->created_at)->translatedFormat('j \d\e F \d\e\l Y') }}
+                                    </span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group" aria-label="Acciones">
+                                    <button type="button" class="btn btn-danger btn-delete-shift"
+                                        data-id="{{ $shift->id }}" data-client="{{ $shift->client->name }}">
+                                        <i class="fas fa-trash mr-1"></i> Eliminar
+                                    </button>
+                                    <a class="btn btn-primary" href="{{ route('shifts.show', $shift->id) }}">
+                                        <i class="fas fa-eye mr-1"></i> Ver más
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     @endforeach
                     <tr>
-                        <td colspan="6">
+                        <td colspan="7">
                             <div class="float-right">
                                 {{ $shifts->links('custom.pagination') }}
                             </div>
                         </td>
                     </tr>
                 </x-adminlte-datatable>
+
+                {{-- Formulario oculto para eliminación con SweetAlert2 --}}
+                <form id="delete-form" method="POST" style="display:none;">
+                    @csrf
+                    @method('DELETE')
+                </form>
             </x-adminlte-card>
         </div>
     </div>
-
-
 @stop
 
-
 @push('js')
+    {{-- SweetAlert2 y lógica de interacción --}}
+    <script src="{{ asset('vendor/sweetalert2/sweetalert2.all.min.js') }}"></script>
     <script>
-        $(document).ready(function() {
-            $('#create-room').click(function() {
-                window.location.href = "{{ route('rooms.create') }}";
+        $(function() {
+            // Exporta manteniendo los filtros actuales vía query string
+            $('#export').on('click', function() {
+                const params = new URLSearchParams($('#filters-form').serialize());
+                const url = "{{ route('shifts.report') }}" + '?' + params.toString();
+                window.location.href = url;
             });
-            $('#export').click(function() {
-                window.location.href = "{{ route('shifts.report') }}";
-            })
-            $("#clear-filters").click(function() {
+
+            // Limpia filtros manteniendo ruta base
+            $('#clear-filters').on('click', function() {
+                $('#filters-form').find('input[type="date"], select').val('');
                 window.location.href = "{{ route('shifts.index') }}";
-            })
+            });
+
+            // Dependencia Branch -> Rooms
+            const allRooms = {!! json_encode(
+                $rooms->map(
+                    fn($r) => [
+                        'id' => $r->id,
+                        'name' => $r->name,
+                        'branch_id' => $r->branch_id ?? null,
+                    ],
+                ),
+                JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT,
+            ) !!};
+
+            $('#branch_id').on('change', function() {
+                const branchId = $(this).val();
+                const $roomSelect = $('#room_id');
+                const selectedRoom = "{{ request()->get('room_id') }}";
+                const rooms = branchId ?
+                    allRooms.filter(r => String(r.branch_id) === String(branchId)) :
+                    allRooms;
+
+                $roomSelect.empty().append($('<option>', {
+                    value: '',
+                    text: 'Todos'
+                }));
+                rooms.forEach(r => {
+                    $roomSelect.append($('<option>', {
+                        value: r.id,
+                        text: r.name,
+                        selected: String(selectedRoom) === String(r.id)
+                    }));
+                });
+            }).trigger('change');
+
+            // Confirmación de eliminación con SweetAlert2
+            $('.btn-delete-shift').on('click', function() {
+                const shiftId = $(this).data('id');
+                const clientName = $(this).data('client');
+                Swal.fire({
+                    title: 'Eliminar turno',
+                    html: `Está seguro de eliminar el turno del cliente <b>${clientName}</b>?<br><small>¿Desea continuar?</small>`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonColor: '#e3342f',
+                    cancelButtonColor: '#6c757d',
+                    reverseButtons: true,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const form = document.getElementById('delete-form');
+                        form.action = "{{ route('shifts.destroy', '__ID__') }}".replace('__ID__',
+                            shiftId);
+                        form.submit();
+                    }
+                });
+            });
         });
     </script>
 @endpush

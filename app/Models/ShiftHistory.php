@@ -5,9 +5,12 @@ namespace App\Models;
 use App\Enums\ShiftState;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\ShiftUtils;
 
 class ShiftHistory extends Model
 {
+    use ShiftUtils;
+
     protected $table = 'shift_histories';
 
     protected $fillable = [

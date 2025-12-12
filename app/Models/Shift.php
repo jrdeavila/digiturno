@@ -8,11 +8,12 @@ use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\ShiftUtils;
 
 #[ObservedBy(\App\Observers\ShiftObserver::class)]
 class Shift extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, ShiftUtils;
 
     protected $fillable = [
         'client_id',

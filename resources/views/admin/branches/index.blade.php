@@ -8,125 +8,118 @@
 
 @section('content')
 
-    <x-adminlte-card theme="light" icon="fas fa-list" title="Seccionales">
+    <x-adminlte-card theme="light" icon="fas fa-list" title="{{ __('adminlte::menu.branches.label') }}">
         @session('success')
             <blockquote class="quote quote-success">
-                <h5>Genial! </h5>
+                <h5>{{ __('messages.success_title') ?? 'Genial!' }}</h5>
                 <p>{{ session('success') }}</p>
             </blockquote>
         @endsession
         @session('error')
             <blockquote class="quote quote-danger">
-                <h5>Error! </h5>
+                <h5>{{ __('messages.error_title') ?? 'Error!' }}</h5>
                 <p>{{ session('error') }}</p>
             </blockquote>
         @endsession
+
         @php
             $heads = ['branches.id', 'branches.name', 'branches.address', 'branches.actions.label'];
-            $heads = array_map(function ($head) {
-                return trans($head);
-            }, $heads);
+            $heads = array_map(fn($head) => trans($head), $heads);
             $config = [
                 'data' => $branches,
                 'order' => [[1, 'asc']],
-                'columns' => [null, null, null, null, null, ['orderable' => false]],
+                'columns' => [
+                    null, // ID
+                    null, // Nombre
+                    null, // Dirección
+                    ['orderable' => false], // Acciones
+                ],
             ];
         @endphp
-        <x-adminlte-datatable id="table1" :heads="$heads" :config="$config">
+
+        <x-adminlte-datatable id="branches-table" :heads="$heads" :config="$config">
             @foreach ($branches as $branch)
                 <tr>
                     <td>{{ $branch->id }}</td>
-                    <td>{{ $branch->name }}</td>
+                    <td>
+                        <a href="{{ route('branches.show', $branch->id) }}" class="text-primary font-weight-bold">
+                            {{ $branch->name }}
+                        </a>
+                    </td>
                     <td>{{ $branch->address }}</td>
                     <td>
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default">{{ __('attentionProfile.actions.label') }}</button>
-                            <button type="button" class="btn btn-default dropdown-toggle dropdown-icon"
-                                data-toggle="dropdown" aria-expanded="true">
-                                <span class="sr-only">Toggle Dropdown</span>
+                        <div class="btn-group" role="group" aria-label="{{ __('branches.actions.label') }}">
+                            <a href="{{ route('branches.show', $branch->id) }}" class="btn btn-primary">
+                                <i class="fas fa-eye mr-1"></i> {{ __('branches.actions.view') }}
+                            </a>
+                            <a href="{{ route('branches.edit', $branch->id) }}" class="btn btn-warning">
+                                <i class="fas fa-edit mr-1"></i> {{ __('branches.actions.edit') }}
+                            </a>
+                            <button type="button" class="btn btn-danger btn-delete-branch" data-id="{{ $branch->id }}"
+                                data-name="{{ $branch->name }}">
+                                <i class="fas fa-trash mr-1"></i> {{ __('branches.actions.delete') }}
                             </button>
-                            <div class="dropdown-menu" role="menu"
-                                style="position: absolute; transform: translate3d(68px, 38px, 0px); top: 0px; left: 0px; will-change: transform;"
-                                x-placement="bottom-start">
-                                <a class="dropdown-item" href="{{ route('branches.edit', $branch->id) }}">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <i class="fas fa-edit"></i>
-                                        </div>
-                                        <div class="col-6">
-                                            {{ __('branches.actions.edit') }}
-                                        </div>
-                                    </div>
-                                </a>
-
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" data-toggle="modal"
-                                    data-target="#modal-delete-{{ $branch->id }}">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <i class="fas fa-trash"></i>
-                                        </div>
-                                        <div class="col-6">
-                                            {{ __('branches.actions.delete') }}
-                                        </div>
-                                    </div>
-                                </a>
-
-
-
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="{{ route('branches.show', $branch->id) }}">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <i class="fas fa-eye"></i>
-                                        </div>
-                                        <div class="col-6">
-                                            {{ __('branches.actions.view') }}
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
                         </div>
-                        <x-adminlte-modal id="modal-delete-{{ $branch->id }}" theme="danger"
-                            title="Eliminar ({{ $branch->name }})">
-                            <span>La seccional sera eliminada permanentemente y no podra ser recuperada</span>
-                            <br>
-                            <span>¿Desea continuar?</span>
-                            <x-slot name="footerSlot">
-                                <form method="POST" action="{{ route('branches.destroy', $branch) }}">
-                                    @csrf
-                                    @method('DELETE')
-                                    <x-adminlte-button type="submit" label="Eliminar" theme="danger"
-                                        icon="fas fa-lg fa-trash" class="mr-2" />
-                                    <x-adminlte-button theme="default" label="Cerrar" data-dismiss="modal"
-                                        icon="fas fa-lg fa-times" />
-                                </form>
-                            </x-slot>
-                        </x-adminlte-modal>
                     </td>
                 </tr>
             @endforeach
+
             <tr>
-                <td colspan="2">
-                    <x-adminlte-button id="create-branch" theme="primary" label="Crear" />
+                <td colspan="3"></td>
+                <td class="text-right">
+                    <a href="{{ route('branches.create') }}" class="btn btn-success" id="create-branch">
+                        <i class="fas fa-plus mr-1"></i> {{ __('branches.actions.create') ?? 'Crear' }}
+                    </a>
                 </td>
-                <td colspan="3">
+            </tr>
+            <tr>
+                <td colspan="4">
                     <div class="float-right">
                         {{ $branches->links('custom.pagination') }}
                     </div>
                 </td>
             </tr>
         </x-adminlte-datatable>
+
+        {{-- Formulario oculto para eliminación (reutilizable) --}}
+        <form id="delete-branch-form" method="POST" style="display:none;">
+            @csrf
+            @method('DELETE')
+        </form>
     </x-adminlte-card>
 
 @stop
 
-
 @push('js')
+    {{-- SweetAlert2: usa tu vendor si lo tienes instalado, o CDN en su defecto --}}
+    <script src="{{ asset('vendor/sweetalert2/sweetalert2.all.min.js') }}"></script>
     <script>
-        $(document).ready(function() {
-            $('#create-branch').click(function() {
-                window.location.href = "{{ route('branches.create') }}";
+        document.addEventListener('DOMContentLoaded', function() {
+            // Eliminar seccional con SweetAlert2
+            document.querySelectorAll('.btn-delete-branch').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    const name = this.getAttribute('data-name');
+
+                    Swal.fire({
+                        title: "{{ __('branches.actions.delete_confirm_title') ?? 'Eliminar seccional' }}",
+                        html: `{{ __('branches.actions.delete_confirm_text') ?? 'La seccional' }} <b>${name}</b> {{ __('branches.actions.delete_confirm_suffix') ?? 'será eliminada permanentemente. Esta acción no se puede deshacer.' }}`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: "{{ __('branches.actions.delete_confirm_yes') ?? 'Sí, eliminar' }}",
+                        cancelButtonText: "{{ __('branches.actions.delete_confirm_cancel') ?? 'Cancelar' }}",
+                        confirmButtonColor: '#e3342f',
+                        cancelButtonColor: '#6c757d',
+                        reverseButtons: true,
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            const form = document.getElementById('delete-branch-form');
+                            form.action = "{{ route('branches.destroy', '__ID__') }}"
+                                .replace('__ID__', id);
+                            form.submit();
+                        }
+                    });
+                });
             });
         });
     </script>

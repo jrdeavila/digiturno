@@ -259,8 +259,15 @@ class RoomSeeder extends Seeder
                                 $attention_profiles = $module['attention_profiles'];
                                 foreach ($attention_profiles as $attention_profile) {
                                     $ap = AttentionProfile::where('name', $attention_profile)->firstOrFail();
-                                    $m->attentionProfiles()->attach($ap->id);
-                                    $r->attentionProfiles()->attach($ap->id);
+
+                                    // Verificar si el modulo ya tiene el perfil de atencion y si no agregarlo
+                                    if (!$m->attentionProfiles()->where('attention_profiles.id', $ap->id)->exists()) {
+                                        $m->attentionProfiles()->attach($ap->id);
+                                    }
+                                    // Verificar si la sala ya tiene el perfil de atencion y si no agregarlo
+                                    if (!$r->attentionProfiles()->where('attention_profiles.id', $ap->id)->exists()) {
+                                        $r->attentionProfiles()->attach($ap->id);
+                                    }
                                 }
                             }
                         }
