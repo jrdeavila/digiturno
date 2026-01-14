@@ -4,6 +4,7 @@ namespace App\Http\Controllers\UI\Attention;
 
 use App\Enums\QualificationOption;
 use App\Http\Controllers\Controller;
+use App\Models\Qualification;
 use App\Models\Shift;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -19,8 +20,10 @@ class QualifyShiftController extends Controller
     ]);
     try {
       DB::beginTransaction();
-      $shift->state = \App\Enums\ShiftState::Qualified;
-      $shift->save();
+      Qualification::create([
+        'shift_id' => $shift->id,
+        'qualification' => $request->qualification
+      ]);
       DB::commit();
       return redirect()->back()->with('success', 'Turno calificado con exito');
     } catch (\Exception $e) {

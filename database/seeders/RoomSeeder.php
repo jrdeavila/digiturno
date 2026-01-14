@@ -236,7 +236,6 @@ class RoomSeeder extends Seeder
             ],
         ];
         try {
-
             DB::beginTransaction();
             foreach ($branchs as $branch) {
                 $branchId = Branch::firstOrCreate(['name' => $branch['name']])->id;

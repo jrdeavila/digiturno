@@ -5,7 +5,6 @@ namespace App\Http\Controllers\UI;
 use App\Http\Controllers\Controller;
 use App\Models\AttentionProfile;
 use App\Models\Branch;
-use App\Models\Qualification;
 use App\Models\Room;
 use App\Models\Shift;
 use Exception;
@@ -60,9 +59,9 @@ class ShiftController extends Controller
     {
         try {
             $shift->forceDelete();
-            return redirect()->route('admin.shifts.index')->with('success', 'El turno fue eliminado con exito');
+            return redirect()->route('shifts.index')->with('success', 'El turno fue eliminado con exito');
         } catch (Exception $e) {
-            return redirect()->route('admin.shifts.index')->with('error', 'El turno no pudo ser eliminado');
+            return redirect()->route('shifts.index')->with('error', 'El turno no pudo ser eliminado');
         }
     }
 }
